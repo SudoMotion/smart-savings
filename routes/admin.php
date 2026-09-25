@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AboutUsController;
+use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DepositOptionController;
@@ -254,6 +255,25 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('units/{unit}', [UnitController::class, 'destroy'])
                 ->middleware('permission:units.delete')
                 ->name('units.destroy');
+        });
+
+        Route::middleware('permission:attributes.view')->group(function () {
+            Route::get('attributes', [AttributeController::class, 'index'])->name('attributes.index');
+            Route::get('attributes/create', [AttributeController::class, 'create'])
+                ->middleware('permission:attributes.create')
+                ->name('attributes.create');
+            Route::post('attributes', [AttributeController::class, 'store'])
+                ->middleware('permission:attributes.create')
+                ->name('attributes.store');
+            Route::get('attributes/{attribute}/edit', [AttributeController::class, 'edit'])
+                ->middleware('permission:attributes.edit')
+                ->name('attributes.edit');
+            Route::put('attributes/{attribute}', [AttributeController::class, 'update'])
+                ->middleware('permission:attributes.edit')
+                ->name('attributes.update');
+            Route::delete('attributes/{attribute}', [AttributeController::class, 'destroy'])
+                ->middleware('permission:attributes.delete')
+                ->name('attributes.destroy');
         });
 
         Route::middleware('permission:products.view')->group(function () {
