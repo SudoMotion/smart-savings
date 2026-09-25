@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AboutUsController;
+use App\Http\Controllers\Admin\DepositOptionController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingsController;
@@ -133,6 +134,25 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('settings', [SettingsController::class, 'update'])
                 ->middleware('permission:settings.update')
                 ->name('settings.update');
+        });
+
+        Route::middleware('permission:deposit-options.view')->group(function () {
+            Route::get('deposit-options', [DepositOptionController::class, 'index'])->name('deposit-options.index');
+            Route::get('deposit-options/create', [DepositOptionController::class, 'create'])
+                ->middleware('permission:deposit-options.create')
+                ->name('deposit-options.create');
+            Route::post('deposit-options', [DepositOptionController::class, 'store'])
+                ->middleware('permission:deposit-options.create')
+                ->name('deposit-options.store');
+            Route::get('deposit-options/{depositOption}/edit', [DepositOptionController::class, 'edit'])
+                ->middleware('permission:deposit-options.edit')
+                ->name('deposit-options.edit');
+            Route::put('deposit-options/{depositOption}', [DepositOptionController::class, 'update'])
+                ->middleware('permission:deposit-options.edit')
+                ->name('deposit-options.update');
+            Route::delete('deposit-options/{depositOption}', [DepositOptionController::class, 'destroy'])
+                ->middleware('permission:deposit-options.delete')
+                ->name('deposit-options.destroy');
         });
     });
 });
