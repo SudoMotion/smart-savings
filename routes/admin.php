@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Admin\AboutUsController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DepositOptionController;
 use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\UserController;
@@ -153,6 +155,29 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('deposit-options/{depositOption}', [DepositOptionController::class, 'destroy'])
                 ->middleware('permission:deposit-options.delete')
                 ->name('deposit-options.destroy');
+        });
+
+        Route::middleware('permission:categories.view')->group(function () {
+            Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
+            Route::get('categories/create', [CategoryController::class, 'create'])
+                ->middleware('permission:categories.create')
+                ->name('categories.create');
+            Route::post('categories', [CategoryController::class, 'store'])
+                ->middleware('permission:categories.create')
+                ->name('categories.store');
+            Route::get('categories/{category}/edit', [CategoryController::class, 'edit'])
+                ->middleware('permission:categories.edit')
+                ->name('categories.edit');
+            Route::put('categories/{category}', [CategoryController::class, 'update'])
+                ->middleware('permission:categories.edit')
+                ->name('categories.update');
+            Route::delete('categories/{category}', [CategoryController::class, 'destroy'])
+                ->middleware('permission:categories.delete')
+                ->name('categories.destroy');
+        });
+
+        Route::middleware('permission:products.view')->group(function () {
+            Route::get('products', [ProductController::class, 'index'])->name('products.index');
         });
     });
 });
