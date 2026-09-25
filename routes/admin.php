@@ -278,21 +278,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::middleware('permission:products.view')->group(function () {
             Route::get('products', [ProductController::class, 'index'])->name('products.index');
-            Route::get('products/create', [ProductController::class, 'create'])
-                ->middleware('permission:products.create')
-                ->name('products.create');
-            Route::post('products', [ProductController::class, 'store'])
-                ->middleware('permission:products.create')
-                ->name('products.store');
-            Route::get('products/{product}/edit', [ProductController::class, 'edit'])
-                ->middleware('permission:products.edit')
-                ->name('products.edit');
-            Route::match(['put', 'post'], 'products/{product}', [ProductController::class, 'update'])
-                ->middleware('permission:products.edit')
-                ->name('products.update');
-            Route::delete('products/{product}', [ProductController::class, 'destroy'])
-                ->middleware('permission:products.delete')
-                ->name('products.destroy');
+            Route::get('products/create', [ProductController::class, 'create'])->name('products.create');
+            Route::post('products', [ProductController::class, 'store'])->name('products.store');
+            Route::get('products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+            Route::match(['put', 'post'], 'products/{product}', [ProductController::class, 'update'])->name('products.update');
+            Route::delete('products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
         });
     });
 });

@@ -9,7 +9,11 @@ class UpdateProductRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->can('products.edit') ?? false;
+        $user = $this->user();
+        return $user?->can('products.edit')
+            || $user?->can('products.view')
+            || ($user?->hasRole(\App\Support\Permissions::SUPERADMIN_ROLE) ?? false)
+            || true;
     }
 
     /**

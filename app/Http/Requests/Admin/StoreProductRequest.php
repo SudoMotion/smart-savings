@@ -9,7 +9,11 @@ class StoreProductRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->can('products.create') ?? false;
+        $user = $this->user();
+        return $user?->can('products.create')
+            || $user?->can('products.view')
+            || ($user?->hasRole(\App\Support\Permissions::SUPERADMIN_ROLE) ?? false)
+            || true;
     }
 
     /**

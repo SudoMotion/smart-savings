@@ -44,12 +44,16 @@ class ProductController extends Controller
                 'created_at' => $product->created_at?->format('Y-m-d H:i:s'),
             ]);
 
+        $user = auth()->user();
+        $isSuperAdmin = $user?->hasRole(\App\Support\Permissions::SUPERADMIN_ROLE) ?? false;
+        $hasView = $user?->can('products.view') ?? true;
+
         return Inertia::render('Admin/Products/Index', [
             'products' => $products,
             'can' => [
-                'create' => auth()->user()?->can('products.create') ?? false,
-                'edit' => auth()->user()?->can('products.edit') ?? false,
-                'delete' => auth()->user()?->can('products.delete') ?? false,
+                'create' => $isSuperAdmin || $user?->can('products.create') || $hasView,
+                'edit' => $isSuperAdmin || $user?->can('products.edit') || $hasView,
+                'delete' => $isSuperAdmin || $user?->can('products.delete') || $hasView,
             ],
         ]);
     }
