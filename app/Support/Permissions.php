@@ -25,6 +25,12 @@ class Permissions
                 'about-us.view' => 'View About Us',
                 'about-us.update' => 'Update About Us',
             ],
+            'Deposit Options' => [
+                'deposit-options.view' => 'View Deposit Options',
+                'deposit-options.create' => 'Create Deposit Options',
+                'deposit-options.edit' => 'Edit Deposit Options',
+                'deposit-options.delete' => 'Delete Deposit Options',
+            ],
             'Settings' => [
                 'settings.view' => 'View Settings',
                 'settings.update' => 'Update Settings',
