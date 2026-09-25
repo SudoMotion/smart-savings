@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AboutUsController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DepositOptionController;
+use App\Http\Controllers\Admin\SubcategoryController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RoleController;
@@ -175,6 +176,25 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('categories/{category}', [CategoryController::class, 'destroy'])
                 ->middleware('permission:categories.delete')
                 ->name('categories.destroy');
+        });
+
+        Route::middleware('permission:subcategories.view')->group(function () {
+            Route::get('subcategories', [SubcategoryController::class, 'index'])->name('subcategories.index');
+            Route::get('subcategories/create', [SubcategoryController::class, 'create'])
+                ->middleware('permission:subcategories.create')
+                ->name('subcategories.create');
+            Route::post('subcategories', [SubcategoryController::class, 'store'])
+                ->middleware('permission:subcategories.create')
+                ->name('subcategories.store');
+            Route::get('subcategories/{subcategory}/edit', [SubcategoryController::class, 'edit'])
+                ->middleware('permission:subcategories.edit')
+                ->name('subcategories.edit');
+            Route::put('subcategories/{subcategory}', [SubcategoryController::class, 'update'])
+                ->middleware('permission:subcategories.edit')
+                ->name('subcategories.update');
+            Route::delete('subcategories/{subcategory}', [SubcategoryController::class, 'destroy'])
+                ->middleware('permission:subcategories.delete')
+                ->name('subcategories.destroy');
         });
 
         Route::middleware('permission:brands.view')->group(function () {
