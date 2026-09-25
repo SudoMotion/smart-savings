@@ -16,4 +16,12 @@ export default function AppLogo({ className = 'h-7 w-auto', ...props }) {
     }
 
     return <ApplicationLogo className={className} {...props} />;
+    return (
+        <img
+            src={site?.logo_url || '/images/logo.png'}
+            alt={site?.name || 'Application logo'}
+            className={`object-contain ${className}`}
+            {...props}
+        />
+    );
 }

@@ -21,6 +21,7 @@ class SiteData
         }
 
         return null;
+        return asset('images/logo.png');
     }
 
     /**
@@ -36,6 +37,7 @@ class SiteData
             'phone' => $settings->phone,
             'address' => $settings->address,
             'logo_url' => $settings->logo ? Storage::url($settings->logo) : null,
+            'logo_url' => asset('images/logo.png'),
             'favicon_url' => self::faviconUrl($settings),
             'favicon_only_url' => $settings->favicon ? Storage::url($settings->favicon) : null,
             'google_map_embed_link' => GoogleMapEmbed::normalize($settings->google_map_embed_link),

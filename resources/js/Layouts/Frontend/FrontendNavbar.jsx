@@ -26,6 +26,11 @@ export default function FrontendNavbar() {
                         ) : (
                             <span className="text-lg font-medium text-neutral-900">{site.name}</span>
                         )}
+                        <img
+                            src={site.logo_url || '/images/logo.png'}
+                            alt={site.name || 'Application logo'}
+                            className="h-8 w-auto object-contain"
+                        />
                     </Link>
 
                     <nav className="hidden items-center gap-8 md:flex">

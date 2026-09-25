@@ -37,6 +37,7 @@ class SettingsController extends Controller
     {
         $settings = Setting::current();
         $data = $request->safe()->except(['logo', 'favicon']);
+        $data = $request->safe()->except(['favicon']);
 
         if ($request->hasFile('logo')) {
             if ($settings->logo) {
