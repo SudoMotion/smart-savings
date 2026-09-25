@@ -31,6 +31,15 @@ class Permissions
                 'deposit-options.edit' => 'Edit Deposit Options',
                 'deposit-options.delete' => 'Delete Deposit Options',
             ],
+            'Categories' => [
+                'categories.view' => 'View Categories',
+                'categories.create' => 'Create Categories',
+                'categories.edit' => 'Edit Categories',
+                'categories.delete' => 'Delete Categories',
+            ],
+            'Products' => [
+                'products.view' => 'View Products',
+            ],
             'Settings' => [
                 'settings.view' => 'View Settings',
                 'settings.update' => 'Update Settings',
