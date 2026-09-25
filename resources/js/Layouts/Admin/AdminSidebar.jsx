@@ -61,6 +61,7 @@ const accessControlItems = [
 
 const productCatalogItems = [
     { name: 'Categories', href: 'admin.categories.index', active: 'admin.categories.*', permission: 'categories.view' },
+    { name: 'Subcategories', href: 'admin.subcategories.index', active: 'admin.subcategories.*', permission: 'subcategories.view' },
     { name: 'Brands', href: 'admin.brands.index', active: 'admin.brands.*', permission: 'brands.view' },
     { name: 'Products', href: 'admin.products.index', active: 'admin.products.*', permission: 'products.view' },
 ];
