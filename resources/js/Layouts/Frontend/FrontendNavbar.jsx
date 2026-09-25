@@ -17,15 +17,6 @@ export default function FrontendNavbar() {
             <Container>
                 <div className="flex h-16 items-center justify-between">
                     <Link href={route('home')} className="flex items-center gap-3">
-                        {site.logo_url ? (
-                            <img
-                                src={site.logo_url}
-                                alt={site.name}
-                                className="h-8 w-auto object-contain"
-                            />
-                        ) : (
-                            <span className="text-lg font-medium text-neutral-900">{site.name}</span>
-                        )}
                         <img
                             src={site.logo_url || '/images/logo.png'}
                             alt={site.name || 'Application logo'}

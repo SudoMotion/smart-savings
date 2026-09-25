@@ -7,26 +7,20 @@ import {
     AddAction,
     Button,
     Card,
-    FileInput,
     Input,
     RemoveAction,
     Select,
     Textarea,
 } from '@/Components/UI';
 import { Head, useForm, usePage } from '@inertiajs/react';
-import { useState } from 'react';
 
 export default function Index({ settings }) {
     const { flash } = usePage().props;
-    const [logoPreview, setLogoPreview] = useState(settings.logo_url);
-    const [faviconPreview, setFaviconPreview] = useState(settings.favicon_preview_url);
 
-    const { data, setData, post, processing, errors, progress } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         application_name: settings.application_name ?? '',
         email: settings.email ?? '',
         phone: settings.phone ?? '',
-        logo: null,
-        favicon: null,
         address: settings.address ?? '',
         google_map_embed_link: settings.google_map_embed_link ?? '',
         social_media: settings.social_media?.length
@@ -38,27 +32,8 @@ export default function Index({ settings }) {
         e.preventDefault();
 
         post(route('admin.settings.update'), {
-            forceFormData: true,
             preserveScroll: true,
         });
-    };
-
-    const handleLogoChange = (e) => {
-        const file = e.target.files[0];
-
-        if (file) {
-            setData('logo', file);
-            setLogoPreview(URL.createObjectURL(file));
-        }
-    };
-
-    const handleFaviconChange = (e) => {
-        const file = e.target.files[0];
-
-        if (file) {
-            setData('favicon', file);
-            setFaviconPreview(URL.createObjectURL(file));
-        }
     };
 
     const addSocialMedia = () => {
@@ -131,59 +106,10 @@ export default function Index({ settings }) {
                             onChange={(e) => setData('address', e.target.value)}
                         />
 
-                        <FileInput
-                            id="logo"
-                            label="Logo"
-                            wrapperClassName="sm:col-span-2 lg:col-span-1 xl:col-span-2"
-                            accept="image/*"
-                            error={errors.logo}
-                            hint="PNG, JPG or SVG. Max 2MB."
-                            placeholder={logoPreview ? 'Replace current logo' : 'No file chosen'}
-                            onChange={handleLogoChange}
-                        >
-                            {logoPreview && (
-                                <div className="mt-3 inline-flex rounded-md border border-neutral-200 bg-neutral-50 p-2">
-                                    <img
-                                        src={logoPreview}
-                                        alt="Logo preview"
-                                        className="h-16 w-auto max-w-[200px] object-contain"
-                                    />
-                                </div>
-                            )}
-                            {progress && (
-                                <p className="mt-2 text-sm text-neutral-500">
-                                    Uploading: {progress.percentage}%
-                                </p>
-                            )}
-                        </FileInput>
-
-                        <FileInput
-                            id="favicon"
-                            label="Favicon"
-                            wrapperClassName="sm:col-span-2 lg:col-span-1 xl:col-span-2"
-                            accept="image/*,.ico"
-                            error={errors.favicon}
-                            hint="ICO, PNG or SVG. Max 512KB. Uses logo if empty."
-                            placeholder={
-                                faviconPreview ? 'Replace current favicon' : 'No file chosen'
-                            }
-                            onChange={handleFaviconChange}
-                        >
-                            {faviconPreview && (
-                                <div className="mt-3 inline-flex rounded-md border border-neutral-200 bg-neutral-50 p-2">
-                                    <img
-                                        src={faviconPreview}
-                                        alt="Favicon preview"
-                                        className="h-8 w-8 object-contain"
-                                    />
-                                </div>
-                            )}
-                        </FileInput>
-
                         <Textarea
                             id="google_map_embed_link"
                             label="Google Map Embed"
-                            wrapperClassName="sm:col-span-2 lg:col-span-2 xl:col-span-2"
+                            wrapperClassName="sm:col-span-2 lg:col-span-3 xl:col-span-4"
                             value={data.google_map_embed_link}
                             placeholder="Paste the embed URL or full iframe code from Google Maps"
                             error={errors.google_map_embed_link}

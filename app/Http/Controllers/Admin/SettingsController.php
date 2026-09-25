@@ -6,9 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpdateSettingsRequest;
 use App\Models\Setting;
 use App\Support\GoogleMapEmbed;
-use App\Support\SiteData;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -23,9 +21,6 @@ class SettingsController extends Controller
                 'application_name' => $settings->application_name,
                 'email' => $settings->email,
                 'phone' => $settings->phone,
-                'logo_url' => $settings->logo ? Storage::url($settings->logo) : null,
-                'favicon_url' => $settings->favicon ? Storage::url($settings->favicon) : null,
-                'favicon_preview_url' => SiteData::faviconUrl($settings),
                 'address' => $settings->address,
                 'google_map_embed_link' => GoogleMapEmbed::normalize($settings->google_map_embed_link),
                 'social_media' => $settings->social_media ?? [],
@@ -36,24 +31,7 @@ class SettingsController extends Controller
     public function update(UpdateSettingsRequest $request): RedirectResponse
     {
         $settings = Setting::current();
-        $data = $request->safe()->except(['logo', 'favicon']);
-        $data = $request->safe()->except(['favicon']);
-
-        if ($request->hasFile('logo')) {
-            if ($settings->logo) {
-                Storage::disk('public')->delete($settings->logo);
-            }
-
-            $data['logo'] = $request->file('logo')->store('logos', 'public');
-        }
-
-        if ($request->hasFile('favicon')) {
-            if ($settings->favicon) {
-                Storage::disk('public')->delete($settings->favicon);
-            }
-
-            $data['favicon'] = $request->file('favicon')->store('favicons', 'public');
-        }
+        $data = $request->validated();
 
         $data['social_media'] = collect($request->input('social_media', []))
             ->filter(fn (array $item) => filled($item['platform'] ?? null) || filled($item['url'] ?? null))
