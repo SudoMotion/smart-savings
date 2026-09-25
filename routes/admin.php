@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DepositOptionController;
 use App\Http\Controllers\Admin\SubcategoryController;
+use App\Http\Controllers\Admin\SubsubcategoryController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RoleController;
@@ -214,6 +215,25 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('subcategories/{subcategory}', [SubcategoryController::class, 'destroy'])
                 ->middleware('permission:subcategories.delete')
                 ->name('subcategories.destroy');
+        });
+
+        Route::middleware('permission:subsubcategories.view')->group(function () {
+            Route::get('subsubcategories', [SubsubcategoryController::class, 'index'])->name('subsubcategories.index');
+            Route::get('subsubcategories/create', [SubsubcategoryController::class, 'create'])
+                ->middleware('permission:subsubcategories.create')
+                ->name('subsubcategories.create');
+            Route::post('subsubcategories', [SubsubcategoryController::class, 'store'])
+                ->middleware('permission:subsubcategories.create')
+                ->name('subsubcategories.store');
+            Route::get('subsubcategories/{subsubcategory}/edit', [SubsubcategoryController::class, 'edit'])
+                ->middleware('permission:subsubcategories.edit')
+                ->name('subsubcategories.edit');
+            Route::put('subsubcategories/{subsubcategory}', [SubsubcategoryController::class, 'update'])
+                ->middleware('permission:subsubcategories.edit')
+                ->name('subsubcategories.update');
+            Route::delete('subsubcategories/{subsubcategory}', [SubsubcategoryController::class, 'destroy'])
+                ->middleware('permission:subsubcategories.delete')
+                ->name('subsubcategories.destroy');
         });
 
         Route::middleware('permission:products.view')->group(function () {
