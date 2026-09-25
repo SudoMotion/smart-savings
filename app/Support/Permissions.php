@@ -49,6 +49,12 @@ class Permissions
                 'subcategories.edit' => 'Edit Subcategories',
                 'subcategories.delete' => 'Delete Subcategories',
             ],
+            'Subsubcategories' => [
+                'subsubcategories.view' => 'View Subsubcategories',
+                'subsubcategories.create' => 'Create Subsubcategories',
+                'subsubcategories.edit' => 'Edit Subsubcategories',
+                'subsubcategories.delete' => 'Delete Subsubcategories',
+            ],
             'Products' => [
                 'products.view' => 'View Products',
             ],
