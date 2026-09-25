@@ -67,6 +67,7 @@ class ProductController extends Controller
     {
         DB::transaction(function () use ($request) {
             $data = $request->safe()->except(['image', 'additional_images', 'attributes']);
+            $data = $this->sanitizeProductData($data);
 
             if ($request->hasFile('image')) {
                 $data['image'] = $request->file('image')->store('products', 'public');
@@ -144,6 +145,8 @@ class ProductController extends Controller
                 'deleted_image_ids',
                 'attributes',
             ]);
+
+            $data = $this->sanitizeProductData($data);
 
             if ($request->hasFile('image')) {
                 if ($product->image) {
@@ -256,6 +259,31 @@ class ProductController extends Controller
                 ->values()
                 ->all(),
         ];
+    }
+
+    private function sanitizeProductData(array $data): array
+    {
+        $data['discount_value'] = isset($data['discount_value']) && $data['discount_value'] !== ''
+            ? (float) $data['discount_value']
+            : 0;
+
+        $data['discount_type'] = !empty($data['discount_type']) ? $data['discount_type'] : null;
+
+        $data['stock'] = isset($data['stock']) && $data['stock'] !== ''
+            ? (int) $data['stock']
+            : 0;
+
+        $data['alert_quantity'] = isset($data['alert_quantity']) && $data['alert_quantity'] !== ''
+            ? (int) $data['alert_quantity']
+            : 0;
+
+        $data['category_id'] = !empty($data['category_id']) ? $data['category_id'] : null;
+        $data['subcategory_id'] = !empty($data['subcategory_id']) ? $data['subcategory_id'] : null;
+        $data['subsubcategory_id'] = !empty($data['subsubcategory_id']) ? $data['subsubcategory_id'] : null;
+        $data['brand_id'] = !empty($data['brand_id']) ? $data['brand_id'] : null;
+        $data['unit_id'] = !empty($data['unit_id']) ? $data['unit_id'] : null;
+
+        return $data;
     }
 }
 

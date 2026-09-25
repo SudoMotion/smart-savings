@@ -45,6 +45,26 @@ class Product extends Model
         ];
     }
 
+    public function setDiscountValueAttribute($value): void
+    {
+        $this->attributes['discount_value'] = ($value === null || $value === '') ? 0 : $value;
+    }
+
+    public function setDiscountTypeAttribute($value): void
+    {
+        $this->attributes['discount_type'] = $value ?: null;
+    }
+
+    public function setStockAttribute($value): void
+    {
+        $this->attributes['stock'] = ($value === null || $value === '') ? 0 : (int) $value;
+    }
+
+    public function setAlertQuantityAttribute($value): void
+    {
+        $this->attributes['alert_quantity'] = ($value === null || $value === '') ? 0 : (int) $value;
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);

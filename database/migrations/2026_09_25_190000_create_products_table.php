@@ -24,9 +24,9 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->decimal('price', 12, 2)->default(0);
             $table->string('discount_type')->nullable();
-            $table->decimal('discount_value', 12, 2)->default(0);
+            $table->decimal('discount_value', 12, 2)->nullable()->default(0);
             $table->integer('stock')->default(0);
-            $table->integer('alert_quantity')->default(0);
+            $table->integer('alert_quantity')->nullable()->default(0);
             $table->text('short_description')->nullable();
             $table->longText('description')->nullable();
             $table->string('status')->default('active');
