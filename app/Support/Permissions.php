@@ -69,6 +69,9 @@ class Permissions
             ],
             'Products' => [
                 'products.view' => 'View Products',
+                'products.create' => 'Create Products',
+                'products.edit' => 'Edit Products',
+                'products.delete' => 'Delete Products',
             ],
             'Settings' => [
                 'settings.view' => 'View Settings',
