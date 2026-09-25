@@ -64,6 +64,7 @@ const productCatalogItems = [
     { name: 'Categories', href: 'admin.categories.index', active: 'admin.categories.*', permission: 'categories.view' },
     { name: 'Subcategories', href: 'admin.subcategories.index', active: 'admin.subcategories.*', permission: 'subcategories.view' },
     { name: 'Subsubcategories', href: 'admin.subsubcategories.index', active: 'admin.subsubcategories.*', permission: 'subsubcategories.view' },
+    { name: 'Units', href: 'admin.units.index', active: 'admin.units.*', permission: 'units.view' },
     { name: 'Products', href: 'admin.products.index', active: 'admin.products.*', permission: 'products.view' },
 ];
 
