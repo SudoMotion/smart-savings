@@ -46,26 +46,26 @@ export default function Edit({ subcategory, categoryOptions = [] }) {
                             onChange={(e) => setData('category_id', e.target.value)}
                         />
 
+                        <Input
+                            id="name"
+                            label="Subcategory Name"
+                            placeholder="e.g. Smartphones, Wireless Earbuds, Gift Cards"
+                            wrapperClassName="sm:col-span-2 lg:col-span-1 xl:col-span-1"
+                            value={data.name}
+                            error={errors.name}
+                            required
+                            onChange={(e) => setData('name', e.target.value)}
+                        />
+
                         <Select
                             id="status"
                             label="Status"
-                            wrapperClassName="sm:col-span-2 lg:col-span-1 xl:col-span-1"
+                            wrapperClassName="sm:col-span-2 lg:col-span-1 xl:col-span-2"
                             value={data.status}
                             error={errors.status}
                             options={statusOptions}
                             required
                             onChange={(e) => setData('status', e.target.value)}
-                        />
-
-                        <Input
-                            id="name"
-                            label="Subcategory Name"
-                            placeholder="e.g. Smartphones, Wireless Earbuds, Gift Cards"
-                            wrapperClassName="sm:col-span-2 lg:col-span-2 xl:col-span-2"
-                            value={data.name}
-                            error={errors.name}
-                            required
-                            onChange={(e) => setData('name', e.target.value)}
                         />
                     </AdminFormGrid>
 

@@ -45,16 +45,6 @@ export default function Create() {
                             onChange={(e) => setData('coin_type', e.target.value)}
                         />
 
-                        <Select
-                            id="status"
-                            label="Status"
-                            wrapperClassName="sm:col-span-2 lg:col-span-1 xl:col-span-2"
-                            value={data.status}
-                            error={errors.status}
-                            options={statusOptions}
-                            onChange={(e) => setData('status', e.target.value)}
-                        />
-
                         <Textarea
                             id="value"
                             label="Deposit Value / Address"
@@ -64,6 +54,16 @@ export default function Create() {
                             error={errors.value}
                             required
                             onChange={(e) => setData('value', e.target.value)}
+                        />
+
+                        <Select
+                            id="status"
+                            label="Status"
+                            wrapperClassName="sm:col-span-2 lg:col-span-1 xl:col-span-2"
+                            value={data.status}
+                            error={errors.status}
+                            options={statusOptions}
+                            onChange={(e) => setData('status', e.target.value)}
                         />
                     </AdminFormGrid>
 

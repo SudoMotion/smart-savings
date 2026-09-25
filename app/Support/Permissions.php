@@ -31,6 +31,12 @@ class Permissions
                 'deposit-options.edit' => 'Edit Deposit Options',
                 'deposit-options.delete' => 'Delete Deposit Options',
             ],
+            'Brands' => [
+                'brands.view' => 'View Brands',
+                'brands.create' => 'Create Brands',
+                'brands.edit' => 'Edit Brands',
+                'brands.delete' => 'Delete Brands',
+            ],
             'Categories' => [
                 'categories.view' => 'View Categories',
                 'categories.create' => 'Create Categories',
@@ -42,12 +48,6 @@ class Permissions
                 'subcategories.create' => 'Create Subcategories',
                 'subcategories.edit' => 'Edit Subcategories',
                 'subcategories.delete' => 'Delete Subcategories',
-            ],
-            'Brands' => [
-                'brands.view' => 'View Brands',
-                'brands.create' => 'Create Brands',
-                'brands.edit' => 'Edit Brands',
-                'brands.delete' => 'Delete Brands',
             ],
             'Products' => [
                 'products.view' => 'View Products',
