@@ -18,6 +18,12 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', function () {
+        return auth()->check()
+            ? redirect()->route('admin.dashboard')
+            : redirect()->route('admin.login');
+    })->name('index');
+
     Route::middleware('guest')->group(function () {
         Route::get('register', [RegisteredUserController::class, 'create'])
             ->name('register');
