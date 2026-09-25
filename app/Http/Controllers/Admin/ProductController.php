@@ -24,7 +24,6 @@ class ProductController extends Controller
 {
     public function index(): Response
     {
-        return Inertia::render('Admin/Products/Index');
         $products = Product::query()
             ->with(['category:id,name', 'brand:id,name', 'unit:id,name'])
             ->latest('id')
@@ -42,7 +41,9 @@ class ProductController extends Controller
                 'status' => $product->status,
                 'image_url' => $product->image_url,
                 'created_at' => $product->created_at?->format('Y-m-d H:i:s'),
-            ]);
+            ])
+            ->values()
+            ->all();
 
         $user = auth()->user();
         $isSuperAdmin = $user?->hasRole(\App\Support\Permissions::SUPERADMIN_ROLE) ?? false;
