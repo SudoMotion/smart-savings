@@ -502,8 +502,8 @@ export default function Create({
                                     Cancel
                                 </Button>
                             </Link>
-                            <Button type="submit" disabled={processing}>
-                                Save Product
+                            <Button type="submit" disabled={processing} loading={processing}>
+                                {processing ? 'Saving Product...' : 'Save Product'}
                             </Button>
                         </div>
                     </Card>

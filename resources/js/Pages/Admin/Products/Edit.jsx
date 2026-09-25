@@ -548,8 +548,8 @@ export default function Edit({
                                     Cancel
                                 </Button>
                             </Link>
-                            <Button type="submit" disabled={processing}>
-                                Update Product
+                            <Button type="submit" disabled={processing} loading={processing}>
+                                {processing ? 'Updating Product...' : 'Update Product'}
                             </Button>
                         </div>
                     </Card>
