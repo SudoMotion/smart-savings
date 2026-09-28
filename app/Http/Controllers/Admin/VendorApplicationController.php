@@ -8,6 +8,7 @@ use App\Models\Vendor;
 use App\Models\VendorApplication;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\Permission\Models\Role;
@@ -16,16 +17,9 @@ class VendorApplicationController extends Controller
 {
     public function index(Request $request): Response
     {
-        $status = $request->query('status');
         $search = $request->query('search');
 
-        $query = VendorApplication::query()
-            ->with(['user', 'reviewer'])
-            ->latest();
-
-        if ($status && in_array($status, ['pending', 'approved', 'rejected'])) {
-            $query->where('status', $status);
-        }
+        $query = VendorApplication::query()->latest();
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -38,20 +32,12 @@ class VendorApplicationController extends Controller
 
         $applications = $query->paginate(15)->withQueryString();
 
-        $counts = [
-            'all' => VendorApplication::count(),
-            'pending' => VendorApplication::where('status', 'pending')->count(),
-            'approved' => VendorApplication::where('status', 'approved')->count(),
-            'rejected' => VendorApplication::where('status', 'rejected')->count(),
-        ];
-
         return Inertia::render('Admin/VendorApplications/Index', [
             'applications' => $applications,
             'filters' => [
-                'status' => $status,
                 'search' => $search,
             ],
-            'counts' => $counts,
+            'total' => VendorApplication::count(),
             'can' => [
                 'approve' => auth()->user()?->can('vendor-applications.approve') ?? false,
                 'reject' => auth()->user()?->can('vendor-applications.reject') ?? false,
@@ -62,6 +48,8 @@ class VendorApplicationController extends Controller
 
     public function approve(VendorApplication $vendorApplication): RedirectResponse
     {
+        $shopName = $vendorApplication->shop_name;
+
         // 1. Create or retrieve User
         $user = User::firstOrNew(['email' => $vendorApplication->email]);
         $user->name = $vendorApplication->name;
@@ -86,40 +74,37 @@ class VendorApplicationController extends Controller
             ]
         );
 
-        // 4. Update Application status
-        $vendorApplication->update([
-            'status' => 'approved',
-            'user_id' => $user->id,
-            'reviewed_by' => auth()->id(),
-            'reviewed_at' => now(),
-            'rejection_reason' => null,
-        ]);
+        // 4. Remove from vendor_applications so it is not kept here, transferred to vendor list
+        $vendorApplication->delete();
 
         return redirect()
             ->route('admin.vendor-applications.index')
-            ->with('success', "Vendor application for '{$vendorApplication->shop_name}' approved successfully! Vendor transferred to Vendor List.");
+            ->with('success', "Vendor application for '{$shopName}' approved and transferred to Vendor List successfully.");
     }
 
     public function reject(Request $request, VendorApplication $vendorApplication): RedirectResponse
     {
-        $validated = $request->validate([
-            'rejection_reason' => ['required', 'string', 'max:1000'],
-        ]);
+        $shopName = $vendorApplication->shop_name;
 
-        $vendorApplication->update([
-            'status' => 'rejected',
-            'rejection_reason' => $validated['rejection_reason'],
-            'reviewed_by' => auth()->id(),
-            'reviewed_at' => now(),
-        ]);
+        // Delete uploaded shop logo file if present
+        if ($vendorApplication->shop_logo) {
+            Storage::disk('public')->delete($vendorApplication->shop_logo);
+        }
+
+        // Delete from vendor_applications
+        $vendorApplication->delete();
 
         return redirect()
             ->route('admin.vendor-applications.index')
-            ->with('success', "Vendor application for '{$vendorApplication->shop_name}' has been rejected.");
+            ->with('success', "Vendor application for '{$shopName}' has been rejected and removed.");
     }
 
     public function destroy(VendorApplication $vendorApplication): RedirectResponse
     {
+        if ($vendorApplication->shop_logo) {
+            Storage::disk('public')->delete($vendorApplication->shop_logo);
+        }
+
         $vendorApplication->delete();
 
         return redirect()
@@ -127,4 +112,3 @@ class VendorApplicationController extends Controller
             ->with('success', 'Vendor application deleted successfully.');
     }
 }
-
