@@ -34,6 +34,10 @@ class Product extends Model
         'status',
     ];
 
+    protected $appends = [
+        'image_url',
+    ];
+
     /**
      * @return array<string, string>
      */
