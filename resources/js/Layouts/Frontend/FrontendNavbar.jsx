@@ -39,6 +39,12 @@ export default function FrontendNavbar() {
                                 {link.name}
                             </Link>
                         ))}
+                        <Link
+                            href={route('vendor.apply')}
+                            className="inline-flex items-center justify-center rounded-md bg-neutral-900 px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-neutral-800 transition"
+                        >
+                            Become a vendor
+                        </Link>
                     </nav>
 
                     <button
@@ -75,6 +81,13 @@ export default function FrontendNavbar() {
                                     {link.name}
                                 </Link>
                             ))}
+                            <Link
+                                href={route('vendor.apply')}
+                                className="mt-2 rounded-md bg-neutral-900 px-3 py-2 text-center text-sm font-semibold text-white hover:bg-neutral-800"
+                                onClick={() => setMobileOpen(false)}
+                            >
+                                Become a vendor
+                            </Link>
                         </div>
                     </nav>
                 )}

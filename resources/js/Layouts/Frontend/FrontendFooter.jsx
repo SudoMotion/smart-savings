@@ -22,6 +22,14 @@ export default function FrontendFooter() {
                         <p className="mt-3 text-sm leading-relaxed text-neutral-600">
                             Thoughtful interior design for modern living spaces.
                         </p>
+                        <div className="mt-5">
+                            <Link
+                                href={route('vendor.apply')}
+                                className="inline-flex items-center justify-center rounded-md bg-neutral-900 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-neutral-800 transition"
+                            >
+                                Become a vendor
+                            </Link>
+                        </div>
                     </div>
 
                     <div>
@@ -37,6 +45,9 @@ export default function FrontendFooter() {
                             </Link>
                             <Link href={route('contact')} className="text-sm text-neutral-600 hover:text-neutral-900">
                                 Contact Us
+                            </Link>
+                            <Link href={route('vendor.apply')} className="text-sm font-medium text-neutral-800 hover:text-neutral-950">
+                                Become a vendor
                             </Link>
                         </div>
                     </div>
