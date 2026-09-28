@@ -13,6 +13,9 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\VendorApplicationController;
+use App\Http\Controllers\Admin\VendorController;
+use App\Http\Controllers\Admin\VendorPermissionController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
@@ -283,6 +286,41 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
             Route::match(['put', 'post'], 'products/{product}', [ProductController::class, 'update'])->name('products.update');
             Route::delete('products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+        });
+
+        // Vendor Catalog Routes
+        Route::middleware('permission:vendor-applications.view')->group(function () {
+            Route::get('vendor-applications', [VendorApplicationController::class, 'index'])->name('vendor-applications.index');
+            Route::post('vendor-applications/{vendorApplication}/approve', [VendorApplicationController::class, 'approve'])
+                ->middleware('permission:vendor-applications.approve')
+                ->name('vendor-applications.approve');
+            Route::post('vendor-applications/{vendorApplication}/reject', [VendorApplicationController::class, 'reject'])
+                ->middleware('permission:vendor-applications.reject')
+                ->name('vendor-applications.reject');
+            Route::delete('vendor-applications/{vendorApplication}', [VendorApplicationController::class, 'destroy'])
+                ->middleware('permission:vendor-applications.delete')
+                ->name('vendor-applications.destroy');
+        });
+
+        Route::middleware('permission:vendors.view')->group(function () {
+            Route::get('vendors', [VendorController::class, 'index'])->name('vendors.index');
+            Route::get('vendors/{vendor}/edit', [VendorController::class, 'edit'])
+                ->middleware('permission:vendors.edit')
+                ->name('vendors.edit');
+            Route::match(['put', 'post'], 'vendors/{vendor}', [VendorController::class, 'update'])
+                ->middleware('permission:vendors.edit')
+                ->name('vendors.update');
+            Route::post('vendors/{vendor}/toggle-status', [VendorController::class, 'toggleStatus'])
+                ->middleware('permission:vendors.edit')
+                ->name('vendors.toggle-status');
+            Route::delete('vendors/{vendor}', [VendorController::class, 'destroy'])
+                ->middleware('permission:vendors.delete')
+                ->name('vendors.destroy');
+        });
+
+        Route::middleware('permission:vendor-permissions.manage')->group(function () {
+            Route::get('vendor-permissions', [VendorPermissionController::class, 'index'])->name('vendor-permissions.index');
+            Route::put('vendor-permissions', [VendorPermissionController::class, 'update'])->name('vendor-permissions.update');
         });
     });
 });
