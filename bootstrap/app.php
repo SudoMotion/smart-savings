@@ -14,11 +14,13 @@ return Application::configure(basePath: dirname(__DIR__))
         then: function () {
             Route::middleware('web')
                 ->group(base_path('routes/admin.php'));
+            Route::middleware('web')
+                ->group(base_path('routes/vendor.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->redirectGuestsTo('/admin/login');
-        $middleware->redirectUsersTo('/admin/dashboard');
+        $middleware->redirectGuestsTo(fn (Request $request) => $request->is('vendor*') ? '/vendor/login' : '/admin/login');
+        $middleware->redirectUsersTo(fn (Request $request) => $request->is('vendor*') ? '/vendor/dashboard' : '/admin/dashboard');
 
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,
@@ -29,6 +31,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            'vendor' => \App\Http\Middleware\EnsureUserIsVendor::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

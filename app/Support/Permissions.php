@@ -87,6 +87,16 @@ class Permissions
                 'permissions.view' => 'View Permissions',
                 'permissions.update' => 'Update Permissions',
             ],
+            'Vendor Catalog' => [
+                'vendor-applications.view' => 'View Vendor Applications',
+                'vendor-applications.approve' => 'Approve Vendor Applications',
+                'vendor-applications.reject' => 'Reject Vendor Applications',
+                'vendor-applications.delete' => 'Delete Vendor Applications',
+                'vendors.view' => 'View Vendors',
+                'vendors.edit' => 'Edit Vendors',
+                'vendors.delete' => 'Delete Vendors',
+                'vendor-permissions.manage' => 'Manage Vendor Permissions',
+            ],
         ];
     }
 
