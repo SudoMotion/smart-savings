@@ -13,6 +13,8 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
+        'vendor_id',
+        'user_id',
         'name',
         'code',
         'sku',
@@ -103,6 +105,16 @@ class Product extends Model
     public function getImageUrlAttribute(): ?string
     {
         return $this->image ? Storage::url($this->image) : null;
+    }
+
+    public function vendor(): BelongsTo
+    {
+        return $this->belongsTo(Vendor::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }
 
