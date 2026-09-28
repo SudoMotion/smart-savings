@@ -59,10 +59,18 @@ export default function VendorBottomNav({ onOpenMenu }) {
             </Link>
 
             <Link
-                href={route('vendor.dashboard')}
-                className="flex flex-col items-center justify-center gap-1 py-1 px-3 text-[11px] font-medium text-neutral-500 hover:text-neutral-800 transition"
+                href={route('vendor.products.index')}
+                className={`flex flex-col items-center justify-center gap-1 py-1 px-3 text-[11px] font-medium transition ${
+                    route().current('vendor.products.*')
+                        ? 'text-neutral-950 font-semibold'
+                        : 'text-neutral-500 hover:text-neutral-800'
+                }`}
             >
-                <div className="flex h-7 w-7 items-center justify-center rounded-full text-neutral-600">
+                <div
+                    className={`flex h-7 w-7 items-center justify-center rounded-full transition ${
+                        route().current('vendor.products.*') ? 'bg-neutral-900 text-white' : 'text-neutral-600'
+                    }`}
+                >
                     <ProductsIcon className="h-4 w-4" />
                 </div>
                 <span>Products</span>
