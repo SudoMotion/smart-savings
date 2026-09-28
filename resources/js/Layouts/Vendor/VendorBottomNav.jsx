@@ -39,6 +39,7 @@ export default function VendorBottomNav({ onOpenMenu }) {
         <nav
             aria-label="Mobile Bottom Navigation"
             className="fixed inset-x-0 bottom-0 z-40 flex h-16 items-center justify-around border-t border-neutral-200 bg-white/95 px-2 backdrop-blur-md shadow-[0_-2px_10px_rgba(0,0,0,0.05)] md:hidden"
+            className="fixed inset-x-0 bottom-0 z-40 flex h-16 items-center justify-around border-t border-neutral-200 bg-white/95 px-2 backdrop-blur-md shadow-[0_-2px_10px_rgba(0,0,0,0.05)] lg:hidden"
         >
             <Link
                 href={route('vendor.dashboard')}
