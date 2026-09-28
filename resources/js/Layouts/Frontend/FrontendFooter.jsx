@@ -1,89 +1,192 @@
-import Container from '@/Components/Frontend/Container';
 import { Link, usePage } from '@inertiajs/react';
-
-const socialLabels = {
-    facebook: 'Facebook',
-    instagram: 'Instagram',
-    x: 'X',
-    linkedin: 'LinkedIn',
-    youtube: 'YouTube',
-};
 
 export default function FrontendFooter() {
     const { site } = usePage().props;
     const year = new Date().getFullYear();
 
+    const scrollToTop = () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        });
+    };
+
     return (
-        <footer className="border-t border-neutral-200 bg-neutral-50">
-            <Container className="py-12">
-                <div className="grid gap-10 md:grid-cols-3">
-                    <div>
-                        <p className="text-lg font-medium text-neutral-900">{site.name}</p>
-                        <p className="mt-3 text-sm leading-relaxed text-neutral-600">
-                            Thoughtful interior design for modern living spaces.
-                        </p>
-                        <div className="mt-5">
-                            <Link
-                                href={route('vendor.apply')}
-                                className="inline-flex items-center justify-center rounded-md bg-neutral-900 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-neutral-800 transition"
-                            >
-                                Become a vendor
-                            </Link>
-                        </div>
+        <footer className="w-full select-none text-white">
+            {/* Back to top bar */}
+            <button
+                type="button"
+                onClick={scrollToTop}
+                className="w-full bg-[#37475a] py-4 text-center text-xs font-semibold text-white transition hover:bg-[#485769] active:bg-[#2e3b4b]"
+            >
+                Back to top
+            </button>
+
+            {/* Main Amazon 4-Column Links Section */}
+            <div className="bg-[#232f3e] px-4 py-12">
+                <div className="mx-auto grid max-w-[1200px] grid-cols-2 gap-8 text-xs sm:grid-cols-4 sm:gap-10">
+                    {/* Col 1: Get to Know Us */}
+                    <div className="space-y-3">
+                        <h4 className="text-sm font-bold text-white">Get to Know Us</h4>
+                        <ul className="space-y-2 text-gray-300">
+                            <li>
+                                <Link href={route('about')} className="hover:underline">
+                                    About {site?.name || 'Amazon'}
+                                </Link>
+                            </li>
+                            <li>
+                                <span className="hover:underline cursor-pointer">Careers</span>
+                            </li>
+                            <li>
+                                <span className="hover:underline cursor-pointer">Press Releases</span>
+                            </li>
+                            <li>
+                                <span className="hover:underline cursor-pointer">Marketplace Science</span>
+                            </li>
+                            <li>
+                                <span className="hover:underline cursor-pointer">Community Impact</span>
+                            </li>
+                        </ul>
                     </div>
 
-                    <div>
-                        <p className="text-sm font-medium uppercase tracking-wider text-neutral-500">
-                            Quick Links
-                        </p>
-                        <div className="mt-4 flex flex-col gap-2">
-                            <Link href={route('home')} className="text-sm text-neutral-600 hover:text-neutral-900">
-                                Home
-                            </Link>
-                            <Link href={route('about')} className="text-sm text-neutral-600 hover:text-neutral-900">
-                                About Us
-                            </Link>
-                            <Link href={route('contact')} className="text-sm text-neutral-600 hover:text-neutral-900">
-                                Contact Us
-                            </Link>
-                            <Link href={route('vendor.apply')} className="text-sm font-medium text-neutral-800 hover:text-neutral-950">
-                                Become a vendor
-                            </Link>
-                        </div>
+                    {/* Col 2: Make Money with Us */}
+                    <div className="space-y-3">
+                        <h4 className="text-sm font-bold text-white">Make Money with Us</h4>
+                        <ul className="space-y-2 text-gray-300">
+                            <li>
+                                <Link
+                                    href={route('vendor.apply')}
+                                    className="font-semibold text-[#febd69] hover:underline"
+                                >
+                                    Sell products on {site?.name || 'Amazon'}
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href={route('vendor.apply')}
+                                    className="hover:underline"
+                                >
+                                    Become a Registered Seller
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href={route('vendor.login')}
+                                    className="hover:underline"
+                                >
+                                    Vendor Management Portal
+                                </Link>
+                            </li>
+                            <li>
+                                <span className="hover:underline cursor-pointer">Become an Affiliate</span>
+                            </li>
+                            <li>
+                                <span className="hover:underline cursor-pointer">Advertise Your Products</span>
+                            </li>
+                            <li>
+                                <span className="hover:underline cursor-pointer">Self-Publish with Us</span>
+                            </li>
+                        </ul>
                     </div>
 
-                    <div>
-                        <p className="text-sm font-medium uppercase tracking-wider text-neutral-500">
-                            Contact
-                        </p>
-                        <div className="mt-4 space-y-2 text-sm text-neutral-600">
-                            {site.email && <p>{site.email}</p>}
-                            {site.phone && <p>{site.phone}</p>}
-                            {site.address && <p className="whitespace-pre-line">{site.address}</p>}
-                        </div>
+                    {/* Col 3: Payment Products */}
+                    <div className="space-y-3">
+                        <h4 className="text-sm font-bold text-white">Payment Products</h4>
+                        <ul className="space-y-2 text-gray-300">
+                            <li>
+                                <span className="hover:underline cursor-pointer">{site?.name || 'Amazon'} Business Card</span>
+                            </li>
+                            <li>
+                                <span className="hover:underline cursor-pointer">Shop with Points</span>
+                            </li>
+                            <li>
+                                <span className="hover:underline cursor-pointer">Reload Your Balance</span>
+                            </li>
+                            <li>
+                                <span className="hover:underline cursor-pointer">Currency Converter</span>
+                            </li>
+                            <li>
+                                <span className="hover:underline cursor-pointer">Secure Vendor Payouts</span>
+                            </li>
+                        </ul>
+                    </div>
 
-                        {site.social_media?.length > 0 && (
-                            <div className="mt-4 flex flex-wrap gap-3">
-                                {site.social_media.map((item) => (
-                                    <a
-                                        key={`${item.platform}-${item.url}`}
-                                        href={item.url}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="text-sm text-neutral-600 hover:text-neutral-900"
-                                    >
-                                        {socialLabels[item.platform] ?? item.platform}
-                                    </a>
-                                ))}
-                            </div>
+                    {/* Col 4: Let Us Help You */}
+                    <div className="space-y-3">
+                        <h4 className="text-sm font-bold text-white">Let Us Help You</h4>
+                        <ul className="space-y-2 text-gray-300">
+                            <li>
+                                <Link href={route('admin.login')} className="hover:underline">
+                                    Your Account
+                                </Link>
+                            </li>
+                            <li>
+                                <span className="hover:underline cursor-pointer">Your Orders</span>
+                            </li>
+                            <li>
+                                <span className="hover:underline cursor-pointer">Shipping Rates & Policies</span>
+                            </li>
+                            <li>
+                                <span className="hover:underline cursor-pointer">Returns & Replacements</span>
+                            </li>
+                            <li>
+                                <Link href={route('contact')} className="hover:underline">
+                                    Customer Service & Help
+                                </Link>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                {/* Middle Divider & Language/Country Bar */}
+                <div className="mx-auto mt-10 max-w-[1200px] border-t border-gray-700 pt-8 flex flex-wrap items-center justify-center gap-4 text-xs text-gray-300">
+                    <Link href={route('home')} className="flex items-center gap-1 mr-4">
+                        {site?.logo_url ? (
+                            <img
+                                src={site.logo_url}
+                                alt={site.name}
+                                className="h-6 w-auto object-contain brightness-110"
+                            />
+                        ) : (
+                            <span className="text-lg font-black tracking-tight text-white">
+                                {site?.name || 'amazon'}
+                                <span className="text-[#febd69] font-normal text-xs">.com</span>
+                            </span>
                         )}
+                    </Link>
+
+                    <div className="flex items-center gap-1.5 rounded border border-gray-600 px-3 py-1.5 cursor-pointer hover:border-gray-400">
+                        <span>🌐</span>
+                        <span>English</span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 rounded border border-gray-600 px-3 py-1.5 cursor-pointer hover:border-gray-400">
+                        <span>$ USD - U.S. Dollar</span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 rounded border border-gray-600 px-3 py-1.5 cursor-pointer hover:border-gray-400">
+                        <span>🇺🇸 United States</span>
                     </div>
                 </div>
+            </div>
 
-                <div className="mt-10 border-t border-neutral-200 pt-6 text-center text-sm text-neutral-500">
-                    &copy; {year} {site.name}. All rights reserved.
+            {/* Bottom Dark Navy Strip: Legal & Copyright */}
+            <div className="bg-[#131921] px-4 py-8 text-center text-[11px] text-gray-400">
+                <div className="mx-auto flex max-w-[800px] flex-wrap items-center justify-center gap-4 font-normal">
+                    <span className="hover:underline cursor-pointer">Conditions of Use</span>
+                    <span className="hover:underline cursor-pointer">Privacy Notice</span>
+                    <span className="hover:underline cursor-pointer">Consumer Health Data Privacy Disclosure</span>
+                    <span className="hover:underline cursor-pointer">Your Ads Privacy Choices</span>
                 </div>
-            </Container>
+                <p className="mt-3 text-gray-400">
+                    &copy; 1996-{year}, {site?.name || 'Amazon.com'}, Inc. or its affiliates. Multi-Vendor Marketplace Platform.
+                </p>
+                {site?.address && (
+                    <p className="mt-1 text-[10px] text-gray-500">
+                        Headquarters: {site.address} {site.phone ? `| Tel: ${site.phone}` : ''}
+                    </p>
+                )}
+            </div>
         </footer>
     );
 }
