@@ -1,9 +1,14 @@
 <?php
 
+use App\Http\Controllers\Vendor\AttributeController;
 use App\Http\Controllers\Vendor\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Vendor\CatalogController;
+use App\Http\Controllers\Vendor\BrandController;
+use App\Http\Controllers\Vendor\CategoryController;
 use App\Http\Controllers\Vendor\DashboardController;
 use App\Http\Controllers\Vendor\ProductController;
+use App\Http\Controllers\Vendor\SubcategoryController;
+use App\Http\Controllers\Vendor\SubsubcategoryController;
+use App\Http\Controllers\Vendor\UnitController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('vendor')->name('vendor.')->group(function () {
@@ -22,13 +27,13 @@ Route::prefix('vendor')->name('vendor.')->group(function () {
         Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-        // Product Catalog Master Data (read-only for vendors)
-        Route::get('brands', [CatalogController::class, 'brands'])->name('brands.index');
-        Route::get('categories', [CatalogController::class, 'categories'])->name('categories.index');
-        Route::get('subcategories', [CatalogController::class, 'subcategories'])->name('subcategories.index');
-        Route::get('subsubcategories', [CatalogController::class, 'subsubcategories'])->name('subsubcategories.index');
-        Route::get('units', [CatalogController::class, 'units'])->name('units.index');
-        Route::get('attributes', [CatalogController::class, 'attributes'])->name('attributes.index');
+        // Global Catalog CRUD for Vendors
+        Route::resource('brands', BrandController::class);
+        Route::resource('categories', CategoryController::class);
+        Route::resource('subcategories', SubcategoryController::class);
+        Route::resource('subsubcategories', SubsubcategoryController::class);
+        Route::resource('units', UnitController::class);
+        Route::resource('attributes', AttributeController::class);
 
         // Vendor Products (Vendor-owned CRUD)
         Route::get('products', [ProductController::class, 'index'])->name('products.index');
