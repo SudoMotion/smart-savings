@@ -7,12 +7,12 @@ export default function AdminFooter() {
                 <span>
                     &copy; {year}{' '}
                     <a
-                        href="https://srsit.com.bd/"
+                        href="https://sudo-motion.vercel.app/"
                         target="_blank"
                         rel="noreferrer"
                         className="text-neutral-700 hover:text-neutral-900 hover:underline"
                     >
-                        SRS IT
+                        Sudo Motion
                     </a>
                     . All rights reserved.
                 </span>
