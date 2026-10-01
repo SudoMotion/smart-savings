@@ -9,7 +9,13 @@ import { useEffect, useState } from 'react';
 export default function Verify() {
     const { flash } = usePage().props;
     const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [showErrorModal, setShowErrorModal] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const [resending, setResending] = useState(false);
+    const [codeError, setCodeError] = useState('');
+    const [resendCount, setResendCount] = useState(0);
+    const [canResend, setCanResend] = useState(true);
+    const [countdown, setCountdown] = useState(0);
 
     const { data, setData, post, processing, errors } = useForm({
         code: '',
@@ -21,17 +27,74 @@ export default function Verify() {
         }
     }, [flash?.success]);
 
+    useEffect(() => {
+        if (flash?.error) {
+            // Set error for any verification-related error
+            if (flash.error.includes('Invalid verification code') ||
+                flash.error.includes('Invalid or expired')) {
+                setCodeError(flash.error);
+                setErrorMessage(flash.error);
+                setShowErrorModal(true);
+            } else if (flash.error) {
+                setErrorMessage(flash.error);
+                setShowErrorModal(true);
+            } else {
+                setCodeError('');
+            }
+        } else {
+            setCodeError('');
+        }
+    }, [flash?.error]);
+
+    // Countdown timer effect
+    useEffect(() => {
+        if (countdown > 0) {
+            const timer = setTimeout(() => {
+                setCountdown(countdown - 1);
+            }, 1000);
+            return () => clearTimeout(timer);
+        } else {
+            setCanResend(true);
+        }
+    }, [countdown]);
+
     const submit = (e) => {
         e.preventDefault();
         post(route('vendor.verify.code'), {
             preserveScroll: true,
+            onSuccess: () => {
+                // Success modal will be shown via useEffect watching flash.success
+            },
+            onError: (errors) => {
+                // Error will be shown via useEffect watching flash.error
+            },
         });
     };
 
     const handleResend = () => {
         setResending(true);
+        setCanResend(false);
+
+        // Increment resend count and calculate wait time
+        const newResendCount = resendCount + 1;
+        setResendCount(newResendCount);
+
+        // Wait time: 1 min for first, 2 min for second, 3 min for third, etc.
+        const waitTimeInSeconds = newResendCount * 60;
+        setCountdown(waitTimeInSeconds);
+
         post(route('vendor.verify.resend'), {
             preserveScroll: true,
+            onSuccess: () => {
+                setShowSuccessModal(true);
+            },
+            onError: (errors) => {
+                setErrorMessage(flash?.error || 'Failed to send verification code. Please try again.');
+                setShowErrorModal(true);
+                // Reset countdown on error
+                setCanResend(true);
+                setCountdown(0);
+            },
             onFinish: () => setResending(false),
         });
     };
@@ -77,26 +140,17 @@ export default function Verify() {
                                     maxLength={6}
                                     placeholder="e.g. 123456"
                                     value={data.code}
-                                    error={errors.code}
+                                    error={codeError || errors.code}
                                     onChange={(e) => {
                                         const value = e.target.value.replace(/\D/g, '');
                                         setData('code', value);
+                                        setCodeError(''); // Clear error when user types
                                     }}
                                     className={`text-center text-2xl tracking-widest font-mono ${
-                                        flash?.error && flash.error.includes('Invalid verification code')
-                                            ? 'border-2 border-red-500 focus:border-red-500 focus:ring-red-500'
-                                            : ''
+                                        codeError ? '!border-red-500 !border-2 focus:!border-red-500 focus:!ring-red-500' : ''
                                     }`}
                                 />
-                                {flash?.error && flash.error.includes('Invalid verification code') && (
-                                    <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-                                        <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                                        </svg>
-                                        The code you entered is incorrect. Please try again.
-                                    </p>
-                                )}
-                                {(!flash?.error || !flash.error.includes('Invalid verification code')) && (
+                                {!codeError && (
                                     <p className="mt-2 text-xs text-neutral-500">
                                         Enter the 6-digit code sent to your email address
                                     </p>
@@ -127,11 +181,16 @@ export default function Verify() {
                                     <button
                                         type="button"
                                         onClick={handleResend}
-                                        disabled={resending}
-                                        className="font-medium text-neutral-900 underline hover:text-neutral-700 disabled:opacity-50"
+                                        disabled={resending || !canResend}
+                                        className="font-medium text-neutral-900 underline hover:text-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
-                                        {resending ? 'Resending...' : 'Resend Code'}
+                                        {resending ? 'Resending...' : !canResend && countdown > 0 ? `Resend Code (${Math.floor(countdown / 60)}:${String(countdown % 60).padStart(2, '0')})` : 'Resend Code'}
                                     </button>
+                                    {!canResend && countdown > 0 && (
+                                        <span className="text-xs text-neutral-400">
+                                            Please wait {Math.floor(countdown / 60)} minute{Math.floor(countdown / 60) !== 1 ? 's' : ''} before requesting again
+                                        </span>
+                                    )}
                                 </div>
 
                                 <Link
@@ -207,6 +266,36 @@ export default function Verify() {
                                 Back to Homepage
                             </Button>
                         </Link>
+                    </div>
+                </div>
+            </Modal>
+
+            {/* Error Modal */}
+            <Modal show={showErrorModal} onClose={() => setShowErrorModal(false)} maxWidth="md">
+                <div className="p-6 text-center">
+                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-red-100 text-red-600 mb-4 ring-8 ring-red-50">
+                        <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </div>
+
+                    <h3 className="text-lg font-bold text-neutral-900">
+                        Verification Failed
+                    </h3>
+
+                    <p className="mt-2 text-sm text-neutral-600 leading-relaxed">
+                        {errorMessage}
+                    </p>
+
+                    <div className="mt-6 flex items-center justify-center gap-3">
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            onClick={() => setShowErrorModal(false)}
+                            className="w-full sm:w-auto"
+                        >
+                            Try Again
+                        </Button>
                     </div>
                 </div>
             </Modal>

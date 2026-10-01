@@ -87,7 +87,15 @@ class VendorApplicationController extends Controller
             'code' => ['required', 'string', 'size:6'],
         ]);
 
-        $application = VendorApplication::where('email', session('vendor_application_email'))
+        $email = session('vendor_application_email');
+
+        if (!$email) {
+            return redirect()
+                ->route('vendor.apply')
+                ->with('error', 'Session expired. Please submit your application again.');
+        }
+
+        $application = VendorApplication::where('email', $email)
             ->where('email_verified', false)
             ->where('verification_code_expires_at', '>', now())
             ->first();
@@ -149,7 +157,15 @@ class VendorApplicationController extends Controller
 
     public function resendCode(Request $request): RedirectResponse
     {
-        $application = VendorApplication::where('email', session('vendor_application_email'))
+        $email = session('vendor_application_email');
+
+        if (!$email) {
+            return redirect()
+                ->route('vendor.apply')
+                ->with('error', 'Session expired. Please submit your application again.');
+        }
+
+        $application = VendorApplication::where('email', $email)
             ->where('email_verified', false)
             ->first();
 
