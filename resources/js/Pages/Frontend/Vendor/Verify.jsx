@@ -22,24 +22,27 @@ export default function Verify() {
     });
 
     useEffect(() => {
+        console.log('Flash changed:', flash);
         if (flash?.success && flash.success.includes('verified successfully')) {
+            setShowSuccessModal(true);
+        } else if (flash?.success && flash.success.includes('new verification code')) {
+            // Show success for resend
             setShowSuccessModal(true);
         }
     }, [flash?.success]);
 
     useEffect(() => {
+        console.log('Flash error:', flash?.error);
         if (flash?.error) {
-            // Set error for any verification-related error
+            // Always show error modal for any error
+            setErrorMessage(flash.error);
+            setShowErrorModal(true);
+            console.log('Error modal should show:', showErrorModal);
+
+            // Also set inline error for verification code errors
             if (flash.error.includes('Invalid verification code') ||
                 flash.error.includes('Invalid or expired')) {
                 setCodeError(flash.error);
-                setErrorMessage(flash.error);
-                setShowErrorModal(true);
-            } else if (flash.error) {
-                setErrorMessage(flash.error);
-                setShowErrorModal(true);
-            } else {
-                setCodeError('');
             }
         } else {
             setCodeError('');
@@ -62,11 +65,13 @@ export default function Verify() {
         e.preventDefault();
         post(route('vendor.verify.code'), {
             preserveScroll: true,
+            preserveState: true,
             onSuccess: () => {
                 // Success modal will be shown via useEffect watching flash.success
             },
             onError: (errors) => {
                 // Error will be shown via useEffect watching flash.error
+                // Keep form data intact for retry
             },
         });
     };
@@ -284,14 +289,16 @@ export default function Verify() {
                     </h3>
 
                     <p className="mt-2 text-sm text-neutral-600 leading-relaxed">
-                        {errorMessage}
+                        {errorMessage || 'An error occurred during verification. Please try again.'}
                     </p>
 
                     <div className="mt-6 flex items-center justify-center gap-3">
                         <Button
                             type="button"
-                            variant="secondary"
-                            onClick={() => setShowErrorModal(false)}
+                            onClick={() => {
+                                setShowErrorModal(false);
+                                setCodeError('');
+                            }}
                             className="w-full sm:w-auto"
                         >
                             Try Again
