@@ -41,29 +41,28 @@ class VendorApplicationController extends Controller
 
         $verificationCode = (string) random_int(100000, 999999);
 
-        $application = VendorApplication::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'],
-            'address' => $validated['address'],
-            'shop_name' => $validated['shop_name'],
-            'shop_logo' => $logoPath,
-            'password' => Hash::make($validated['password']),
-            'status' => 'pending',
-            'verification_code' => $verificationCode,
-            'verification_code_expires_at' => now()->addMinutes(10),
-            'email_verified' => false,
+        // Store application data in session (don't create database record yet)
+        session([
+            'vendor_application_data' => [
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'],
+                'address' => $validated['address'],
+                'shop_name' => $validated['shop_name'],
+                'shop_logo' => $logoPath,
+                'password' => Hash::make($validated['password']),
+                'verification_code' => $verificationCode,
+                'verification_code_expires_at' => now()->addMinutes(10),
+            ]
         ]);
-
-        session(['vendor_application_email' => $validated['email']]);
 
         try {
             Mail::to($validated['email'])->send(
                 new VendorVerificationCode($verificationCode, $validated['name'])
             );
         } catch (\Throwable $e) {
-            // If email fails, delete the application and return an error
-            $application->delete();
+            // If email fails, clean up and return error
+            session()->forget('vendor_application_data');
 
             return redirect()
                 ->back()
@@ -87,68 +86,53 @@ class VendorApplicationController extends Controller
             'code' => ['required', 'string', 'size:6'],
         ]);
 
-        $email = session('vendor_application_email');
+        $applicationData = session('vendor_application_data');
 
-        if (!$email) {
+        if (!$applicationData) {
             return redirect()
                 ->route('vendor.apply')
                 ->with('error', 'Session expired. Please submit your application again.');
         }
 
-        $application = VendorApplication::where('email', $email)
-            ->where('email_verified', false)
-            ->where('verification_code_expires_at', '>', now())
-            ->first();
-
-        if (! $application) {
+        // Check if code is expired
+        if (now()->greaterThan($applicationData['verification_code_expires_at'])) {
             return redirect()
                 ->route('vendor.verify')
-                ->with('error', 'Invalid or expired verification code. Please request a new one.');
+                ->with('error', 'Verification code has expired. Please request a new one.');
         }
 
-        if ($application->verification_code !== $request->input('code')) {
+        // Check if code matches
+        if ($applicationData['verification_code'] !== $request->input('code')) {
             return redirect()
                 ->route('vendor.verify')
                 ->with('error', 'Invalid verification code. Please try again.');
         }
 
-        // Mark application as verified
-        $application->update([
-            'email_verified' => true,
+        // Code is valid! Now create the user and vendor
+        // 1. Create User
+        $user = User::create([
+            'name' => $applicationData['name'],
+            'email' => $applicationData['email'],
+            'password' => $applicationData['password'],
             'email_verified_at' => now(),
-            'verification_code' => null,
-            'verification_code_expires_at' => null,
         ]);
-
-        // Automatically create user and vendor after email verification
-        // 1. Create or retrieve User
-        $user = User::firstOrNew(['email' => $application->email]);
-        $user->name = $application->name;
-        $user->password = $application->password; // Already hashed
-        $user->email_verified_at = now();
-        $user->save();
 
         // 2. Ensure vendor role exists and assign it
         Role::firstOrCreate(['name' => 'vendor', 'guard_name' => 'web']);
         $user->assignRole('vendor');
 
-        // 3. Create Vendor profile with pending status (admin can activate later)
-        Vendor::updateOrCreate(
-            ['user_id' => $user->id],
-            [
-                'shop_name' => $application->shop_name,
-                'shop_logo' => $application->shop_logo,
-                'phone' => $application->phone,
-                'address' => $application->address,
-                'status' => 'inactive', // Set as inactive until admin approves
-            ]
-        );
+        // 3. Create Vendor profile with inactive status (admin will activate)
+        Vendor::create([
+            'user_id' => $user->id,
+            'shop_name' => $applicationData['shop_name'],
+            'shop_logo' => $applicationData['shop_logo'],
+            'phone' => $applicationData['phone'],
+            'address' => $applicationData['address'],
+            'status' => 'inactive', // Set as inactive until admin approves
+        ]);
 
-        // 4. Delete the application record as it's now transferred
-        $application->delete();
-
-        // Clear session
-        session()->forget('vendor_application_email');
+        // Clear session data
+        session()->forget('vendor_application_data');
 
         return redirect()
             ->route('vendor.verify')
@@ -157,33 +141,25 @@ class VendorApplicationController extends Controller
 
     public function resendCode(Request $request): RedirectResponse
     {
-        $email = session('vendor_application_email');
+        $applicationData = session('vendor_application_data');
 
-        if (!$email) {
+        if (!$applicationData) {
             return redirect()
                 ->route('vendor.apply')
                 ->with('error', 'Session expired. Please submit your application again.');
         }
 
-        $application = VendorApplication::where('email', $email)
-            ->where('email_verified', false)
-            ->first();
-
-        if (! $application) {
-            return redirect()
-                ->route('vendor.apply')
-                ->with('error', 'No pending application found. Please submit a new application.');
-        }
-
+        // Generate new verification code
         $verificationCode = (string) random_int(100000, 999999);
-        $application->update([
-            'verification_code' => $verificationCode,
-            'verification_code_expires_at' => now()->addMinutes(10),
-        ]);
+
+        // Update session data with new code
+        $applicationData['verification_code'] = $verificationCode;
+        $applicationData['verification_code_expires_at'] = now()->addMinutes(10);
+        session(['vendor_application_data' => $applicationData]);
 
         try {
-            Mail::to($application->email)->send(
-                new VendorVerificationCode($verificationCode, $application->name)
+            Mail::to($applicationData['email'])->send(
+                new VendorVerificationCode($verificationCode, $applicationData['name'])
             );
         } catch (\Throwable $e) {
             return redirect()
