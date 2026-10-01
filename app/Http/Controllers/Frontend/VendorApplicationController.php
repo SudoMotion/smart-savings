@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use App\Mail\VendorVerificationCode;
+use App\Models\User;
+use App\Models\Vendor;
 use App\Models\VendorApplication;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -11,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\Permission\Models\Role;
 
 class VendorApplicationController extends Controller
 {
@@ -101,6 +104,7 @@ class VendorApplicationController extends Controller
                 ->with('error', 'Invalid verification code. Please try again.');
         }
 
+        // Mark application as verified
         $application->update([
             'email_verified' => true,
             'email_verified_at' => now(),
@@ -108,8 +112,38 @@ class VendorApplicationController extends Controller
             'verification_code_expires_at' => null,
         ]);
 
+        // Automatically create user and vendor after email verification
+        // 1. Create or retrieve User
+        $user = User::firstOrNew(['email' => $application->email]);
+        $user->name = $application->name;
+        $user->password = $application->password; // Already hashed
+        $user->email_verified_at = now();
+        $user->save();
+
+        // 2. Ensure vendor role exists and assign it
+        Role::firstOrCreate(['name' => 'vendor', 'guard_name' => 'web']);
+        $user->assignRole('vendor');
+
+        // 3. Create Vendor profile with pending status (admin can activate later)
+        Vendor::updateOrCreate(
+            ['user_id' => $user->id],
+            [
+                'shop_name' => $application->shop_name,
+                'shop_logo' => $application->shop_logo,
+                'phone' => $application->phone,
+                'address' => $application->address,
+                'status' => 'inactive', // Set as inactive until admin approves
+            ]
+        );
+
+        // 4. Delete the application record as it's now transferred
+        $application->delete();
+
+        // Clear session
+        session()->forget('vendor_application_email');
+
         return redirect()
-            ->route('vendor.apply')
+            ->route('vendor.verify')
             ->with('success', 'Email verified successfully! Your vendor application has been submitted and is now under review.');
     }
 

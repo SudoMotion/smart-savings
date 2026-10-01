@@ -1,22 +1,90 @@
-@php
-use Illuminate\Support\Str;
-@endphp
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Verification Code</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            background-color: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 32px;
+            margin: 20px 0;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        h1 {
+            color: #111827;
+            font-size: 24px;
+            margin: 0 0 16px 0;
+        }
+        .code-box {
+            background-color: #f3f4f6;
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 24px;
+            text-align: center;
+            margin: 24px 0;
+        }
+        .code {
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: 8px;
+            color: #1f2937;
+            font-family: 'Courier New', monospace;
+        }
+        .info {
+            background-color: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 16px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 32px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 Vendor Verification Code</h1>
+        </div>
 
-@component('mail::message')
+        <p>Hello <strong>{{ $name }}</strong>,</p>
 
-# Vendor Verification Code
+        <p>Thank you for applying to become a vendor on {{ config('app.name') }}. To complete your registration, please verify your email address using the code below:</p>
 
-Hello {{ $name }},
+        <div class="code-box">
+            <div class="code">{{ $verificationCode }}</div>
+        </div>
 
-Your verification code for the vendor application is:
+        <div class="info">
+            <strong>⏰ Important:</strong> This verification code will expire in <strong>10 minutes</strong>. Please enter it on the verification page to complete your vendor application.
+        </div>
 
-## {{ $verificationCode }}
+        <p>If you did not request this verification code, please ignore this email or contact our support team if you have concerns.</p>
 
-This code will expire in 10 minutes. Please enter this code to verify your email address and complete your vendor application.
-
-If you did not request this verification code, please contact our support team.
-
-Thank you,
-
-{{ config('app.name') }}
-@endcomponent
+        <div class="footer">
+            <p>Thank you for choosing {{ config('app.name') }}</p>
+            <p style="margin-top: 8px; font-size: 12px;">This is an automated email. Please do not reply to this message.</p>
+        </div>
+    </div>
+</body>
+</html>

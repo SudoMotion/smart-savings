@@ -22,11 +22,12 @@ export default function Apply() {
         password_confirmation: '',
     });
 
-    useEffect(() => {
-        if (flash?.success) {
-            setShowSuccessModal(true);
-        }
-    }, [flash?.success]);
+    // Remove the auto-modal since we redirect to verify page
+    // useEffect(() => {
+    //     if (flash?.success) {
+    //         setShowSuccessModal(true);
+    //     }
+    // }, [flash?.success]);
 
     const handleLogoChange = (e) => {
         const file = e.target.files?.[0];
@@ -43,11 +44,9 @@ export default function Apply() {
         e.preventDefault();
         post(route('vendor.apply.store'), {
             forceFormData: true,
-            preserveScroll: true,
             onSuccess: () => {
-                reset();
-                setLogoPreview(null);
-                setShowSuccessModal(true);
+                // Form will redirect to verification page automatically
+                // No need to reset or show modal here
             },
         });
     };
@@ -68,9 +67,9 @@ export default function Apply() {
 
             <section className="py-12 sm:py-16">
                 <Container className="max-w-3xl">
-                    {flash?.success && (
-                        <Alert variant="success" className="mb-6">
-                            {flash.success}
+                    {flash?.error && (
+                        <Alert variant="error" className="mb-6">
+                            {flash.error}
                         </Alert>
                     )}
 
@@ -215,53 +214,6 @@ export default function Apply() {
                 </Container>
             </section>
 
-            {/* Success Popup Modal */}
-            <Modal show={showSuccessModal} onClose={() => setShowSuccessModal(false)} maxWidth="md">
-                <div className="p-6 text-center">
-                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 mb-4 ring-8 ring-emerald-50">
-                        <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
-                        </svg>
-                    </div>
-
-                    <h3 className="text-lg font-bold text-neutral-900">
-                        Application Submitted Successfully!
-                    </h3>
-
-                    <p className="mt-2 text-sm text-neutral-600 leading-relaxed">
-                        Thank you for applying to become a vendor. Your registration request has been submitted and is currently under review by our admin team.
-                    </p>
-
-                    <div className="mt-5 rounded-lg border border-neutral-100 bg-neutral-50 p-4 text-left text-xs text-neutral-600 space-y-2">
-                        <div className="font-semibold text-neutral-900 flex items-center gap-1.5">
-                            <svg className="h-4 w-4 text-neutral-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                            </svg>
-                            What happens next?
-                        </div>
-                        <ul className="list-disc pl-4 space-y-1 text-neutral-500">
-                            <li>Our administration team will review your application and verify shop details.</li>
-                            <li>Once approved, you will be able to log in to your dedicated Vendor Portal at <strong className="text-neutral-700">/vendor/login</strong> with your credentials.</li>
-                        </ul>
-                    </div>
-
-                    <div className="mt-6 flex flex-col-reverse sm:flex-row items-center justify-center gap-3">
-                        <Button
-                            type="button"
-                            variant="secondary"
-                            onClick={() => setShowSuccessModal(false)}
-                            className="w-full sm:w-auto"
-                        >
-                            Close
-                        </Button>
-                        <Link href={route('home')} className="w-full sm:w-auto">
-                            <Button type="button" variant="primary" className="w-full sm:w-auto">
-                                Back to Homepage
-                            </Button>
-                        </Link>
-                    </div>
-                </div>
-            </Modal>
         </FrontendLayout>
     );
 }

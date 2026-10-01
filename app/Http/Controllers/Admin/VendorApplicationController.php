@@ -18,8 +18,17 @@ class VendorApplicationController extends Controller
     public function index(Request $request): Response
     {
         $search = $request->query('search');
+        $status = $request->query('status'); // all, verified, unverified
 
         $query = VendorApplication::query()->latest();
+
+        // Filter by verification status
+        if ($status === 'verified') {
+            $query->where('email_verified', true);
+        } elseif ($status === 'unverified') {
+            $query->where('email_verified', false);
+        }
+        // if $status is 'all' or null, show all applications
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -36,8 +45,13 @@ class VendorApplicationController extends Controller
             'applications' => $applications,
             'filters' => [
                 'search' => $search,
+                'status' => $status,
             ],
-            'total' => VendorApplication::count(),
+            'counts' => [
+                'all' => VendorApplication::count(),
+                'verified' => VendorApplication::where('email_verified', true)->count(),
+                'unverified' => VendorApplication::where('email_verified', false)->count(),
+            ],
             'can' => [
                 'approve' => auth()->user()?->can('vendor-applications.approve') ?? false,
                 'reject' => auth()->user()?->can('vendor-applications.reject') ?? false,
