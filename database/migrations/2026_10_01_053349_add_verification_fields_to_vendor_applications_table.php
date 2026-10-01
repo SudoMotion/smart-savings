@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('vendor_applications', function (Blueprint $table) {
+            $table->string('verification_code', 6)->nullable()->after('email');
+            $table->timestamp('verification_code_expires_at')->nullable()->after('verification_code');
+            $table->boolean('email_verified')->default(false)->after('verification_code_expires_at');
+            $table->timestamp('email_verified_at')->nullable()->after('email_verified');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('vendor_applications', function (Blueprint $table) {
+            $table->dropColumn([
+                'verification_code',
+                'verification_code_expires_at',
+                'email_verified',
+                'email_verified_at',
+            ]);
+        });
+    }
+};

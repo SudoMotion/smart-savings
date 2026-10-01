@@ -24,6 +24,10 @@ class VendorApplication extends Model
         'user_id',
         'reviewed_by',
         'reviewed_at',
+        'verification_code',
+        'verification_code_expires_at',
+        'email_verified',
+        'email_verified_at',
     ];
 
     protected $hidden = [
