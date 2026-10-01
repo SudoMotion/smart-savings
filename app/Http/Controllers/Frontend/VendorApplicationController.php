@@ -7,7 +7,7 @@ use App\Mail\VendorVerificationCode;
 use App\Models\VendorApplication;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades.Hash;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
