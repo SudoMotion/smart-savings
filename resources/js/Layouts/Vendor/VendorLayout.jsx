@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SiteFavicon from '@/Components/SiteFavicon';
 import VendorBottomNav from './VendorBottomNav';
 import VendorFooter from './VendorFooter';
@@ -10,6 +10,24 @@ export default function VendorLayout({ title, children }) {
 
     const toggleSidebar = () => setSidebarOpen((open) => !open);
     const closeSidebar = () => setSidebarOpen(false);
+
+    useEffect(() => {
+        if (!window.Tawk_API) {
+            window.Tawk_API = window.Tawk_API || {};
+            window.Tawk_LoadStart = new Date();
+            const s1 = document.createElement("script");
+            const s0 = document.getElementsByTagName("script")[0];
+            s1.async = true;
+            s1.src = 'https://embed.tawk.to/6ac0ed545437be34c4581ef8/1k40pu4uj';
+            s1.charset = 'UTF-8';
+            s1.setAttribute('crossorigin', '*');
+            if (s0 && s0.parentNode) {
+                s0.parentNode.insertBefore(s1, s0);
+            } else {
+                document.head.appendChild(s1);
+            }
+        }
+    }, []);
 
     return (
         <div className="min-h-screen bg-neutral-100 font-sans text-neutral-900 antialiased selection:bg-neutral-900 selection:text-white">
