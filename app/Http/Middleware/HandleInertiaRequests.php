@@ -45,6 +45,7 @@ class HandleInertiaRequests extends Middleware
                 'error' => fn () => $request->session()->get('error'),
             ],
             'site' => fn () => SiteData::settings(),
+            'vendor_email' => fn () => session('vendor_application_data')['email'] ?? null,
         ];
     }
 }
