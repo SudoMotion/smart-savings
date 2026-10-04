@@ -296,7 +296,7 @@ export default function Login({ status }) {
                             )}
                         </div>
 
-                        {/* Remember Me Option */}
+                        {/* Remember Me & Forgot Password Option */}
                         <div className="flex items-center justify-between pt-1">
                             <label className="flex items-center gap-2 cursor-pointer select-none">
                                 <input
@@ -307,6 +307,13 @@ export default function Login({ status }) {
                                 />
                                 <span className="text-xs text-slate-300 font-medium">Keep me signed in</span>
                             </label>
+
+                            <Link
+                                href={route('guest.reset.password')}
+                                className="text-xs font-semibold text-amber-400 hover:text-amber-300 hover:underline transition"
+                            >
+                                Forgot password ?
+                            </Link>
                         </div>
 
                         {/* Submit Button (Android-Style Glow Gradient) */}
@@ -336,7 +343,7 @@ export default function Login({ status }) {
                         </div>
                     </form>
 
-                    {/* Bottom Link: Register + Forgot */}
+                    {/* Bottom Link: Register */}
                     <div className="mt-6 border-t border-slate-800/80 pt-5 text-center">
                         <p className="text-xs text-slate-400">
                             Don't have a merchant account?{' '}
@@ -345,14 +352,6 @@ export default function Login({ status }) {
                                 className="font-bold text-amber-400 hover:text-amber-300 hover:underline transition"
                             >
                                 Apply as a Vendor
-                            </Link>
-                        </p>
-                        <p className="mt-2 text-xs text-slate-400">
-                            <Link
-                                href={route('guest.reset.password')}
-                                className="font-bold text-amber-400 hover:text-amber-300 hover:underline transition"
-                            >
-                                Forgot password ?
                             </Link>
                         </p>
                     </div>
