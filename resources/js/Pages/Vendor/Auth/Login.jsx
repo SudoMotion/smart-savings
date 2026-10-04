@@ -336,7 +336,7 @@ export default function Login({ status }) {
                         </div>
                     </form>
 
-                    {/* Bottom Link: Register */}
+                    {/* Bottom Link: Register + Forgot */}
                     <div className="mt-6 border-t border-slate-800/80 pt-5 text-center">
                         <p className="text-xs text-slate-400">
                             Don't have a merchant account?{' '}
@@ -345,6 +345,14 @@ export default function Login({ status }) {
                                 className="font-bold text-amber-400 hover:text-amber-300 hover:underline transition"
                             >
                                 Apply as a Vendor
+                            </Link>
+                        </p>
+                        <p className="mt-2 text-xs text-slate-400">
+                            <Link
+                                href={route('guest.reset.password')}
+                                className="font-bold text-amber-400 hover:text-amber-300 hover:underline transition"
+                            >
+                                Forgot password ?
                             </Link>
                         </p>
                     </div>
