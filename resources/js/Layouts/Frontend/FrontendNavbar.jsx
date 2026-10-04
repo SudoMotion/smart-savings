@@ -201,20 +201,20 @@ export default function FrontendNavbar({ categories = [] }) {
                                     {!user ? (
                                         <div className="border-b border-neutral-200 pb-3 text-center">
                                             <Link
-                                                href={route('admin.login')}
+                                                href={route('vendor.login')}
                                                 className="block w-full rounded-md bg-[#ffd814] py-2 text-center text-xs font-bold text-neutral-900 shadow-sm transition hover:bg-[#f7ca00]"
                                                 onClick={() => setAccountMenuOpen(false)}
                                             >
-                                                Sign in
+                                                Log In
                                             </Link>
                                             <p className="mt-2 text-xs text-neutral-600">
-                                                New customer?{' '}
+                                                New vendor?{' '}
                                                 <Link
                                                     href={route('vendor.apply')}
                                                     className="text-blue-700 hover:text-orange-600 hover:underline"
                                                     onClick={() => setAccountMenuOpen(false)}
                                                 >
-                                                    Start here.
+                                                    Register
                                                 </Link>
                                             </p>
                                         </div>
@@ -565,15 +565,26 @@ export default function FrontendNavbar({ categories = [] }) {
                                         </Link>
                                     </li>
                                     {!user ? (
-                                        <li>
-                                            <Link
-                                                href={route('admin.login')}
-                                                onClick={() => setDrawerOpen(false)}
-                                                className="block rounded px-2 py-2 font-semibold text-blue-600 hover:bg-blue-50"
-                                            >
-                                                Sign In to Your Account
-                                            </Link>
-                                        </li>
+                                        <>
+                                            <li>
+                                                <Link
+                                                    href={route('vendor.login')}
+                                                    onClick={() => setDrawerOpen(false)}
+                                                    className="block rounded px-2 py-2 font-semibold text-blue-600 hover:bg-blue-50"
+                                                >
+                                                    Sign In to Your Account
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <Link
+                                                    href={route('vendor.apply')}
+                                                    onClick={() => setDrawerOpen(false)}
+                                                    className="block rounded px-2 py-2 font-semibold text-amber-600 hover:bg-amber-50"
+                                                >
+                                                    Register as Vendor
+                                                </Link>
+                                            </li>
+                                        </>
                                     ) : (
                                         <li>
                                             <Link
