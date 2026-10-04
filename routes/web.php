@@ -22,11 +22,11 @@ Route::redirect('/dashboard', '/admin/dashboard');
 Route::redirect('/login', '/admin/login');
 
 Route::middleware('guest')->group(function () {
-    Route::get('/guest/reset-password', [GuestPasswordResetController::class, 'create'])->name('guest.reset.password');
-    Route::post('/guest/reset-password', [GuestPasswordResetController::class, 'store'])->name('guest.reset.password.store');
-    Route::get('/guest/reset-password/verify', [GuestPasswordResetController::class, 'verify'])->name('guest.reset.verify');
-    Route::post('/guest/reset-password/verify', [GuestPasswordResetController::class, 'verifyCode'])->name('guest.reset.verify.code');
-    Route::post('/guest/reset-password/verify/resend', [GuestPasswordResetController::class, 'resendCode'])->name('guest.reset.verify.resend');
-    Route::get('/guest/reset-password/reset', [GuestPasswordResetController::class, 'newPassword'])->name('guest.reset.new');
-    Route::post('/guest/reset-password/store', [GuestPasswordResetController::class, 'finalStore'])->name('guest.reset.password.store.final');
+    Route::get('/reset-password', [GuestPasswordResetController::class, 'create'])->name('guest.reset.password');
+    Route::post('/reset-password', [GuestPasswordResetController::class, 'store'])->name('guest.reset.password.store');
+    Route::get('/reset-password/verify', [GuestPasswordResetController::class, 'verify'])->name('guest.reset.verify');
+    Route::post('/reset-password/verify', [GuestPasswordResetController::class, 'verifyCode'])->name('guest.reset.verify.code');
+    Route::post('/reset-password/verify/resend', [GuestPasswordResetController::class, 'resendCode'])->name('guest.reset.verify.resend');
+    Route::get('/reset-password/reset', [GuestPasswordResetController::class, 'newPassword'])->name('guest.reset.new');
+    Route::post('/reset-password/store', [GuestPasswordResetController::class, 'finalStore'])->name('guest.reset.password.store.final');
 });

@@ -97,7 +97,7 @@ export default function Verify({ email }) {
                     >
                         {canResend ? 'Resend Code' : `Resend in ${Math.floor(countdown / 60)}:${String(countdown % 60).padStart(2, '0')}`}
                     </button>
-                    <PrimaryButton disabled={processing || data.code.length !== 6}>
+                    <PrimaryButton type="submit" disabled={processing || data.code.length !== 6}>
                         Verify
                     </PrimaryButton>
                 </div>
