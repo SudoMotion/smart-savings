@@ -35,6 +35,10 @@ class Permissions
                 'deposit-requests.view' => 'View Deposit Requests',
                 'deposit-requests.review' => 'Approve or Reject Deposit Requests',
             ],
+            'Withdraw Requests' => [
+                'withdraw-requests.view' => 'View Withdraw Requests',
+                'withdraw-requests.review' => 'Approve or Reject Withdraw Requests',
+            ],
             'Brands' => [
                 'brands.view' => 'View Brands',
                 'brands.create' => 'Create Brands',

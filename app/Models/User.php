@@ -63,4 +63,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(DepositRequest::class);
     }
+
+    public function withdrawRequests(): HasMany
+    {
+        return $this->hasMany(WithdrawRequest::class);
+    }
 }

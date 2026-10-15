@@ -94,6 +94,7 @@ const topLevelItems = [
     { name: 'User List', href: 'admin.users.index', active: 'admin.users.*', icon: UsersIcon, permission: 'users.view' },
     { name: 'Deposit Options', href: 'admin.deposit-options.index', active: 'admin.deposit-options.*', icon: DepositOptionsIcon, permission: 'deposit-options.view' },
     { name: 'Deposit Requests', href: 'admin.deposit-requests.index', active: 'admin.deposit-requests.*', icon: DepositOptionsIcon, permission: 'deposit-requests.view' },
+    { name: 'Withdraw Requests', href: 'admin.withdraw-requests.index', active: 'admin.withdraw-requests.*', icon: DepositOptionsIcon, permission: 'withdraw-requests.view' },
     { name: 'About Us', href: 'admin.about-us.index', active: 'admin.about-us.*', icon: AboutUsIcon, permission: 'about-us.view' },
     { name: 'Settings', href: 'admin.settings.index', active: 'admin.settings.*', icon: SettingsIcon, permission: 'settings.view' },
 ];

@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VendorApplicationController;
 use App\Http\Controllers\Admin\VendorController;
 use App\Http\Controllers\Admin\VendorPermissionController;
+use App\Http\Controllers\Admin\WithdrawRequestController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
@@ -180,6 +181,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('deposit-requests/{depositRequest}/reject', [DepositRequestController::class, 'reject'])
                 ->middleware('permission:deposit-requests.review')
                 ->name('deposit-requests.reject');
+        });
+
+        Route::middleware('permission:withdraw-requests.view')->group(function () {
+            Route::get('withdraw-requests', [WithdrawRequestController::class, 'index'])->name('withdraw-requests.index');
+            Route::post('withdraw-requests/{withdrawRequest}/approve', [WithdrawRequestController::class, 'approve'])
+                ->middleware('permission:withdraw-requests.review')
+                ->name('withdraw-requests.approve');
+            Route::post('withdraw-requests/{withdrawRequest}/reject', [WithdrawRequestController::class, 'reject'])
+                ->middleware('permission:withdraw-requests.review')
+                ->name('withdraw-requests.reject');
         });
 
         Route::middleware('permission:brands.view')->group(function () {
