@@ -18,8 +18,9 @@ Route::get('/become-a-vendor/verify', [VendorApplicationController::class, 'veri
 Route::post('/become-a-vendor/verify', [VendorApplicationController::class, 'verifyCode'])->name('vendor.verify.code');
 Route::post('/become-a-vendor/verify/resend', [VendorApplicationController::class, 'resendCode'])->name('vendor.verify.resend');
 
-Route::redirect('/dashboard', '/admin/dashboard');
-Route::redirect('/login', '/admin/login');
+Route::redirect('/dashboard', '/account/dashboard');
+Route::redirect('/login', '/account/login');
+Route::redirect('/register', '/account/register');
 
 Route::middleware('guest')->group(function () {
     Route::get('/reset-password', [GuestPasswordResetController::class, 'create'])->name('guest.reset.password');

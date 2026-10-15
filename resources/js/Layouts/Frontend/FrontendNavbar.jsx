@@ -59,7 +59,9 @@ export default function FrontendNavbar({ categories = [] }) {
 
     const user = auth?.user;
     const isVendor = !!user?.vendor;
-    const isAdmin = auth?.isSuperAdmin || (auth?.roles && auth.roles.length > 0);
+    const isAdmin =
+        auth?.isSuperAdmin ||
+        (auth?.permissions && auth.permissions.includes('dashboard.view'));
 
     return (
         <header className="sticky top-0 z-50 w-full select-none shadow-md">
@@ -201,20 +203,20 @@ export default function FrontendNavbar({ categories = [] }) {
                                     {!user ? (
                                         <div className="border-b border-neutral-200 pb-3 text-center">
                                             <Link
-                                                href={route('vendor.login')}
+                                                href={route('account.login')}
                                                 className="block w-full rounded-md bg-[#ffd814] py-2 text-center text-xs font-bold text-neutral-900 shadow-sm transition hover:bg-[#f7ca00]"
                                                 onClick={() => setAccountMenuOpen(false)}
                                             >
-                                                Log In
+                                                Sign In
                                             </Link>
                                             <p className="mt-2 text-xs text-neutral-600">
-                                                New vendor?{' '}
+                                                New customer?{' '}
                                                 <Link
-                                                    href={route('vendor.apply')}
+                                                    href={route('account.register')}
                                                     className="text-blue-700 hover:text-orange-600 hover:underline"
                                                     onClick={() => setAccountMenuOpen(false)}
                                                 >
-                                                    Register
+                                                    Create account
                                                 </Link>
                                             </p>
                                         </div>
@@ -231,6 +233,18 @@ export default function FrontendNavbar({ categories = [] }) {
                                             Your Account
                                         </p>
                                         <div className="space-y-1">
+                                            {user && (
+                                                <Link
+                                                    href={route('account.dashboard')}
+                                                    className="flex items-center justify-between rounded px-2 py-1.5 font-semibold text-neutral-800 hover:bg-neutral-100"
+                                                    onClick={() => setAccountMenuOpen(false)}
+                                                >
+                                                    <span>My Account</span>
+                                                    <span className="text-[10px] bg-neutral-100 text-neutral-700 px-1.5 py-0.5 rounded">
+                                                        Customer
+                                                    </span>
+                                                </Link>
+                                            )}
                                             {isVendor && (
                                                 <Link
                                                     href={route('vendor.dashboard')}
@@ -279,7 +293,7 @@ export default function FrontendNavbar({ categories = [] }) {
                                     {user && (
                                         <div className="border-t border-neutral-200 pt-2">
                                             <Link
-                                                href={isVendor ? route('vendor.logout') : route('admin.logout')}
+                                                href={route('account.logout')}
                                                 method="post"
                                                 as="button"
                                                 className="w-full text-left text-xs text-red-600 font-medium px-2 py-1.5 rounded hover:bg-red-50 transition"
@@ -568,7 +582,7 @@ export default function FrontendNavbar({ categories = [] }) {
                                         <>
                                             <li>
                                                 <Link
-                                                    href={route('vendor.login')}
+                                                    href={route('account.login')}
                                                     onClick={() => setDrawerOpen(false)}
                                                     className="block rounded px-2 py-2 font-semibold text-blue-600 hover:bg-blue-50"
                                                 >
@@ -588,7 +602,7 @@ export default function FrontendNavbar({ categories = [] }) {
                                     ) : (
                                         <li>
                                             <Link
-                                                href={isVendor ? route('vendor.logout') : route('admin.logout')}
+                                                href={route('account.logout')}
                                                 method="post"
                                                 as="button"
                                                 onClick={() => setDrawerOpen(false)}

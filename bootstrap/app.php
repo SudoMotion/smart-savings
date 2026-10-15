@@ -16,11 +16,37 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->group(base_path('routes/admin.php'));
             Route::middleware('web')
                 ->group(base_path('routes/vendor.php'));
+            Route::middleware('web')
+                ->group(base_path('routes/customer.php'));
         },
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->redirectGuestsTo(fn (Request $request) => $request->is('vendor*') ? '/vendor/login' : '/admin/login');
-        $middleware->redirectUsersTo(fn (Request $request) => $request->is('vendor*') ? '/vendor/dashboard' : '/admin/dashboard');
+        $middleware->redirectGuestsTo(function (Request $request) {
+            if ($request->is('vendor*')) {
+                return '/vendor/login';
+            }
+            if ($request->is('admin*')) {
+                return '/admin/login';
+            }
+            if ($request->is('account*')) {
+                return '/account/login';
+            }
+
+            return '/account/login';
+        });
+        $middleware->redirectUsersTo(function (Request $request) {
+            if ($request->is('vendor*')) {
+                return '/vendor/dashboard';
+            }
+            if ($request->is('admin*')) {
+                return '/admin/dashboard';
+            }
+            if ($request->is('account*')) {
+                return '/account/dashboard';
+            }
+
+            return '/account/dashboard';
+        });
 
         $middleware->web(append: [
             \App\Http\Middleware\HandleInertiaRequests::class,

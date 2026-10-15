@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Category;
 use App\Support\SiteData;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -45,6 +46,10 @@ class HandleInertiaRequests extends Middleware
                 'error' => fn () => $request->session()->get('error'),
             ],
             'site' => fn () => SiteData::settings(),
+            'categories' => fn () => Category::query()
+                ->where('status', 'active')
+                ->orderBy('name')
+                ->get(['id', 'name']),
             'vendor_email' => fn () => session('vendor_application_data')['email'] ?? null,
         ];
     }
