@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\AccountType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreUserRequest;
+use App\Http\Requests\Admin\UpdateUserAccountTypeRequest;
 use App\Http\Requests\Admin\UpdateUserPercentageRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Models\User;
@@ -48,7 +50,9 @@ class UserController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'role' => $user->roles->pluck('name')->join(', ') ?: null,
-                'account_type' => $this->accountType($user),
+                'portal_type' => $this->portalType($user),
+                'account_type' => ($user->account_type ?? AccountType::InactiveMember)->value,
+                'account_type_label' => ($user->account_type ?? AccountType::InactiveMember)->label(),
                 'vendor_shop' => $user->vendor?->shop_name,
                 'percentage' => (float) ($user->percentage ?? 0),
                 'created_at' => $user->created_at?->format('Y-m-d H:i'),
@@ -68,6 +72,7 @@ class UserController extends Controller
                 'type' => $type ?? '',
             ],
             'counts' => $counts,
+            'accountTypeOptions' => AccountType::options(),
             'can' => [
                 'create' => auth()->user()?->can('users.create') ?? false,
                 'edit' => auth()->user()?->can('users.edit') ?? false,
@@ -123,6 +128,17 @@ class UserController extends Controller
             ->with('success', "Percentage updated for {$user->name}.");
     }
 
+    public function updateAccountType(UpdateUserAccountTypeRequest $request, User $user): RedirectResponse
+    {
+        $user->update([
+            'account_type' => $request->validated('account_type'),
+        ]);
+
+        return redirect()
+            ->back()
+            ->with('success', "Member type updated for {$user->name}.");
+    }
+
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
         $user->update([
@@ -174,7 +190,7 @@ class UserController extends Controller
             ->all();
     }
 
-    private function accountType(User $user): string
+    private function portalType(User $user): string
     {
         if ($user->hasRole(Permissions::SUPERADMIN_ROLE) || $user->roles->isNotEmpty()) {
             return 'staff';

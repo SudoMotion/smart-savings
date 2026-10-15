@@ -12,6 +12,8 @@ const variants = {
     remove: 'border-red-200 bg-white text-red-600 hover:bg-red-50 focus:ring-red-400',
     percentage:
         'border-emerald-200 bg-white text-emerald-700 hover:bg-emerald-50 hover:text-emerald-900 focus:ring-emerald-400',
+    member:
+        'border-amber-200 bg-white text-amber-700 hover:bg-amber-50 hover:text-amber-900 focus:ring-amber-400',
 };
 
 function ActionIcon({ type }) {
@@ -61,6 +63,14 @@ function ActionIcon({ type }) {
             <span className="text-xs font-bold leading-none" aria-hidden="true">
                 %
             </span>
+        );
+    }
+
+    if (type === 'member') {
+        return (
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 0 1 3 3h-15a3 3 0 0 1 3-3m9 0v-1.875c0-.621-.504-1.125-1.125-1.125h-.871M7.5 18.75v-1.875c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 0 1-.982-3.172M9.497 14.25a7.454 7.454 0 0 0 .981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 0 0 7.5 9.75v.75m0 0v.375c0 .621-.504 1.125-1.125 1.125H4.125A1.125 1.125 0 0 1 3 12.375V11.25m9-7.5v.75m0 0V5.25m0 0h.375c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125H12.75m0 0h.375m-.375 0V9" />
+            </svg>
         );
     }
 
@@ -156,6 +166,10 @@ export function RemoveAction({ title = 'Remove', ...props }) {
 
 export function PercentageAction({ title = 'Set percentage', ...props }) {
     return <ActionButton type="percentage" title={title} {...props} />;
+}
+
+export function MemberTypeAction({ title = 'Set member type', ...props }) {
+    return <ActionButton type="member" title={title} {...props} />;
 }
 
 export function ActionButtonGroup({ children, className = '' }) {
