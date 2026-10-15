@@ -53,6 +53,14 @@ function SettingsIcon({ className }) {
     );
 }
 
+function UsersIcon({ className }) {
+    return (
+        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+        </svg>
+    );
+}
+
 function VendorCatalogIcon({ className }) {
     return (
         <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -62,7 +70,6 @@ function VendorCatalogIcon({ className }) {
 }
 
 const accessControlItems = [
-    { name: 'Users', href: 'admin.users.index', active: 'admin.users.*', permission: 'users.view' },
     { name: 'Roles', href: 'admin.roles.index', active: 'admin.roles.*', permission: 'roles.view' },
     { name: 'Permissions', href: 'admin.permissions.index', active: 'admin.permissions.*', permission: 'permissions.view' },
 ];
@@ -84,6 +91,7 @@ const vendorCatalogItems = [
 
 const topLevelItems = [
     { name: 'Dashboard', href: 'admin.dashboard', active: 'admin.dashboard', icon: DashboardIcon, permission: 'dashboard.view' },
+    { name: 'User List', href: 'admin.users.index', active: 'admin.users.*', icon: UsersIcon, permission: 'users.view' },
     { name: 'Deposit Options', href: 'admin.deposit-options.index', active: 'admin.deposit-options.*', icon: DepositOptionsIcon, permission: 'deposit-options.view' },
     { name: 'About Us', href: 'admin.about-us.index', active: 'admin.about-us.*', icon: AboutUsIcon, permission: 'about-us.view' },
     { name: 'Settings', href: 'admin.settings.index', active: 'admin.settings.*', icon: SettingsIcon, permission: 'settings.view' },
@@ -100,13 +108,13 @@ export default function AdminSidebar({ open, onNavigate }) {
     return (
         <aside
             className={
-                'fixed bottom-0 left-0 top-14 z-40 flex w-60 flex-col border-r border-neutral-200 bg-neutral-50 transition-transform duration-300 ease-in-out lg:translate-x-0 ' +
+                'fixed bottom-0 left-0 top-14 z-40 flex w-60 flex-col border-r border-[#2d5240] bg-[#1e3a2d] text-white transition-transform duration-300 ease-in-out lg:translate-x-0 ' +
                 (open ? 'translate-x-0' : '-translate-x-full')
             }
         >
-            <div className="flex h-14 shrink-0 items-center border-b border-neutral-200 px-4 lg:hidden">
+            <div className="flex h-14 shrink-0 items-center border-b border-[#2d5240] px-4 lg:hidden">
                 <Link href={route('admin.dashboard')} onClick={onNavigate}>
-                    <AppLogo className="block h-7 w-auto fill-current text-neutral-800" />
+                    <AppLogo className="block h-7 w-auto fill-current text-white" />
                 </Link>
             </div>
 
@@ -152,7 +160,7 @@ export default function AdminSidebar({ open, onNavigate }) {
             </nav>
 
             <div
-                className="hidden h-10 shrink-0 border-t border-neutral-200 bg-neutral-50 lg:block"
+                className="hidden h-10 shrink-0 border-t border-[#2d5240] bg-[#1e3a2d] lg:block"
                 aria-hidden="true"
             />
         </aside>

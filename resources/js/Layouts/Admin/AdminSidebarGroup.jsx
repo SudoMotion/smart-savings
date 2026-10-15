@@ -23,8 +23,8 @@ export default function AdminSidebarGroup({
                 className={cn(
                     'group flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
                     hasActiveChild
-                        ? 'bg-neutral-200 text-neutral-900'
-                        : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900',
+                        ? 'bg-[#0f281c] text-white shadow-sm'
+                        : 'text-gray-300 hover:bg-[#2d5240]/60 hover:text-white',
                 )}
             >
                 {Icon && (
@@ -32,15 +32,15 @@ export default function AdminSidebarGroup({
                         className={cn(
                             'h-[18px] w-[18px] shrink-0',
                             hasActiveChild
-                                ? 'text-neutral-800'
-                                : 'text-neutral-400 group-hover:text-neutral-700',
+                                ? 'text-emerald-200'
+                                : 'text-gray-400 group-hover:text-emerald-100',
                         )}
                     />
                 )}
                 <span className="flex-1 text-left">{label}</span>
                 <svg
                     className={cn(
-                        'h-4 w-4 shrink-0 text-neutral-400 transition-transform',
+                        'h-4 w-4 shrink-0 text-gray-400 transition-transform group-hover:text-gray-200',
                         open && 'rotate-180',
                     )}
                     fill="none"
@@ -53,7 +53,7 @@ export default function AdminSidebarGroup({
             </button>
 
             {open && (
-                <div className="mt-0.5 space-y-0.5 border-l border-neutral-200 ms-5 ps-2">
+                <div className="mt-0.5 space-y-0.5 border-l border-[#2d5240] ms-5 ps-2">
                     {items.map((item) => (
                         <AdminSidebarLink
                             key={item.name}
