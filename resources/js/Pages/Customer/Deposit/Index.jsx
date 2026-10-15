@@ -1,10 +1,11 @@
 import Container from '@/Components/Frontend/Container';
+import ResultPopup from '@/Components/Frontend/ResultPopup';
 import SectionHeading from '@/Components/Frontend/SectionHeading';
 import Modal from '@/Components/Modal';
-import { Alert, Button, Card, FileInput, Input, Select } from '@/Components/UI';
+import { Button, Card, FileInput, Input, Select } from '@/Components/UI';
 import CustomerPanelLayout from '@/Layouts/Frontend/CustomerPanelLayout';
 import { Head, useForm, usePage } from '@inertiajs/react';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 function statusLabel(status) {
     const value = typeof status === 'object' && status?.value ? status.value : status;
@@ -34,10 +35,46 @@ async function copyText(text) {
     }
 }
 
+function firstFormError(errors) {
+    if (!errors || typeof errors !== 'object') {
+        return null;
+    }
+
+    for (const value of Object.values(errors)) {
+        const message = Array.isArray(value) ? value[0] : value;
+        if (message) {
+            return message;
+        }
+    }
+
+    return null;
+}
+
 export default function Index({ depositOptions = [], recentRequests = [], wallet }) {
     const { flash } = usePage().props;
     const [detailOption, setDetailOption] = useState(null);
     const [addressCopied, setAddressCopied] = useState(false);
+    const [resultPopup, setResultPopup] = useState({ show: false, variant: 'success', message: '' });
+
+    const closeResultPopup = useCallback(() => {
+        setResultPopup((prev) => ({ ...prev, show: false }));
+    }, []);
+
+    useEffect(() => {
+        if (flash?.success) {
+            setResultPopup({
+                show: true,
+                variant: 'success',
+                message: flash.success,
+            });
+        } else if (flash?.error) {
+            setResultPopup({
+                show: true,
+                variant: 'error',
+                message: flash.error,
+            });
+        }
+    }, [flash?.success, flash?.error]);
 
     const optionChoices = useMemo(
         () =>
@@ -67,6 +104,15 @@ export default function Index({ depositOptions = [], recentRequests = [], wallet
             preserveScroll: true,
             onSuccess: () => {
                 reset('amount', 'transaction_id', 'proof');
+            },
+            onError: (pageErrors) => {
+                setResultPopup({
+                    show: true,
+                    variant: 'error',
+                    message:
+                        firstFormError(pageErrors) ||
+                        'Could not submit your deposit request. Please check the form and try again.',
+                });
             },
         });
     };
@@ -101,12 +147,6 @@ export default function Index({ depositOptions = [], recentRequests = [], wallet
 
             <section className="py-10 sm:py-12">
                 <Container>
-                    {flash?.success && (
-                        <Alert variant="success" className="mb-6">
-                            {flash.success}
-                        </Alert>
-                    )}
-
                     <Card title="Current wallet balance" className="mb-6">
                         <p className="text-3xl font-bold tracking-tight text-neutral-900">
                             ${wallet?.formatted_balance ?? '0.00'}
@@ -350,6 +390,13 @@ export default function Index({ depositOptions = [], recentRequests = [], wallet
                     </div>
                 )}
             </Modal>
+
+            <ResultPopup
+                show={resultPopup.show}
+                variant={resultPopup.variant}
+                message={resultPopup.message}
+                onClose={closeResultPopup}
+            />
         </CustomerPanelLayout>
     );
 }
