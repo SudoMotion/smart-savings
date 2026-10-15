@@ -1,7 +1,7 @@
 import Container from '@/Components/Frontend/Container';
 import SectionHeading from '@/Components/Frontend/SectionHeading';
 import { Alert, Button, Card } from '@/Components/UI';
-import FrontendLayout from '@/Layouts/Frontend/FrontendLayout';
+import CustomerPanelLayout from '@/Layouts/Frontend/CustomerPanelLayout';
 import { Head, Link, usePage } from '@inertiajs/react';
 
 export default function Index({ user }) {
@@ -12,7 +12,7 @@ export default function Index({ user }) {
         (auth?.permissions && auth.permissions.includes('dashboard.view'));
 
     return (
-        <FrontendLayout>
+        <CustomerPanelLayout>
             <Head title="My account" />
 
             <section className="border-b border-neutral-200 bg-neutral-50 py-10 sm:py-12">
@@ -129,6 +129,6 @@ export default function Index({ user }) {
                     </Card>
                 </Container>
             </section>
-        </FrontendLayout>
+        </CustomerPanelLayout>
     );
 }
