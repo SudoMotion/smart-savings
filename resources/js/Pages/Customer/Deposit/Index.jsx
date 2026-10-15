@@ -1,9 +1,10 @@
 import Container from '@/Components/Frontend/Container';
 import SectionHeading from '@/Components/Frontend/SectionHeading';
+import Modal from '@/Components/Modal';
 import { Alert, Button, Card, FileInput, Input, Select } from '@/Components/UI';
 import CustomerPanelLayout from '@/Layouts/Frontend/CustomerPanelLayout';
 import { Head, useForm, usePage } from '@inertiajs/react';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 function statusLabel(status) {
     const value = typeof status === 'object' && status?.value ? status.value : status;
@@ -23,8 +24,20 @@ function formatAmount(amount) {
     return n.toFixed(2);
 }
 
+async function copyText(text) {
+    if (!text) return false;
+    try {
+        await navigator.clipboard.writeText(text);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
 export default function Index({ depositOptions = [], recentRequests = [], wallet }) {
     const { flash } = usePage().props;
+    const [detailOption, setDetailOption] = useState(null);
+    const [addressCopied, setAddressCopied] = useState(false);
 
     const optionChoices = useMemo(
         () =>
@@ -56,6 +69,20 @@ export default function Index({ depositOptions = [], recentRequests = [], wallet
                 reset('amount', 'transaction_id', 'proof');
             },
         });
+    };
+
+    const openOptionDetail = (option) => {
+        setData('deposit_option_id', String(option.id));
+        setAddressCopied(false);
+        setDetailOption(option);
+    };
+
+    const handleCopyAddress = async (value) => {
+        const ok = await copyText(value);
+        if (ok) {
+            setAddressCopied(true);
+            window.setTimeout(() => setAddressCopied(false), 2000);
+        }
     };
 
     return (
@@ -99,37 +126,55 @@ export default function Index({ depositOptions = [], recentRequests = [], wallet
                     ) : (
                         <div className="grid gap-8 lg:grid-cols-2">
                             <div>
-                                <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-neutral-500">
+                                <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-500 sm:mb-4 sm:text-sm">
                                     Available methods
                                 </h2>
-                                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-                                    {depositOptions.map((option) => (
-                                        <Card
-                                            key={option.id}
-                                            title={option.coin_type}
-                                            className={
-                                                String(option.id) === String(data.deposit_option_id)
-                                                    ? 'ring-2 ring-[#2d5240]'
-                                                    : ''
-                                            }
-                                        >
-                                            <p className="break-all font-mono text-sm text-neutral-800">
-                                                {option.value}
-                                            </p>
-                                            <p className="mt-2 text-xs text-neutral-500">
-                                                Send only {option.coin_type} to this address or account.
-                                            </p>
-                                            <Button
+                                <p className="mb-3 text-xs text-neutral-500 sm:hidden">
+                                    Tap a method to view the full address and copy it.
+                                </p>
+                                <div className="divide-y divide-neutral-100 overflow-hidden rounded-lg border border-neutral-200 bg-white lg:max-w-md">
+                                    {depositOptions.map((option) => {
+                                        const selected =
+                                            String(option.id) === String(data.deposit_option_id);
+                                        return (
+                                            <button
+                                                key={option.id}
                                                 type="button"
-                                                variant="secondary"
-                                                size="sm"
-                                                className="mt-3"
-                                                onClick={() => setData('deposit_option_id', String(option.id))}
+                                                onClick={() => openOptionDetail(option)}
+                                                className={`flex w-full items-center gap-2 px-3 py-2.5 text-left transition hover:bg-neutral-50 sm:gap-3 sm:px-4 sm:py-3 ${
+                                                    selected ? 'bg-[#f4f9f6] ring-1 ring-inset ring-[#2d5240]/25' : ''
+                                                }`}
                                             >
-                                                Use this method
-                                            </Button>
-                                        </Card>
-                                    ))}
+                                                <div className="min-w-0 flex-1">
+                                                    <p className="truncate text-sm font-medium text-neutral-900">
+                                                        {option.coin_type}
+                                                    </p>
+                                                    <p className="truncate font-mono text-[11px] text-neutral-500 sm:text-xs">
+                                                        {option.value}
+                                                    </p>
+                                                </div>
+                                                {selected && (
+                                                    <span className="shrink-0 rounded bg-[#2d5240] px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-white">
+                                                        Selected
+                                                    </span>
+                                                )}
+                                                <svg
+                                                    className="h-4 w-4 shrink-0 text-neutral-400"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                    stroke="currentColor"
+                                                    strokeWidth={2}
+                                                    aria-hidden
+                                                >
+                                                    <path
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                        d="M9 5l7 7-7 7"
+                                                    />
+                                                </svg>
+                                            </button>
+                                        );
+                                    })}
                                 </div>
                             </div>
 
@@ -147,8 +192,21 @@ export default function Index({ depositOptions = [], recentRequests = [], wallet
 
                                     {selectedOption && (
                                         <div className="rounded-md border border-neutral-200 bg-neutral-50 p-3 text-sm">
-                                            <p className="font-medium text-neutral-700">Payment address</p>
-                                            <p className="mt-1 break-all font-mono text-neutral-900">
+                                            <div className="flex items-center justify-between gap-2">
+                                                <p className="font-medium text-neutral-700">
+                                                    Deposit value / address
+                                                </p>
+                                                <Button
+                                                    type="button"
+                                                    variant="secondary"
+                                                    size="sm"
+                                                    className="shrink-0"
+                                                    onClick={() => handleCopyAddress(selectedOption.value)}
+                                                >
+                                                    {addressCopied ? 'Copied' : 'Copy'}
+                                                </Button>
+                                            </div>
+                                            <p className="mt-1 break-all font-mono text-xs text-neutral-900 sm:text-sm">
                                                 {selectedOption.value}
                                             </p>
                                         </div>
@@ -260,6 +318,60 @@ export default function Index({ depositOptions = [], recentRequests = [], wallet
                     )}
                 </Container>
             </section>
+
+            <Modal
+                show={!!detailOption}
+                onClose={() => setDetailOption(null)}
+                maxWidth="md"
+            >
+                {detailOption && (
+                    <div className="p-4 sm:p-6">
+                        <h3 className="text-lg font-semibold text-neutral-900">
+                            {detailOption.coin_type}
+                        </h3>
+                        <p className="mt-1 text-sm text-neutral-500">
+                            Send only {detailOption.coin_type} to this address or account.
+                        </p>
+
+                        <div className="mt-4 rounded-md border border-neutral-200 bg-neutral-50 p-3">
+                            <div className="flex items-center justify-between gap-2">
+                                <p className="text-xs font-medium uppercase tracking-wide text-neutral-500">
+                                    Deposit value / address
+                                </p>
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    size="sm"
+                                    onClick={() => handleCopyAddress(detailOption.value)}
+                                >
+                                    {addressCopied ? 'Copied' : 'Copy'}
+                                </Button>
+                            </div>
+                            <p className="mt-2 break-all font-mono text-sm text-neutral-900">
+                                {detailOption.value}
+                            </p>
+                        </div>
+
+                        <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                className="w-full sm:w-auto"
+                                onClick={() => setDetailOption(null)}
+                            >
+                                Close
+                            </Button>
+                            <Button
+                                type="button"
+                                className="w-full sm:w-auto"
+                                onClick={() => setDetailOption(null)}
+                            >
+                                Use this method
+                            </Button>
+                        </div>
+                    </div>
+                )}
+            </Modal>
         </CustomerPanelLayout>
     );
 }
