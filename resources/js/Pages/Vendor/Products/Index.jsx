@@ -58,7 +58,7 @@ export default function Index({ products = { data: [] }, filters = {} }) {
                         My Products
                     </h1>
                     <p className="mt-0.5 text-xs text-neutral-500">
-                        Manage your store's inventory, prices, variants, and product publication status.
+                        Manage your store's inventory, variants, and product publication status.
                     </p>
                 </div>
 
@@ -165,10 +165,7 @@ export default function Index({ products = { data: [] }, filters = {} }) {
                                     <p className="mt-0.5 text-xs text-neutral-500">
                                         {product.category_name} {product.brand_name !== '—' && `• ${product.brand_name}`}
                                     </p>
-                                    <div className="mt-2 flex items-center justify-between">
-                                        <span className="text-sm font-bold text-neutral-900">
-                                            ${Number(product.price).toFixed(2)}
-                                        </span>
+                                    <div className="mt-2">
                                         <span
                                             className={`text-[11px] font-medium ${
                                                 product.stock <= 5 ? 'text-amber-600' : 'text-neutral-500'
@@ -228,9 +225,6 @@ export default function Index({ products = { data: [] }, filters = {} }) {
                                         Category / Brand
                                     </th>
                                     <th className="px-4 py-3 font-semibold uppercase tracking-wider text-neutral-500">
-                                        Price
-                                    </th>
-                                    <th className="px-4 py-3 font-semibold uppercase tracking-wider text-neutral-500">
                                         Stock
                                     </th>
                                     <th className="px-4 py-3 font-semibold uppercase tracking-wider text-neutral-500">
@@ -276,9 +270,6 @@ export default function Index({ products = { data: [] }, filters = {} }) {
                                             <td className="px-4 py-3 whitespace-nowrap">
                                                 <div className="text-neutral-900">{product.category_name}</div>
                                                 <div className="text-[11px] text-neutral-400">{product.brand_name}</div>
-                                            </td>
-                                            <td className="px-4 py-3 whitespace-nowrap font-semibold text-neutral-900">
-                                                ${Number(product.price).toFixed(2)}
                                             </td>
                                             <td className="px-4 py-3 whitespace-nowrap">
                                                 <span

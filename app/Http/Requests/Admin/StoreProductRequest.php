@@ -33,7 +33,6 @@ class StoreProductRequest extends FormRequest
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp,svg', 'max:5120'],
             'additional_images' => ['nullable', 'array'],
             'additional_images.*' => ['image', 'mimes:jpeg,png,jpg,webp,svg', 'max:5120'],
-            'price' => ['required', 'numeric', 'min:0'],
             'discount_type' => ['nullable', 'string', Rule::in(['percentage', 'fixed', 'none', ''])],
             'discount_value' => ['nullable', 'numeric', 'min:0'],
             'stock' => ['required', 'integer', 'min:0'],

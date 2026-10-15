@@ -35,7 +35,6 @@ export default function Edit({
         subsubcategory_id: product.subsubcategory_id ?? '',
         brand_id: product.brand_id ?? '',
         unit_id: product.unit_id ?? '',
-        price: product.price ?? '',
         discount_type: product.discount_type ?? '',
         discount_value: product.discount_value ?? '',
         stock: product.stock ?? 0,
@@ -263,22 +262,9 @@ export default function Edit({
                     </div>
                 </Card>
 
-                {/* 3. Pricing & Inventory */}
-                <Card title="Pricing & Inventory">
+                {/* 3. Discount & Inventory */}
+                <Card title="Discount & Inventory">
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                        <Input
-                            id="price"
-                            label="Price ($)"
-                            type="number"
-                            step="0.01"
-                            min="0"
-                            placeholder="0.00"
-                            value={data.price}
-                            error={errors.price}
-                            required
-                            onChange={(e) => setData('price', e.target.value)}
-                        />
-
                         <Select
                             id="discount_type"
                             label="Discount Type"

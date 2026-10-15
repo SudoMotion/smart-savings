@@ -33,7 +33,6 @@ class ProductController extends Controller
                 'name' => $product->name,
                 'code' => $product->code,
                 'sku' => $product->sku,
-                'price' => (float) $product->price,
                 'stock' => $product->stock,
                 'category_name' => $product->category?->name ?? '—',
                 'brand_name' => $product->brand?->name ?? '—',
@@ -69,6 +68,7 @@ class ProductController extends Controller
         DB::transaction(function () use ($request) {
             $data = $request->safe()->except(['image', 'additional_images', 'attributes']);
             $data = $this->sanitizeProductData($data);
+            $data['price'] = 0;
 
             if ($request->hasFile('image')) {
                 $data['image'] = $request->file('image')->store('products', 'public');
@@ -116,7 +116,6 @@ class ProductController extends Controller
                 'subsubcategory_id' => $product->subsubcategory_id ? (string) $product->subsubcategory_id : '',
                 'brand_id' => $product->brand_id ? (string) $product->brand_id : '',
                 'unit_id' => $product->unit_id ? (string) $product->unit_id : '',
-                'price' => (string) $product->price,
                 'discount_type' => $product->discount_type ?? '',
                 'discount_value' => (string) ($product->discount_value ?? 0),
                 'stock' => (int) $product->stock,

@@ -45,7 +45,6 @@ class ProductController extends Controller
             'name' => $product->name,
             'code' => $product->code,
             'sku' => $product->sku,
-            'price' => (float) $product->price,
             'stock' => $product->stock,
             'category_name' => $product->category?->name ?? '—',
             'brand_name' => $product->brand?->name ?? '—',
@@ -80,7 +79,6 @@ class ProductController extends Controller
             'subsubcategory_id' => ['nullable', 'exists:subsubcategories,id'],
             'brand_id' => ['nullable', 'exists:brands,id'],
             'unit_id' => ['nullable', 'exists:units,id'],
-            'price' => ['required', 'numeric', 'min:0'],
             'discount_type' => ['nullable', 'in:percentage,fixed'],
             'discount_value' => ['nullable', 'numeric', 'min:0'],
             'stock' => ['nullable', 'integer', 'min:0'],
@@ -102,6 +100,7 @@ class ProductController extends Controller
 
             $data['vendor_id'] = $vendor->id;
             $data['user_id'] = $user->id;
+            $data['price'] = 0;
             $data['stock'] = $data['stock'] ?? 0;
             $data['alert_quantity'] = $data['alert_quantity'] ?? 0;
             $data['discount_value'] = $data['discount_value'] ?? 0;
@@ -159,7 +158,6 @@ class ProductController extends Controller
                 'subsubcategory_id' => $product->subsubcategory_id ? (string) $product->subsubcategory_id : '',
                 'brand_id' => $product->brand_id ? (string) $product->brand_id : '',
                 'unit_id' => $product->unit_id ? (string) $product->unit_id : '',
-                'price' => (string) $product->price,
                 'discount_type' => $product->discount_type ?? '',
                 'discount_value' => (string) ($product->discount_value ?? 0),
                 'stock' => (int) $product->stock,
@@ -198,7 +196,6 @@ class ProductController extends Controller
             'subsubcategory_id' => ['nullable', 'exists:subsubcategories,id'],
             'brand_id' => ['nullable', 'exists:brands,id'],
             'unit_id' => ['nullable', 'exists:units,id'],
-            'price' => ['required', 'numeric', 'min:0'],
             'discount_type' => ['nullable', 'in:percentage,fixed'],
             'discount_value' => ['nullable', 'numeric', 'min:0'],
             'stock' => ['nullable', 'integer', 'min:0'],

@@ -31,7 +31,6 @@ export default function Create({
         subsubcategory_id: '',
         brand_id: '',
         unit_id: '',
-        price: '',
         discount_type: '',
         discount_value: '',
         stock: '0',
@@ -253,21 +252,8 @@ export default function Create({
                 </Card>
 
                 {/* 3. Pricing & Inventory */}
-                <Card title="Pricing & Inventory">
+                <Card title="Discount & Inventory">
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                        <Input
-                            id="price"
-                            label="Price ($)"
-                            type="number"
-                            step="0.01"
-                            min="0"
-                            placeholder="0.00"
-                            value={data.price}
-                            error={errors.price}
-                            required
-                            onChange={(e) => setData('price', e.target.value)}
-                        />
-
                         <Select
                             id="discount_type"
                             label="Discount Type"

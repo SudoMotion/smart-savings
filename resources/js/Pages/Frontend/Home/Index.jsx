@@ -33,27 +33,6 @@ const heroSlides = [
     },
 ];
 
-// Helper to format currency in Amazon style
-function formatAmazonPrice(price) {
-    const num = parseFloat(price) || 0;
-    const parts = num.toFixed(2).split('.');
-    return { whole: parts[0], cents: parts[1] };
-}
-
-// Calculate discount price
-function calculateDiscountedPrice(price, discountType, discountValue) {
-    const p = parseFloat(price) || 0;
-    const dv = parseFloat(discountValue) || 0;
-    if (dv <= 0) return p;
-
-    if (discountType === 'percentage') {
-        const discounted = p - (p * dv) / 100;
-        return Math.max(0, discounted);
-    }
-    // Fixed amount discount
-    return Math.max(0, p - dv);
-}
-
 export default function Index({
     products = { data: [] },
     deals = [],
@@ -429,9 +408,6 @@ export default function Index({
                         className="flex gap-4 overflow-x-auto no-scrollbar scroll-smooth py-2"
                     >
                         {deals.map((item) => {
-                            const finalPrice = calculateDiscountedPrice(item.price, item.discount_type, item.discount_value);
-                            const originalPriceFormatted = formatAmazonPrice(item.price);
-                            const finalPriceFormatted = formatAmazonPrice(finalPrice);
                             const hasDiscount = item.discount_value > 0;
 
                             return (
@@ -471,20 +447,6 @@ export default function Index({
                                             <span className="text-[10px] font-bold text-[#cc0c39] truncate">
                                                 Limited time deal
                                             </span>
-                                        </div>
-
-                                        {/* Price display */}
-                                        <div className="mt-1 flex items-baseline gap-1.5">
-                                            <div className="flex items-start text-neutral-900 font-bold">
-                                                <span className="text-xs">$</span>
-                                                <span className="text-lg leading-none">{finalPriceFormatted.whole}</span>
-                                                <span className="text-xs">{finalPriceFormatted.cents}</span>
-                                            </div>
-                                            {hasDiscount && (
-                                                <span className="text-xs text-neutral-500 line-through">
-                                                    ${originalPriceFormatted.whole}.{originalPriceFormatted.cents}
-                                                </span>
-                                            )}
                                         </div>
 
                                         {/* Title */}
@@ -701,8 +663,6 @@ export default function Index({
                                     className="rounded border border-neutral-300 bg-neutral-50 px-2.5 py-1 text-xs text-neutral-800 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
                                 >
                                     <option value="featured">Featured</option>
-                                    <option value="price_low">Price: Low to High</option>
-                                    <option value="price_high">Price: High to Low</option>
                                     <option value="newest">Newest Arrivals</option>
                                 </select>
                             </div>
@@ -739,9 +699,6 @@ export default function Index({
                     {/* Amazon-style Product Cards Grid */}
                     <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-5">
                         {productList.map((product) => {
-                            const finalPrice = calculateDiscountedPrice(product.price, product.discount_type, product.discount_value);
-                            const originalPriceFormatted = formatAmazonPrice(product.price);
-                            const finalPriceFormatted = formatAmazonPrice(finalPrice);
                             const hasDiscount = product.discount_value > 0;
 
                             return (
@@ -802,20 +759,6 @@ export default function Index({
                                             <span className="text-[11px] text-[#007185] hover:underline cursor-pointer">
                                                 {(product.id * 17) % 80 + 12}
                                             </span>
-                                        </div>
-
-                                        {/* Amazon Price Display */}
-                                        <div className="mt-2 flex items-baseline gap-1.5">
-                                            <div className="flex items-start text-neutral-900 font-bold">
-                                                <span className="text-xs mt-0.5">$</span>
-                                                <span className="text-xl leading-none">{finalPriceFormatted.whole}</span>
-                                                <span className="text-xs">{finalPriceFormatted.cents}</span>
-                                            </div>
-                                            {hasDiscount && (
-                                                <span className="text-xs text-neutral-500 line-through">
-                                                    ${originalPriceFormatted.whole}.{originalPriceFormatted.cents}
-                                                </span>
-                                            )}
                                         </div>
 
                                         {/* Shipping Badge */}

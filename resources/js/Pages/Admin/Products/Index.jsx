@@ -45,9 +45,6 @@ export default function Index({ products = [], can = {} }) {
                                     Category / Brand
                                 </th>
                                 <th className="px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">
-                                    Price
-                                </th>
-                                <th className="px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">
                                     Stock
                                 </th>
                                 <th className="px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">
@@ -65,7 +62,7 @@ export default function Index({ products = [], can = {} }) {
                             {products.length === 0 ? (
                                 <tr>
                                     <td
-                                        colSpan={7}
+                                        colSpan={6}
                                         className="px-4 py-12 text-center"
                                     >
                                         <div className="mx-auto max-w-sm text-center">
@@ -131,9 +128,6 @@ export default function Index({ products = [], can = {} }) {
                                             {product.brand_name !== '—' && (
                                                 <div className="text-xs text-neutral-400">{product.brand_name}</div>
                                             )}
-                                        </td>
-                                        <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-neutral-900">
-                                            ${Number(product.price).toFixed(2)}
                                         </td>
                                         <td className="whitespace-nowrap px-4 py-3 text-sm text-neutral-600">
                                             <span className={product.stock <= 5 ? 'font-semibold text-rose-600' : ''}>

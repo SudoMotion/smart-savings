@@ -35,7 +35,6 @@ class UpdateProductRequest extends FormRequest
             'additional_images.*' => ['image', 'mimes:jpeg,png,jpg,webp,svg', 'max:5120'],
             'deleted_image_ids' => ['nullable', 'array'],
             'deleted_image_ids.*' => ['integer', 'exists:product_images,id'],
-            'price' => ['required', 'numeric', 'min:0'],
             'discount_type' => ['nullable', 'string', Rule::in(['percentage', 'fixed', 'none', ''])],
             'discount_value' => ['nullable', 'numeric', 'min:0'],
             'stock' => ['required', 'integer', 'min:0'],

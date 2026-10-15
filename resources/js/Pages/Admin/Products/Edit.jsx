@@ -37,7 +37,6 @@ export default function Edit({
         subsubcategory_id: product.subsubcategory_id ?? '',
         brand_id: product.brand_id ?? '',
         unit_id: product.unit_id ?? '',
-        price: product.price ?? '',
         discount_type: product.discount_type ?? '',
         discount_value: product.discount_value ?? '',
         stock: product.stock ?? 0,
@@ -251,23 +250,9 @@ export default function Edit({
                         </AdminFormGrid>
                     </Card>
 
-                    {/* Pricing, Discount & Inventory */}
-                    <Card title="Pricing & Inventory">
+                    {/* Discount & Inventory */}
+                    <Card title="Discount & Inventory">
                         <AdminFormGrid>
-                            <Input
-                                id="price"
-                                label="Regular Price ($)"
-                                type="number"
-                                step="0.01"
-                                min="0"
-                                placeholder="0.00"
-                                wrapperClassName="sm:col-span-2 lg:col-span-1 xl:col-span-1"
-                                value={data.price}
-                                error={errors.price}
-                                required
-                                onChange={(e) => setData('price', e.target.value)}
-                            />
-
                             <Select
                                 id="discount_type"
                                 label="Discount Type"
