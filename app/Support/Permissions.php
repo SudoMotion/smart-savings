@@ -31,6 +31,10 @@ class Permissions
                 'deposit-options.edit' => 'Edit Deposit Options',
                 'deposit-options.delete' => 'Delete Deposit Options',
             ],
+            'Deposit Requests' => [
+                'deposit-requests.view' => 'View Deposit Requests',
+                'deposit-requests.review' => 'Approve or Reject Deposit Requests',
+            ],
             'Brands' => [
                 'brands.view' => 'View Brands',
                 'brands.create' => 'Create Brands',

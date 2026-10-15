@@ -5,13 +5,14 @@ use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DepositOptionController;
-use App\Http\Controllers\Admin\SubcategoryController;
-use App\Http\Controllers\Admin\SubsubcategoryController;
-use App\Http\Controllers\Admin\UnitController;
+use App\Http\Controllers\Admin\DepositRequestController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\SubcategoryController;
+use App\Http\Controllers\Admin\SubsubcategoryController;
+use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VendorApplicationController;
 use App\Http\Controllers\Admin\VendorController;
@@ -169,6 +170,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('deposit-options/{depositOption}', [DepositOptionController::class, 'destroy'])
                 ->middleware('permission:deposit-options.delete')
                 ->name('deposit-options.destroy');
+        });
+
+        Route::middleware('permission:deposit-requests.view')->group(function () {
+            Route::get('deposit-requests', [DepositRequestController::class, 'index'])->name('deposit-requests.index');
+            Route::post('deposit-requests/{depositRequest}/approve', [DepositRequestController::class, 'approve'])
+                ->middleware('permission:deposit-requests.review')
+                ->name('deposit-requests.approve');
+            Route::post('deposit-requests/{depositRequest}/reject', [DepositRequestController::class, 'reject'])
+                ->middleware('permission:deposit-requests.review')
+                ->name('deposit-requests.reject');
         });
 
         Route::middleware('permission:brands.view')->group(function () {

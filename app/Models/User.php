@@ -8,6 +8,8 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -34,7 +36,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function wallet(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function wallet(): HasOne
     {
         return $this->hasOne(Wallet::class);
     }
@@ -47,13 +49,18 @@ class User extends Authenticatable
         return $wallet;
     }
 
-    public function vendor(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function vendor(): HasOne
     {
         return $this->hasOne(Vendor::class);
     }
 
-    public function vendorApplications(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function vendorApplications(): HasMany
     {
         return $this->hasMany(VendorApplication::class);
+    }
+
+    public function depositRequests(): HasMany
+    {
+        return $this->hasMany(DepositRequest::class);
     }
 }

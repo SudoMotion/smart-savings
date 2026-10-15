@@ -27,6 +27,7 @@ Route::prefix('account')->name('account.')->group(function () {
         Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('deposit', [DepositController::class, 'index'])->name('deposit');
+        Route::post('deposit', [DepositController::class, 'store'])->name('deposit.store');
         Route::get('profile', [ProfileController::class, 'index'])->name('profile');
         Route::get('percentage', [PercentageController::class, 'index'])->name('percentage');
     });
