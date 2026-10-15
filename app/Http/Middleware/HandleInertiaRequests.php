@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\Category;
 use App\Support\SiteData;
+use App\Support\WalletData;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -50,6 +51,18 @@ class HandleInertiaRequests extends Middleware
                 ->where('status', 'active')
                 ->orderBy('name')
                 ->get(['id', 'name']),
+            'wallet' => function () use ($request) {
+                $user = $request->user();
+
+                if (! $user) {
+                    return [
+                        'balance' => 0,
+                        'formatted_balance' => '0.00',
+                    ];
+                }
+
+                return WalletData::forUser($user);
+            },
             'vendor_email' => fn () => session('vendor_application_data')['email'] ?? null,
         ];
     }

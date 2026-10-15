@@ -10,6 +10,7 @@ use App\Http\Requests\Admin\UpdateUserPercentageRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Models\User;
 use App\Support\Permissions;
+use App\Support\WalletData;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -24,7 +25,7 @@ class UserController extends Controller
         $type = $request->query('type');
 
         $query = User::query()
-            ->with(['roles', 'vendor'])
+            ->with(['roles', 'vendor', 'wallet'])
             ->latest('id');
 
         if ($search) {
@@ -55,6 +56,7 @@ class UserController extends Controller
                 'account_type_label' => ($user->account_type ?? AccountType::InactiveMember)->label(),
                 'vendor_shop' => $user->vendor?->shop_name,
                 'percentage' => (float) ($user->percentage ?? 0),
+                'wallet_balance' => WalletData::balanceFromWallet($user->wallet),
                 'created_at' => $user->created_at?->format('Y-m-d H:i'),
             ]);
 

@@ -4,7 +4,7 @@ import { Card } from '@/Components/UI';
 import CustomerPanelLayout from '@/Layouts/Frontend/CustomerPanelLayout';
 import { Head } from '@inertiajs/react';
 
-export default function Index({ depositOptions = [] }) {
+export default function Index({ depositOptions = [], wallet }) {
     return (
         <CustomerPanelLayout>
             <Head title="Deposit" />
@@ -21,6 +21,15 @@ export default function Index({ depositOptions = [] }) {
 
             <section className="py-10 sm:py-12">
                 <Container>
+                    <Card title="Current wallet balance" className="mb-6">
+                        <p className="text-3xl font-bold tracking-tight text-neutral-900">
+                            ${wallet?.formatted_balance ?? '0.00'}
+                        </p>
+                        <p className="mt-1 text-sm text-neutral-500">
+                            Deposits are credited to this balance after confirmation.
+                        </p>
+                    </Card>
+
                     {depositOptions.length === 0 ? (
                         <Card>
                             <p className="text-sm text-neutral-600">

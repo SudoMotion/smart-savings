@@ -2,7 +2,8 @@ import { Link, usePage, router } from '@inertiajs/react';
 import { useState, useEffect, useRef } from 'react';
 
 export default function FrontendNavbar({ categories = [] }) {
-    const { site, auth, filters: pageFilters } = usePage().props;
+    const { site, auth, filters: pageFilters, wallet } = usePage().props;
+    const walletBalance = wallet?.formatted_balance ?? '0.00';
     const [searchTerm, setSearchTerm] = useState(pageFilters?.search || '');
     const [selectedCategory, setSelectedCategory] = useState(pageFilters?.category || '');
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -67,23 +68,11 @@ export default function FrontendNavbar({ categories = [] }) {
         <header className="sticky top-0 z-50 w-full select-none shadow-md">
             {/* Tier 1: Main Amazon Navy Header */}
             <div className="bg-[#0f281c] px-2 py-2 sm:px-4 text-white">
-                <div className="mx-auto flex max-w-[1500px] items-center gap-2 sm:gap-4">
-                    {/* Mobile Hamburger Drawer Trigger */}
-                    <button
-                        type="button"
-                        onClick={() => setDrawerOpen(true)}
-                        className="flex items-center gap-1 rounded-sm p-1.5 text-white hover:ring-1 hover:ring-white md:hidden"
-                        aria-label="Open menu"
-                    >
-                        <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                        </svg>
-                    </button>
-
+                <div className="mx-auto flex max-w-[1500px] items-center justify-between gap-2 sm:gap-4 md:justify-start">
                     {/* Brand Logo with Amazon Style */}
                     <Link
                         href={route('home')}
-                        className="flex items-center gap-1 rounded-sm px-2 py-1 transition hover:ring-1 hover:ring-white"
+                        className="flex shrink-0 items-center gap-1 rounded-sm px-2 py-1 transition hover:ring-1 hover:ring-white"
                     >
                         {site?.logo_url ? (
                             <img
@@ -172,8 +161,17 @@ export default function FrontendNavbar({ categories = [] }) {
                         </div>
                     </form>
 
-                    {/* Right Side Navigation Items */}
-                    <div className="flex items-center gap-1 sm:gap-2 ml-auto">
+                    {/* Mobile: wallet balance only */}
+                    <Link
+                        href={user ? route('account.dashboard') : route('account.login')}
+                        className="flex md:hidden flex-col items-end rounded-sm px-2 py-1 leading-tight transition hover:ring-1 hover:ring-white"
+                    >
+                        <span className="text-[10px] font-medium text-gray-300">Balance</span>
+                        <span className="text-sm font-bold text-[#febd69]">${walletBalance}</span>
+                    </Link>
+
+                    {/* Desktop right navigation */}
+                    <div className="ml-auto hidden items-center gap-1 sm:gap-2 md:flex">
                         {/* Language Selector Indicator (Desktop) */}
                         <div className="hidden cursor-pointer items-center gap-1 rounded-sm px-2 py-1.5 transition hover:ring-1 hover:ring-white xl:flex">
                             <span className="text-sm">🇺🇸</span>
@@ -344,34 +342,10 @@ export default function FrontendNavbar({ categories = [] }) {
                     </div>
                 </div>
 
-                {/* Mobile Search Bar (Below Main Bar on small screens) */}
-                <form
-                    onSubmit={handleSearch}
-                    className="mt-2 flex w-full items-center md:hidden"
-                >
-                    <div className="relative flex w-full rounded-md shadow-inner">
-                        <input
-                            type="text"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            placeholder="Search Amazon products, brands, sellers..."
-                            className="h-9 w-full rounded-l-md border-0 bg-white px-3 text-xs text-neutral-900 placeholder:text-neutral-500 focus:outline-none focus:ring-1 focus:ring-[#f3a847]"
-                        />
-                        <button
-                            type="submit"
-                            className="flex h-9 w-11 items-center justify-center rounded-r-md bg-[#febd69] text-neutral-900 transition hover:bg-[#f3a847]"
-                            aria-label="Search"
-                        >
-                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}>
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                            </svg>
-                        </button>
-                    </div>
-                </form>
             </div>
 
-            {/* Tier 2: Amazon Slate Sub-Navbar */}
-            <div className="bg-[#1e3a2d] px-2 py-1 sm:px-4 text-white">
+            {/* Tier 2: Amazon Slate Sub-Navbar (desktop / tablet) */}
+            <div className="hidden bg-[#1e3a2d] px-2 py-1 sm:px-4 text-white md:block">
                 <div className="mx-auto flex max-w-[1500px] items-center justify-between text-xs sm:text-sm">
                     {/* Left Quick Navigation items */}
                     <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto no-scrollbar py-0.5">

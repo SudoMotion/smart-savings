@@ -223,6 +223,9 @@ export default function Index({ users, filters, counts, accountTypeOptions = [],
                                     Role
                                 </th>
                                 <th className="px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">
+                                    Wallet
+                                </th>
+                                <th className="px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">
                                     Percentage
                                 </th>
                                 <th className="px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">
@@ -236,7 +239,7 @@ export default function Index({ users, filters, counts, accountTypeOptions = [],
                         <tbody className="divide-y divide-neutral-100 bg-white">
                             {userList.length === 0 ? (
                                 <tr>
-                                    <td colSpan={7} className="px-4 py-12 text-center">
+                                    <td colSpan={8} className="px-4 py-12 text-center">
                                         <div className="mx-auto max-w-sm text-center">
                                             <svg
                                                 className="mx-auto h-12 w-12 text-neutral-400"
@@ -296,6 +299,9 @@ export default function Index({ users, filters, counts, accountTypeOptions = [],
                                         </td>
                                         <td className="whitespace-nowrap px-4 py-3 text-sm capitalize text-neutral-600">
                                             {user.role ?? '—'}
+                                        </td>
+                                        <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-neutral-900">
+                                            ${Number(user.wallet_balance ?? 0).toFixed(2)}
                                         </td>
                                         <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-neutral-900">
                                             {Number(user.percentage ?? 0).toFixed(2)}%

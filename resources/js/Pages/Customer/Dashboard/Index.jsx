@@ -4,7 +4,7 @@ import { Alert, Button, Card } from '@/Components/UI';
 import CustomerPanelLayout from '@/Layouts/Frontend/CustomerPanelLayout';
 import { Head, Link, usePage } from '@inertiajs/react';
 
-export default function Index({ user }) {
+export default function Index({ user, wallet }) {
     const { auth, flash } = usePage().props;
     const isVendor = !!auth?.user?.vendor;
     const isAdmin =
@@ -32,6 +32,21 @@ export default function Index({ user }) {
                             {flash.success}
                         </Alert>
                     )}
+
+                    <Card title="Wallet balance" className="mb-6">
+                        <p className="text-3xl font-bold tracking-tight text-neutral-900">
+                            ${wallet?.formatted_balance ?? '0.00'}
+                        </p>
+                        <p className="mt-1 text-sm text-neutral-500">
+                            Available balance in your customer wallet.
+                        </p>
+                        <Link
+                            href={route('account.deposit')}
+                            className="mt-4 inline-flex text-sm font-semibold text-[#007185] hover:text-[#c7511f] hover:underline"
+                        >
+                            Add funds via deposit
+                        </Link>
+                    </Card>
 
                     <div className="grid gap-6 lg:grid-cols-3">
                         <Card title="Account details" className="lg:col-span-2">

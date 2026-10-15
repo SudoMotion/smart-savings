@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
+use App\Support\WalletData;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -19,6 +20,7 @@ class ProfileController extends Controller
                 'email' => $user->email,
                 'created_at' => $user->created_at?->format('F j, Y'),
             ],
+            'wallet' => WalletData::forUser($user),
         ]);
     }
 }

@@ -4,7 +4,7 @@ import { Button, Card } from '@/Components/UI';
 import CustomerPanelLayout from '@/Layouts/Frontend/CustomerPanelLayout';
 import { Head, Link } from '@inertiajs/react';
 
-export default function Index({ user }) {
+export default function Index({ user, wallet }) {
     return (
         <CustomerPanelLayout>
             <Head title="Profile" />
@@ -21,6 +21,12 @@ export default function Index({ user }) {
 
             <section className="py-10 sm:py-12">
                 <Container className="max-w-lg">
+                    <Card title="Wallet balance" className="mb-4">
+                        <p className="text-2xl font-bold text-neutral-900">
+                            ${wallet?.formatted_balance ?? '0.00'}
+                        </p>
+                    </Card>
+
                     <Card title="Account details">
                         <dl className="space-y-4 text-sm">
                             <div>

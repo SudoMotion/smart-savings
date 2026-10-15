@@ -34,6 +34,19 @@ class User extends Authenticatable
         ];
     }
 
+    public function wallet(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Wallet::class);
+    }
+
+    public function ensureWallet(): Wallet
+    {
+        /** @var Wallet $wallet */
+        $wallet = $this->wallet()->firstOrCreate([], ['balance' => 0]);
+
+        return $wallet;
+    }
+
     public function vendor(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(Vendor::class);
