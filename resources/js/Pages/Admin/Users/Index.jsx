@@ -1,4 +1,5 @@
 import AdminPageHeader from '@/Components/Admin/AdminPageHeader';
+import Modal from '@/Components/Modal';
 import AdminLayout from '@/Layouts/Admin/AdminLayout';
 import {
     ActionButtonGroup,
@@ -8,9 +9,10 @@ import {
     DeleteAction,
     EditAction,
     Input,
+    PercentageAction,
 } from '@/Components/UI';
-import { Head, Link, router, usePage } from '@inertiajs/react';
-import { useState } from 'react';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 
 const accountTypeStyles = {
     customer: 'bg-sky-50 text-sky-700',
@@ -27,8 +29,38 @@ const accountTypeLabels = {
 export default function Index({ users, filters, counts, can }) {
     const { flash } = usePage().props;
     const [search, setSearch] = useState(filters.search || '');
+    const [percentageUser, setPercentageUser] = useState(null);
+
+    const {
+        data: percentageData,
+        setData: setPercentageData,
+        patch: patchPercentage,
+        processing: percentageProcessing,
+        errors: percentageErrors,
+        reset: resetPercentageForm,
+    } = useForm({
+        percentage: '',
+    });
+
+    useEffect(() => {
+        if (percentageUser) {
+            setPercentageData('percentage', String(percentageUser.percentage ?? 0));
+        } else {
+            resetPercentageForm();
+        }
+    }, [percentageUser, resetPercentageForm, setPercentageData]);
 
     const userList = users.data ?? [];
+
+    const submitPercentage = (e) => {
+        e.preventDefault();
+        if (!percentageUser) return;
+
+        patchPercentage(route('admin.users.update-percentage', percentageUser.id), {
+            preserveScroll: true,
+            onSuccess: () => setPercentageUser(null),
+        });
+    };
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -150,6 +182,9 @@ export default function Index({ users, filters, counts, can }) {
                                     Role
                                 </th>
                                 <th className="px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">
+                                    Percentage
+                                </th>
+                                <th className="px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">
                                     Registered
                                 </th>
                                 <th className="px-4 py-2.5 text-right text-xs font-medium uppercase tracking-wide text-neutral-500">
@@ -160,7 +195,7 @@ export default function Index({ users, filters, counts, can }) {
                         <tbody className="divide-y divide-neutral-100 bg-white">
                             {userList.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} className="px-4 py-12 text-center">
+                                    <td colSpan={6} className="px-4 py-12 text-center">
                                         <div className="mx-auto max-w-sm text-center">
                                             <svg
                                                 className="mx-auto h-12 w-12 text-neutral-400"
@@ -211,11 +246,20 @@ export default function Index({ users, filters, counts, can }) {
                                         <td className="whitespace-nowrap px-4 py-3 text-sm capitalize text-neutral-600">
                                             {user.role ?? '—'}
                                         </td>
+                                        <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-neutral-900">
+                                            {Number(user.percentage ?? 0).toFixed(2)}%
+                                        </td>
                                         <td className="whitespace-nowrap px-4 py-3 text-sm text-neutral-600">
                                             {user.created_at ?? '—'}
                                         </td>
                                         <td className="whitespace-nowrap px-4 py-3 text-right">
                                             <ActionButtonGroup className="justify-end">
+                                                {can.edit && (
+                                                    <PercentageAction
+                                                        title="Set user percentage"
+                                                        onClick={() => setPercentageUser(user)}
+                                                    />
+                                                )}
                                                 {can.edit && (
                                                     <EditAction
                                                         href={route('admin.users.edit', user.id)}
@@ -260,6 +304,44 @@ export default function Index({ users, filters, counts, can }) {
                     </div>
                 )}
             </Card>
+
+            <Modal show={!!percentageUser} onClose={() => setPercentageUser(null)} maxWidth="sm">
+                <form onSubmit={submitPercentage} className="p-6">
+                    <h3 className="text-base font-semibold text-neutral-900">Set user percentage</h3>
+                    <p className="mt-1 text-xs text-neutral-600">
+                        {percentageUser?.name} ({percentageUser?.email})
+                    </p>
+
+                    <div className="mt-4">
+                        <Input
+                            id="user-percentage"
+                            label="Percentage (%)"
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            max="100"
+                            value={percentageData.percentage}
+                            error={percentageErrors.percentage}
+                            required
+                            onChange={(e) => setPercentageData('percentage', e.target.value)}
+                        />
+                    </div>
+
+                    <div className="mt-6 flex items-center justify-end gap-3">
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => setPercentageUser(null)}
+                        >
+                            Cancel
+                        </Button>
+                        <Button type="submit" size="sm" disabled={percentageProcessing}>
+                            Save
+                        </Button>
+                    </div>
+                </form>
+            </Modal>
         </AdminLayout>
     );
 }

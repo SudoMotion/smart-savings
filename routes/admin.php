@@ -101,6 +101,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::put('users/{user}', [UserController::class, 'update'])
                 ->middleware('permission:users.edit')
                 ->name('users.update');
+            Route::patch('users/{user}/percentage', [UserController::class, 'updatePercentage'])
+                ->middleware('permission:users.edit')
+                ->name('users.update-percentage');
             Route::delete('users/{user}', [UserController::class, 'destroy'])
                 ->middleware('permission:users.delete')
                 ->name('users.destroy');

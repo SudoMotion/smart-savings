@@ -3,6 +3,7 @@ import {
     AddAction,
     DeleteAction,
     EditAction,
+    PercentageAction,
     RemoveAction,
     ViewAction,
 } from './ActionButtons';
@@ -35,6 +36,7 @@ export {
     Input,
     Label,
     Radio,
+    PercentageAction,
     RemoveAction,
     Select,
     Textarea,

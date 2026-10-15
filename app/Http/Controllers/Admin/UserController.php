@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreUserRequest;
+use App\Http\Requests\Admin\UpdateUserPercentageRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Models\User;
 use App\Support\Permissions;
@@ -49,6 +50,7 @@ class UserController extends Controller
                 'role' => $user->roles->pluck('name')->join(', ') ?: null,
                 'account_type' => $this->accountType($user),
                 'vendor_shop' => $user->vendor?->shop_name,
+                'percentage' => (float) ($user->percentage ?? 0),
                 'created_at' => $user->created_at?->format('Y-m-d H:i'),
             ]);
 
@@ -108,6 +110,17 @@ class UserController extends Controller
             ],
             'roles' => $this->roleOptions(),
         ]);
+    }
+
+    public function updatePercentage(UpdateUserPercentageRequest $request, User $user): RedirectResponse
+    {
+        $user->update([
+            'percentage' => $request->validated('percentage'),
+        ]);
+
+        return redirect()
+            ->back()
+            ->with('success', "Percentage updated for {$user->name}.");
     }
 
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
