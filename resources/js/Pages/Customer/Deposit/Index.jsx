@@ -129,10 +129,10 @@ export default function Index({ depositOptions = [], recentRequests = [], wallet
                                 <h2 className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-500 sm:mb-4 sm:text-sm">
                                     Available methods
                                 </h2>
-                                <p className="mb-3 text-xs text-neutral-500 sm:hidden">
-                                    Tap a method to view the full address and copy it.
+                                <p className="mb-3 text-xs text-neutral-500">
+                                    Tap a coin to view the deposit address and copy it.
                                 </p>
-                                <div className="divide-y divide-neutral-100 overflow-hidden rounded-lg border border-neutral-200 bg-white lg:max-w-md">
+                                <div className="grid grid-cols-4 gap-2 sm:gap-3">
                                     {depositOptions.map((option) => {
                                         const selected =
                                             String(option.id) === String(data.deposit_option_id);
@@ -141,37 +141,15 @@ export default function Index({ depositOptions = [], recentRequests = [], wallet
                                                 key={option.id}
                                                 type="button"
                                                 onClick={() => openOptionDetail(option)}
-                                                className={`flex w-full items-center gap-2 px-3 py-2.5 text-left transition hover:bg-neutral-50 sm:gap-3 sm:px-4 sm:py-3 ${
-                                                    selected ? 'bg-[#f4f9f6] ring-1 ring-inset ring-[#2d5240]/25' : ''
+                                                className={`flex min-h-[3.25rem] items-center justify-center rounded-lg border bg-white px-1 py-2 text-center transition hover:border-[#2d5240]/50 hover:bg-neutral-50 sm:min-h-[4rem] sm:px-2 sm:py-3 ${
+                                                    selected
+                                                        ? 'border-[#2d5240] bg-[#f4f9f6] ring-2 ring-[#2d5240]/25'
+                                                        : 'border-neutral-200'
                                                 }`}
                                             >
-                                                <div className="min-w-0 flex-1">
-                                                    <p className="truncate text-sm font-medium text-neutral-900">
-                                                        {option.coin_type}
-                                                    </p>
-                                                    <p className="truncate font-mono text-[11px] text-neutral-500 sm:text-xs">
-                                                        {option.value}
-                                                    </p>
-                                                </div>
-                                                {selected && (
-                                                    <span className="shrink-0 rounded bg-[#2d5240] px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-white">
-                                                        Selected
-                                                    </span>
-                                                )}
-                                                <svg
-                                                    className="h-4 w-4 shrink-0 text-neutral-400"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                    stroke="currentColor"
-                                                    strokeWidth={2}
-                                                    aria-hidden
-                                                >
-                                                    <path
-                                                        strokeLinecap="round"
-                                                        strokeLinejoin="round"
-                                                        d="M9 5l7 7-7 7"
-                                                    />
-                                                </svg>
+                                                <span className="line-clamp-3 text-[10px] font-semibold leading-tight text-neutral-900 sm:text-xs">
+                                                    {option.coin_type}
+                                                </span>
                                             </button>
                                         );
                                     })}
