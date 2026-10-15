@@ -64,7 +64,7 @@ export default function FrontendNavbar({ categories = [] }) {
     return (
         <header className="sticky top-0 z-50 w-full select-none shadow-md">
             {/* Tier 1: Main Amazon Navy Header */}
-            <div className="bg-[#131921] px-2 py-2 sm:px-4 text-white">
+            <div className="bg-[#0f281c] px-2 py-2 sm:px-4 text-white">
                 <div className="mx-auto flex max-w-[1500px] items-center gap-2 sm:gap-4">
                     {/* Mobile Hamburger Drawer Trigger */}
                     <button
@@ -357,7 +357,7 @@ export default function FrontendNavbar({ categories = [] }) {
             </div>
 
             {/* Tier 2: Amazon Slate Sub-Navbar */}
-            <div className="bg-[#232f3e] px-2 py-1 sm:px-4 text-white">
+            <div className="bg-[#1e3a2d] px-2 py-1 sm:px-4 text-white">
                 <div className="mx-auto flex max-w-[1500px] items-center justify-between text-xs sm:text-sm">
                     {/* Left Quick Navigation items */}
                     <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto no-scrollbar py-0.5">
@@ -434,7 +434,7 @@ export default function FrontendNavbar({ categories = [] }) {
                     {/* Drawer Content */}
                     <div className="relative z-10 flex h-full w-[360px] max-w-[85vw] flex-col bg-white text-neutral-900 shadow-2xl animate-in slide-in-from-left duration-200">
                         {/* Drawer Header */}
-                        <div className="flex items-center justify-between bg-[#232f3e] px-6 py-4 text-white">
+                        <div className="flex items-center justify-between bg-[#1e3a2d] px-6 py-4 text-white">
                             <div className="flex items-center gap-3">
                                 <div className="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-700 text-white">
                                     <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

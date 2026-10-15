@@ -17,13 +17,13 @@ export default function FrontendFooter() {
             <button
                 type="button"
                 onClick={scrollToTop}
-                className="w-full bg-[#37475a] py-4 text-center text-xs font-semibold text-white transition hover:bg-[#485769] active:bg-[#2e3b4b]"
+                className="w-full bg-[#2d5240] py-4 text-center text-xs font-semibold text-white transition hover:bg-[#3d6650] active:bg-[#243d30]"
             >
                 Back to top
             </button>
 
             {/* Main Amazon 4-Column Links Section */}
-            <div className="bg-[#232f3e] px-4 py-12">
+            <div className="bg-[#1e3a2d] px-4 py-12">
                 <div className="mx-auto grid max-w-[1200px] grid-cols-2 gap-8 text-xs sm:grid-cols-4 sm:gap-10">
                     {/* Col 1: Get to Know Us */}
                     <div className="space-y-3">
@@ -139,7 +139,7 @@ export default function FrontendFooter() {
                 </div>
 
                 {/* Middle Divider & Language/Country Bar */}
-                <div className="mx-auto mt-10 max-w-[1200px] border-t border-gray-700 pt-8 flex flex-wrap items-center justify-center gap-4 text-xs text-gray-300">
+                <div className="mx-auto mt-10 max-w-[1200px] border-t border-[#2d5240] pt-8 flex flex-wrap items-center justify-center gap-4 text-xs text-gray-300">
                     <Link href={route('home')} className="flex items-center gap-1 mr-4">
                         {site?.logo_url ? (
                             <img
@@ -155,23 +155,23 @@ export default function FrontendFooter() {
                         )}
                     </Link>
 
-                    <div className="flex items-center gap-1.5 rounded border border-gray-600 px-3 py-1.5 cursor-pointer hover:border-gray-400">
+                    <div className="flex items-center gap-1.5 rounded border border-[#3d6650] px-3 py-1.5 cursor-pointer hover:border-emerald-400/70">
                         <span>🌐</span>
                         <span>English</span>
                     </div>
 
-                    <div className="flex items-center gap-1.5 rounded border border-gray-600 px-3 py-1.5 cursor-pointer hover:border-gray-400">
+                    <div className="flex items-center gap-1.5 rounded border border-[#3d6650] px-3 py-1.5 cursor-pointer hover:border-emerald-400/70">
                         <span>$ USD - U.S. Dollar</span>
                     </div>
 
-                    <div className="flex items-center gap-1.5 rounded border border-gray-600 px-3 py-1.5 cursor-pointer hover:border-gray-400">
+                    <div className="flex items-center gap-1.5 rounded border border-[#3d6650] px-3 py-1.5 cursor-pointer hover:border-emerald-400/70">
                         <span>🇺🇸 United States</span>
                     </div>
                 </div>
             </div>
 
             {/* Bottom Dark Navy Strip: Legal & Copyright */}
-            <div className="bg-[#131921] px-4 py-8 text-center text-[11px] text-gray-400">
+            <div className="bg-[#0f281c] px-4 py-8 text-center text-[11px] text-gray-400">
                 <div className="mx-auto flex max-w-[800px] flex-wrap items-center justify-center gap-4 font-normal">
                     <span className="hover:underline cursor-pointer">Conditions of Use</span>
                     <span className="hover:underline cursor-pointer">Privacy Notice</span>
