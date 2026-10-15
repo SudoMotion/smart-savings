@@ -66,6 +66,15 @@ export default function CustomerPanelLayout({ children, categories }) {
                             </li>
                             <li>
                                 <Link
+                                    href={route('account.percentage')}
+                                    className="block rounded-lg px-3 py-2.5 hover:bg-[#2d5240]/60"
+                                    onClick={() => setMenuOpen(false)}
+                                >
+                                    My percentage
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
                                     href={route('account.deposit')}
                                     className="block rounded-lg px-3 py-2.5 hover:bg-[#2d5240]/60"
                                     onClick={() => setMenuOpen(false)}

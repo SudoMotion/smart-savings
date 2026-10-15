@@ -36,6 +36,7 @@ export default function CustomerBottomNav({ onOpenMenu }) {
     const isHome = route().current('account.dashboard');
     const isDeposit = route().current('account.deposit');
     const isProfile = route().current('account.profile');
+    const isPercentage = route().current('account.percentage');
 
     const iconWrap = (active) =>
         `flex h-9 w-9 items-center justify-center rounded-full transition ${
@@ -64,15 +65,23 @@ export default function CustomerBottomNav({ onOpenMenu }) {
                         </Link>
                     </div>
                     <div className="flex flex-1 justify-center">
-                        <div
-                            className="pointer-events-none flex w-full max-w-[5.5rem] select-none flex-col items-center justify-end gap-0.5 pb-2 pt-1 text-[10px] font-medium text-gray-500"
-                            aria-hidden="true"
+                        <Link
+                            href={route('account.percentage')}
+                            className={`flex w-full max-w-[5.5rem] flex-col items-center justify-end gap-0.5 pb-2 pt-1 text-[10px] font-medium transition ${
+                                isPercentage ? 'text-[#febd69]' : 'text-gray-300 hover:text-white'
+                            }`}
                         >
-                            <div className="flex h-9 w-9 items-center justify-center rounded-full text-lg font-semibold text-gray-600 opacity-40">
+                            <div
+                                className={`flex h-9 w-9 items-center justify-center rounded-full text-lg font-semibold transition ${
+                                    isPercentage
+                                        ? 'bg-[#2d5240] text-[#febd69]'
+                                        : 'text-gray-300'
+                                }`}
+                            >
                                 %
                             </div>
-                            <span className="h-3" />
-                        </div>
+                            <span>My %</span>
+                        </Link>
                     </div>
                 </div>
 
