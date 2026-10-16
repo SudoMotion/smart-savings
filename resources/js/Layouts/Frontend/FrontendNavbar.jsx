@@ -8,7 +8,9 @@ export default function FrontendNavbar({ categories = [] }) {
     const [selectedCategory, setSelectedCategory] = useState(pageFilters?.category || '');
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [accountMenuOpen, setAccountMenuOpen] = useState(false);
+    const [mobileGuestMenuOpen, setMobileGuestMenuOpen] = useState(false);
     const accountDropdownRef = useRef(null);
+    const mobileGuestDropdownRef = useRef(null);
 
     // Sync input if URL search changes
     useEffect(() => {
@@ -20,11 +22,14 @@ export default function FrontendNavbar({ categories = [] }) {
         }
     }, [pageFilters]);
 
-    // Close account dropdown when clicking outside
+    // Close account dropdowns when clicking outside
     useEffect(() => {
         function handleClickOutside(event) {
             if (accountDropdownRef.current && !accountDropdownRef.current.contains(event.target)) {
                 setAccountMenuOpen(false);
+            }
+            if (mobileGuestDropdownRef.current && !mobileGuestDropdownRef.current.contains(event.target)) {
+                setMobileGuestMenuOpen(false);
             }
         }
         document.addEventListener('mousedown', handleClickOutside);
@@ -161,14 +166,67 @@ export default function FrontendNavbar({ categories = [] }) {
                         </div>
                     </form>
 
-                    {/* Mobile: wallet balance only */}
-                    <Link
-                        href={user ? route('account.dashboard') : route('account.login')}
-                        className="flex md:hidden flex-col items-end rounded-sm px-2 py-1 leading-tight transition hover:ring-1 hover:ring-white"
-                    >
-                        <span className="text-[10px] font-medium text-gray-300">Balance</span>
-                        <span className="text-sm font-bold text-[#febd69]">${walletBalance}</span>
-                    </Link>
+                    {/* Mobile: balance when signed in, account entry when guest */}
+                    {user ? (
+                        <Link
+                            href={route('account.dashboard')}
+                            className="flex md:hidden flex-col items-end rounded-sm px-2 py-1 leading-tight transition hover:ring-1 hover:ring-white"
+                        >
+                            <span className="text-[10px] font-medium text-gray-300">Balance</span>
+                            <span className="text-sm font-bold text-[#febd69]">${walletBalance}</span>
+                        </Link>
+                    ) : (
+                        <div className="relative md:hidden" ref={mobileGuestDropdownRef}>
+                            <button
+                                type="button"
+                                onClick={() => setMobileGuestMenuOpen((open) => !open)}
+                                className="flex flex-col items-center rounded-sm px-2 py-1 transition hover:ring-1 hover:ring-white"
+                                aria-label="Account menu"
+                                aria-expanded={mobileGuestMenuOpen}
+                            >
+                                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#2d5240]/90 text-white">
+                                    <svg
+                                        className="h-5 w-5"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                        strokeWidth={2}
+                                        aria-hidden
+                                    >
+                                        <circle cx="12" cy="8" r="5" strokeLinecap="round" strokeLinejoin="round" />
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="M20 21a8 8 0 0 0-16 0"
+                                        />
+                                    </svg>
+                                </span>
+                                {/* <span className="mt-0.5 text-[10px] font-medium text-gray-300">Account</span>    */}
+                            </button>
+
+                            {mobileGuestMenuOpen && (
+                                <div className="absolute right-0 top-full z-50 mt-1 w-52 rounded-md border border-neutral-200 bg-white p-3 text-neutral-800 shadow-2xl">
+                                    <Link
+                                        href={route('account.login')}
+                                        className="block w-full rounded-md bg-[#ffd814] py-2 text-center text-xs font-bold text-neutral-900 shadow-sm transition hover:bg-[#f7ca00]"
+                                        onClick={() => setMobileGuestMenuOpen(false)}
+                                    >
+                                        Sign In
+                                    </Link>
+                                    <p className="mt-2 text-center text-xs text-neutral-600">
+                                        New customer?{' '}
+                                        <Link
+                                            href={route('account.register')}
+                                            className="font-semibold text-blue-700 hover:text-orange-600 hover:underline"
+                                            onClick={() => setMobileGuestMenuOpen(false)}
+                                        >
+                                            Create account
+                                        </Link>
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    )}
 
                     {/* Desktop right navigation */}
                     <div className="ml-auto hidden items-center gap-1 sm:gap-2 md:flex">
