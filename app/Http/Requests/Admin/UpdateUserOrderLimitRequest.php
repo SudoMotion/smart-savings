@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Enums\OrderResetInterval;
 use App\Models\UserOrderLimit;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -29,6 +30,7 @@ class UpdateUserOrderLimitRequest extends FormRequest
                 Rule::unique('user_order_limits', 'user_id')->ignore($userOrderLimit->id),
             ],
             'order_limit' => ['required', 'numeric', 'min:0'],
+            'order_reset_interval' => ['required', Rule::enum(OrderResetInterval::class)],
         ];
     }
 }

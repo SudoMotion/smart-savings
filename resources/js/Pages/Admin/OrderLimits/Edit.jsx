@@ -4,10 +4,11 @@ import AdminLayout from '@/Layouts/Admin/AdminLayout';
 import { Button, Card, Input, Select } from '@/Components/UI';
 import { Head, Link, useForm } from '@inertiajs/react';
 
-export default function Edit({ userOrderLimit, userOptions = [] }) {
+export default function Edit({ userOrderLimit, userOptions = [], orderResetIntervalOptions = [] }) {
     const { data, setData, put, processing, errors } = useForm({
         user_id: userOrderLimit.user_id ?? '',
         order_limit: userOrderLimit.order_limit ?? '',
+        order_reset_interval: userOrderLimit.order_reset_interval ?? '24_hours',
     });
 
     const submit = (e) => {
@@ -50,6 +51,16 @@ export default function Edit({ userOrderLimit, userOptions = [] }) {
                             error={errors.order_limit}
                             required
                             onChange={(e) => setData('order_limit', e.target.value)}
+                        />
+                        <Select
+                            id="order_reset_interval"
+                            label="Order reset in"
+                            wrapperClassName="sm:col-span-2 lg:col-span-1 xl:col-span-2"
+                            value={data.order_reset_interval}
+                            error={errors.order_reset_interval}
+                            options={orderResetIntervalOptions}
+                            required
+                            onChange={(e) => setData('order_reset_interval', e.target.value)}
                         />
                     </AdminFormGrid>
 

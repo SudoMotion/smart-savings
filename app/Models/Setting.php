@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\OrderResetInterval;
 use Illuminate\Database\Eloquent\Model;
 
 class Setting extends Model
@@ -17,6 +18,7 @@ class Setting extends Model
         'google_map_embed_link',
         'social_media',
         'global_order_limit',
+        'order_reset_interval',
     ];
 
     /**
@@ -27,6 +29,7 @@ class Setting extends Model
         return [
             'social_media' => 'array',
             'global_order_limit' => 'decimal:2',
+            'order_reset_interval' => OrderResetInterval::class,
         ];
     }
 

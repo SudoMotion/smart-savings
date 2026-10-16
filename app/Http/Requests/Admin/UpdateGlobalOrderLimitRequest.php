@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Enums\OrderResetInterval;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateGlobalOrderLimitRequest extends FormRequest
 {
@@ -18,6 +20,7 @@ class UpdateGlobalOrderLimitRequest extends FormRequest
     {
         return [
             'global_order_limit' => ['nullable', 'numeric', 'min:0'],
+            'order_reset_interval' => ['required', Rule::enum(OrderResetInterval::class)],
         ];
     }
 }

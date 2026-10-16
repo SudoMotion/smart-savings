@@ -8,6 +8,7 @@ import {
     DeleteAction,
     EditAction,
     Input,
+    Select,
 } from '@/Components/UI';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { useState } from 'react';
@@ -18,12 +19,20 @@ function formatLimit(value) {
     return n.toFixed(2);
 }
 
-export default function Index({ globalOrderLimit, userOrderLimits, filters, can }) {
+export default function Index({
+    globalOrderLimit,
+    orderResetInterval,
+    orderResetIntervalOptions = [],
+    userOrderLimits,
+    filters,
+    can,
+}) {
     const { flash } = usePage().props;
     const [search, setSearch] = useState(filters.search || '');
 
     const globalForm = useForm({
         global_order_limit: globalOrderLimit ?? '',
+        order_reset_interval: orderResetInterval ?? '24_hours',
     });
 
     const saveGlobal = (e) => {
@@ -64,27 +73,42 @@ export default function Index({ globalOrderLimit, userOrderLimits, filters, can 
                 </Alert>
             )}
 
-            <Card title="Global order limit" className="mb-6">
+            <Card title="Global order settings" className="mb-6">
                 <p className="mb-4 text-sm text-neutral-600">
-                    Applies to every user who does not have a custom limit. Leave empty for no global cap.
+                    Default order limit and reset window for all users. Per-user entries below can override both
+                    for specific accounts.
                 </p>
-                <form onSubmit={saveGlobal} className="flex flex-col gap-4 sm:flex-row sm:items-end items-end">
-                    <Input
-                        id="global_order_limit"
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        label="Global limit (USD)"
-                        wrapperClassName="sm:max-w-xs flex-1"
-                        value={globalForm.data.global_order_limit}
-                        error={globalForm.errors.global_order_limit}
-                        disabled={!can.updateGlobal}
-                        onChange={(e) => globalForm.setData('global_order_limit', e.target.value)}
-                    />
+                <form onSubmit={saveGlobal} className="space-y-4">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-end">
+                        <Input
+                            id="global_order_limit"
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            label="Global limit (USD)"
+                            wrapperClassName="sm:max-w-xs flex-1"
+                            value={globalForm.data.global_order_limit}
+                            error={globalForm.errors.global_order_limit}
+                            disabled={!can.updateGlobal}
+                            onChange={(e) => globalForm.setData('global_order_limit', e.target.value)}
+                        />
+                        <Select
+                            id="order_reset_interval"
+                            label="Order reset in"
+                            wrapperClassName="sm:max-w-xs flex-1"
+                            value={globalForm.data.order_reset_interval}
+                            error={globalForm.errors.order_reset_interval}
+                            options={orderResetIntervalOptions}
+                            disabled={!can.updateGlobal}
+                            onChange={(e) => globalForm.setData('order_reset_interval', e.target.value)}
+                        />
+                    </div>
                     {can.updateGlobal && (
-                        <Button type="submit" disabled={globalForm.processing}>
-                            Save global limit
-                        </Button>
+                        <div className="flex justify-end sm:justify-start">
+                            <Button type="submit" disabled={globalForm.processing}>
+                                Save global settings
+                            </Button>
+                        </div>
                     )}
                 </form>
             </Card>

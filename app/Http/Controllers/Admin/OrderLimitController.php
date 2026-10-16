@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\OrderResetInterval;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreUserOrderLimitRequest;
 use App\Http\Requests\Admin\UpdateGlobalOrderLimitRequest;
@@ -39,6 +40,8 @@ class OrderLimitController extends Controller
             'globalOrderLimit' => $settings->global_order_limit !== null
                 ? (string) $settings->global_order_limit
                 : '',
+            'orderResetInterval' => ($settings->order_reset_interval ?? OrderResetInterval::default())->value,
+            'orderResetIntervalOptions' => OrderResetInterval::options(),
             'userOrderLimits' => $userOrderLimits,
             'filters' => [
                 'search' => $search ?? '',
@@ -59,9 +62,10 @@ class OrderLimitController extends Controller
 
         $settings->update([
             'global_order_limit' => $value !== null && $value !== '' ? $value : null,
+            'order_reset_interval' => $request->validated('order_reset_interval'),
         ]);
 
-        return back()->with('success', 'Global order limit saved.');
+        return back()->with('success', 'Global order settings saved.');
     }
 
     public function create(): Response
@@ -77,8 +81,12 @@ class OrderLimitController extends Controller
                 'label' => "{$user->name} ({$user->email})",
             ]);
 
+        $settings = Setting::current();
+
         return Inertia::render('Admin/OrderLimits/Create', [
             'userOptions' => $userOptions,
+            'defaultOrderResetInterval' => ($settings->order_reset_interval ?? OrderResetInterval::default())->value,
+            'orderResetIntervalOptions' => OrderResetInterval::options(),
         ]);
     }
 
@@ -111,15 +119,20 @@ class OrderLimitController extends Controller
                 'label' => "{$user->name} ({$user->email})",
             ]);
 
+        $settings = Setting::current();
+        $defaultReset = $settings->order_reset_interval ?? OrderResetInterval::default();
+
         return Inertia::render('Admin/OrderLimits/Edit', [
             'userOrderLimit' => [
                 'id' => $userOrderLimit->id,
                 'user_id' => (string) $userOrderLimit->user_id,
                 'order_limit' => (string) $userOrderLimit->order_limit,
+                'order_reset_interval' => ($userOrderLimit->order_reset_interval ?? $defaultReset)->value,
                 'user_name' => $userOrderLimit->user?->name,
                 'user_email' => $userOrderLimit->user?->email,
             ],
             'userOptions' => $userOptions,
+            'orderResetIntervalOptions' => OrderResetInterval::options(),
         ]);
     }
 
