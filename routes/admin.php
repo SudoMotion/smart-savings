@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DepositOptionController;
 use App\Http\Controllers\Admin\DepositRequestController;
+use App\Http\Controllers\Admin\OrderLimitController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RoleController;
@@ -191,6 +192,28 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('withdraw-requests/{withdrawRequest}/reject', [WithdrawRequestController::class, 'reject'])
                 ->middleware('permission:withdraw-requests.review')
                 ->name('withdraw-requests.reject');
+        });
+
+        Route::middleware('permission:order-limits.view')->group(function () {
+            Route::get('order-limits', [OrderLimitController::class, 'index'])->name('order-limits.index');
+            Route::patch('order-limits/global', [OrderLimitController::class, 'updateGlobal'])
+                ->middleware('permission:order-limits.update')
+                ->name('order-limits.update-global');
+            Route::get('order-limits/create', [OrderLimitController::class, 'create'])
+                ->middleware('permission:order-limits.create')
+                ->name('order-limits.create');
+            Route::post('order-limits', [OrderLimitController::class, 'store'])
+                ->middleware('permission:order-limits.create')
+                ->name('order-limits.store');
+            Route::get('order-limits/{userOrderLimit}/edit', [OrderLimitController::class, 'edit'])
+                ->middleware('permission:order-limits.edit')
+                ->name('order-limits.edit');
+            Route::put('order-limits/{userOrderLimit}', [OrderLimitController::class, 'update'])
+                ->middleware('permission:order-limits.edit')
+                ->name('order-limits.update');
+            Route::delete('order-limits/{userOrderLimit}', [OrderLimitController::class, 'destroy'])
+                ->middleware('permission:order-limits.delete')
+                ->name('order-limits.destroy');
         });
 
         Route::middleware('permission:brands.view')->group(function () {

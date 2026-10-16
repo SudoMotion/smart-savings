@@ -16,6 +16,7 @@ class Setting extends Model
         'address',
         'google_map_embed_link',
         'social_media',
+        'global_order_limit',
     ];
 
     /**
@@ -25,6 +26,7 @@ class Setting extends Model
     {
         return [
             'social_media' => 'array',
+            'global_order_limit' => 'decimal:2',
         ];
     }
 

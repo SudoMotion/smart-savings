@@ -68,4 +68,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(WithdrawRequest::class);
     }
+
+    public function orderLimit(): HasOne
+    {
+        return $this->hasOne(UserOrderLimit::class);
+    }
 }

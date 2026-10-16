@@ -39,6 +39,13 @@ class Permissions
                 'withdraw-requests.view' => 'View Withdraw Requests',
                 'withdraw-requests.review' => 'Approve or Reject Withdraw Requests',
             ],
+            'Order Limits' => [
+                'order-limits.view' => 'View Order Limits',
+                'order-limits.update' => 'Update Global Order Limit',
+                'order-limits.create' => 'Create User Order Limits',
+                'order-limits.edit' => 'Edit User Order Limits',
+                'order-limits.delete' => 'Delete User Order Limits',
+            ],
             'Brands' => [
                 'brands.view' => 'View Brands',
                 'brands.create' => 'Create Brands',
