@@ -44,14 +44,14 @@ export default function Index({
         <FrontendLayout categories={categories}>
             <Head title={`${site?.name || 'Amazon'} - Online Shopping & Multi-Vendor Marketplace`} />
 
-            {/* 1. Tether savings hero — artwork from assets, copy overlaid */}
-            <section className="relative w-full overflow-hidden bg-white">
-                <div className="relative mx-auto w-full max-w-[1500px]">
+            {/* 1. Tether savings hero (copy baked into hero-mobile / hero-desktop assets) */}
+            <section className="w-full overflow-hidden bg-white">
+                <div className="mx-auto w-full max-w-[1500px]">
                     <picture>
                         <source media="(min-width: 768px)" srcSet="/images/hero-desktop.png" />
                         <img
                             src="/images/hero-mobile.png"
-                            alt=""
+                            alt="Tether saving account — low risk high return, earn interest in ETH"
                             className="block h-auto w-full"
                             loading="eager"
                             fetchPriority="high"
@@ -59,23 +59,6 @@ export default function Index({
                             height={900}
                         />
                     </picture>
-
-                    <div className="absolute inset-0 flex items-start md:items-center">
-                        <div className="w-full px-5 pt-7 sm:px-8 sm:pt-9 md:px-10 md:pt-0 lg:px-14 xl:px-16">
-                            <div className="max-w-[17rem] sm:max-w-xs md:max-w-md lg:max-w-lg">
-                                <p className="text-[15px] font-bold leading-snug text-neutral-900 sm:text-lg md:text-2xl lg:text-3xl">
-                                    Low risk high return over{' '}
-                                    <span className="text-[#f5a623]">120%</span> per month
-                                </p>
-                                <h1 className="mt-2 text-[1.35rem] font-black leading-tight text-neutral-900 sm:mt-3 sm:text-2xl md:mt-4 md:text-4xl lg:text-5xl">
-                                    Tether saving account
-                                </h1>
-                                <p className="mt-2 text-lg font-bold text-[#3d9a5f] sm:mt-3 sm:text-xl md:mt-4 md:text-3xl lg:text-4xl">
-                                    Earn interest in ETH
-                                </p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </section>
 
