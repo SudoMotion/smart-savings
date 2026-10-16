@@ -1,37 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import FrontendLayout from '@/Layouts/Frontend/FrontendLayout';
-
-// Mock hero slides with Amazon marketplace theme
-const heroSlides = [
-    {
-        id: 1,
-        title: 'Huge Multi-Vendor Savings',
-        subtitle: 'Shop millions of products from independent verified sellers worldwide',
-        ctaText: 'Shop All Deals',
-        ctaLink: '#products-catalog',
-        bgGradient: 'from-amber-600 via-orange-600 to-amber-900',
-        badge: 'SPRING DEALS',
-    },
-    {
-        id: 2,
-        title: 'Sell Your Products on Our Marketplace',
-        subtitle: 'Reach millions of shoppers with zero upfront listing fees and instant payouts',
-        ctaText: 'Become a Seller Today',
-        ctaLink: route('vendor.apply'),
-        bgGradient: 'from-slate-900 via-blue-900 to-indigo-950',
-        badge: 'VENDOR HUB',
-    },
-    {
-        id: 3,
-        title: 'Trending Electronics & Home Goods',
-        subtitle: 'Curated deals from top rated verified stores with fast direct delivery',
-        ctaText: 'Explore Collection',
-        ctaLink: '#products-catalog',
-        bgGradient: 'from-emerald-800 via-teal-800 to-slate-900',
-        badge: 'FEATURED STORES',
-    },
-];
 
 export default function Index({
     products = { data: [] },
@@ -42,19 +11,10 @@ export default function Index({
     filters = {},
 }) {
     const { site, auth } = usePage().props;
-    const [currentSlide, setCurrentSlide] = useState(0);
     const dealsScrollRef = useRef(null);
 
     const productList = products?.data || (Array.isArray(products) ? products : []);
     const hasFilters = !!(filters.search || filters.category || filters.brand || filters.vendor);
-
-    // Auto rotate hero slides every 6 seconds
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-        }, 6000);
-        return () => clearInterval(interval);
-    }, []);
 
     const scrollDeals = (direction) => {
         if (dealsScrollRef.current) {
@@ -84,76 +44,43 @@ export default function Index({
         <FrontendLayout categories={categories}>
             <Head title={`${site?.name || 'Amazon'} - Online Shopping & Multi-Vendor Marketplace`} />
 
-            {/* 1. AMAZON HERO CAROUSEL */}
-            <div className="relative w-full overflow-hidden bg-neutral-900 select-none">
-                {/* Slides */}
-                <div className="relative h-[250px] sm:h-[350px] md:h-[420px] lg:h-[480px] w-full">
-                    {heroSlides.map((slide, idx) => (
-                        <div
-                            key={slide.id}
-                            className={`absolute inset-0 flex items-center justify-between transition-opacity duration-700 ease-in-out bg-gradient-to-r ${slide.bgGradient} ${
-                                idx === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
-                            }`}
-                        >
-                            <div className="mx-auto flex h-full w-full max-w-[1500px] items-center px-6 sm:px-12 md:px-16">
-                                <div className="max-w-xl text-white">
-                                    <span className="inline-block rounded-sm bg-[#febd69] px-2 py-0.5 text-[11px] font-black uppercase tracking-wider text-neutral-900 mb-2">
-                                        {slide.badge}
-                                    </span>
-                                    <h1 className="text-2xl font-black tracking-tight sm:text-4xl md:text-5xl drop-shadow-md">
-                                        {slide.title}
-                                    </h1>
-                                    <p className="mt-2 text-xs sm:text-base text-gray-200 line-clamp-2 drop-shadow">
-                                        {slide.subtitle}
-                                    </p>
-                                    <div className="mt-4 sm:mt-6 flex items-center gap-3">
-                                        <a
-                                            href={slide.ctaLink}
-                                            className="inline-flex items-center justify-center rounded-md bg-[#ffd814] px-5 py-2 text-xs sm:text-sm font-bold text-neutral-900 shadow transition hover:bg-[#f7ca00] active:scale-95"
-                                        >
-                                            {slide.ctaText}
-                                        </a>
-                                        <Link
-                                            href={route('vendor.apply')}
-                                            className="inline-flex items-center justify-center rounded-md border border-white/60 bg-black/20 px-4 py-2 text-xs sm:text-sm font-semibold text-white backdrop-blur-sm transition hover:bg-black/40"
-                                        >
-                                            Sell on {site?.name || 'Amazon'}
-                                        </Link>
-                                    </div>
-                                </div>
+            {/* 1. Tether savings hero — artwork from assets, copy overlaid */}
+            <section className="relative w-full overflow-hidden bg-white">
+                <div className="relative mx-auto w-full max-w-[1500px]">
+                    <picture>
+                        <source media="(min-width: 768px)" srcSet="/images/hero-desktop.png" />
+                        <img
+                            src="/images/hero-mobile.png"
+                            alt=""
+                            className="block h-auto w-full"
+                            loading="eager"
+                            fetchPriority="high"
+                            width={750}
+                            height={900}
+                        />
+                    </picture>
+
+                    <div className="absolute inset-0 flex items-start md:items-center">
+                        <div className="w-full px-5 pt-7 sm:px-8 sm:pt-9 md:px-10 md:pt-0 lg:px-14 xl:px-16">
+                            <div className="max-w-[17rem] sm:max-w-xs md:max-w-md lg:max-w-lg">
+                                <p className="text-[15px] font-bold leading-snug text-neutral-900 sm:text-lg md:text-2xl lg:text-3xl">
+                                    Low risk high return over{' '}
+                                    <span className="text-[#f5a623]">120%</span> per month
+                                </p>
+                                <h1 className="mt-2 text-[1.35rem] font-black leading-tight text-neutral-900 sm:mt-3 sm:text-2xl md:mt-4 md:text-4xl lg:text-5xl">
+                                    Tether saving account
+                                </h1>
+                                <p className="mt-2 text-lg font-bold text-[#3d9a5f] sm:mt-3 sm:text-xl md:mt-4 md:text-3xl lg:text-4xl">
+                                    Earn interest in ETH
+                                </p>
                             </div>
                         </div>
-                    ))}
+                    </div>
                 </div>
+            </section>
 
-                {/* Carousel Left/Right Controls */}
-                <button
-                    type="button"
-                    onClick={() => setCurrentSlide((prev) => (prev === 0 ? heroSlides.length - 1 : prev - 1))}
-                    className="absolute left-2 top-[35%] z-20 flex h-16 w-10 items-center justify-center rounded border border-transparent bg-black/10 text-white hover:border-white hover:bg-black/30 transition focus:outline-none"
-                    aria-label="Previous slide"
-                >
-                    <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-                    </svg>
-                </button>
-                <button
-                    type="button"
-                    onClick={() => setCurrentSlide((prev) => (prev + 1) % heroSlides.length)}
-                    className="absolute right-2 top-[35%] z-20 flex h-16 w-10 items-center justify-center rounded border border-transparent bg-black/10 text-white hover:border-white hover:bg-black/30 transition focus:outline-none"
-                    aria-label="Next slide"
-                >
-                    <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                    </svg>
-                </button>
-
-                {/* Amazon Signature Bottom Gradient Fade */}
-                <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#eaeded] via-[#eaeded]/60 to-transparent pointer-events-none z-10" />
-            </div>
-
-            {/* 2. OVERLAPPING 4-GRID CARDS (Iconic Amazon Feature) */}
-            <div className="relative z-20 mx-auto -mt-20 sm:-mt-32 md:-mt-44 max-w-[1500px] px-3 sm:px-6">
+            {/* 2. Feature cards */}
+            <div className="relative mx-auto max-w-[1500px] px-3 pb-2 pt-4 sm:px-6 sm:pt-6">
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     {/* Card 1: Shop by Category */}
                     <div className="flex flex-col justify-between rounded-sm bg-white p-5 shadow-sm border border-neutral-200">
