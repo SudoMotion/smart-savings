@@ -10,12 +10,6 @@ const statusOptions = [
     { value: 'inactive', label: 'Inactive' },
 ];
 
-const discountTypeOptions = [
-    { value: '', label: 'No Discount' },
-    { value: 'percentage', label: 'Percentage (%)' },
-    { value: 'fixed', label: 'Fixed Amount ($)' },
-];
-
 export default function Edit({
     product,
     existingImages = [],
@@ -246,61 +240,6 @@ export default function Edit({
                                 error={errors.unit_id}
                                 options={unitOptions}
                                 onChange={(e) => setData('unit_id', e.target.value)}
-                            />
-                        </AdminFormGrid>
-                    </Card>
-
-                    {/* Discount & Inventory */}
-                    <Card title="Discount & Inventory">
-                        <AdminFormGrid>
-                            <Select
-                                id="discount_type"
-                                label="Discount Type"
-                                wrapperClassName="sm:col-span-2 lg:col-span-1 xl:col-span-1"
-                                value={data.discount_type}
-                                error={errors.discount_type}
-                                options={discountTypeOptions}
-                                onChange={(e) => setData('discount_type', e.target.value)}
-                            />
-
-                            {data.discount_type && (
-                                <Input
-                                    id="discount_value"
-                                    label={`Discount Value (${data.discount_type === 'percentage' ? '%' : '$'})`}
-                                    type="number"
-                                    step="0.01"
-                                    min="0"
-                                    placeholder="0"
-                                    wrapperClassName="sm:col-span-2 lg:col-span-1 xl:col-span-1"
-                                    value={data.discount_value}
-                                    error={errors.discount_value}
-                                    onChange={(e) => setData('discount_value', e.target.value)}
-                                />
-                            )}
-
-                            <Input
-                                id="stock"
-                                label="Stock Quantity"
-                                type="number"
-                                min="0"
-                                placeholder="0"
-                                wrapperClassName="sm:col-span-2 lg:col-span-1 xl:col-span-1"
-                                value={data.stock}
-                                error={errors.stock}
-                                required
-                                onChange={(e) => setData('stock', e.target.value)}
-                            />
-
-                            <Input
-                                id="alert_quantity"
-                                label="Alert Quantity"
-                                type="number"
-                                min="0"
-                                placeholder="0"
-                                wrapperClassName="sm:col-span-2 lg:col-span-1 xl:col-span-1"
-                                value={data.alert_quantity}
-                                error={errors.alert_quantity}
-                                onChange={(e) => setData('alert_quantity', e.target.value)}
                             />
                         </AdminFormGrid>
                     </Card>
