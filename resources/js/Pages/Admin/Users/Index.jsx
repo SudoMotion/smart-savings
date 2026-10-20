@@ -12,6 +12,7 @@ import {
     MemberTypeAction,
     PercentageAction,
     Select,
+    ViewAction,
 } from '@/Components/UI';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
@@ -330,6 +331,10 @@ export default function Index({ users, filters, counts, accountTypeOptions = [],
                                         </td>
                                         <td className="whitespace-nowrap px-4 py-3 text-right">
                                             <ActionButtonGroup className="justify-end">
+                                                <ViewAction
+                                                    title="Order logs"
+                                                    href={route('admin.users.order-logs', user.id)}
+                                                />
                                                 {can.edit && (
                                                     <MemberTypeAction
                                                         title="Set member type"

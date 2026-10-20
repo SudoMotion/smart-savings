@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\SubcategoryController;
 use App\Http\Controllers\Admin\SubsubcategoryController;
 use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\UserOrderLogController;
 use App\Http\Controllers\Admin\VendorApplicationController;
 use App\Http\Controllers\Admin\VendorController;
 use App\Http\Controllers\Admin\VendorPermissionController;
@@ -98,6 +99,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('users', [UserController::class, 'store'])
                 ->middleware('permission:users.create')
                 ->name('users.store');
+            Route::get('users/{user}/order-logs', [UserOrderLogController::class, 'index'])
+                ->name('users.order-logs');
             Route::get('users/{user}/edit', [UserController::class, 'edit'])
                 ->middleware('permission:users.edit')
                 ->name('users.edit');
