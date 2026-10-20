@@ -16,7 +16,7 @@ import { useState } from 'react';
 function formatLimit(value) {
     const n = Number(value);
     if (Number.isNaN(n)) return value;
-    return n.toFixed(2);
+    return String(Math.trunc(n));
 }
 
 export default function Index({
@@ -83,9 +83,9 @@ export default function Index({
                         <Input
                             id="global_order_limit"
                             type="number"
-                            step="0.01"
+                            step="1"
                             min="0"
-                            label="Global limit (USD)"
+                            label="Global order limit"
                             wrapperClassName="sm:max-w-xs flex-1"
                             value={globalForm.data.global_order_limit}
                             error={globalForm.errors.global_order_limit}
@@ -168,7 +168,7 @@ export default function Index({
                                             <div className="text-xs text-neutral-500">{row.user?.email}</div>
                                         </td>
                                         <td className="px-4 py-3 text-sm font-semibold text-neutral-900">
-                                            ${formatLimit(row.order_limit)}
+                                            {formatLimit(row.order_limit)}
                                         </td>
                                         <td className="px-4 py-3 text-xs text-neutral-600">
                                             {row.updated_at

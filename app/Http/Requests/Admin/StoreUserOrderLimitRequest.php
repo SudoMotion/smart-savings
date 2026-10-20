@@ -25,7 +25,7 @@ class StoreUserOrderLimitRequest extends FormRequest
                 Rule::exists('users', 'id'),
                 Rule::unique('user_order_limits', 'user_id'),
             ],
-            'order_limit' => ['required', 'numeric', 'min:0'],
+            'order_limit' => ['required', 'integer', 'min:0'],
             'order_reset_interval' => ['required', Rule::enum(OrderResetInterval::class)],
         ];
     }

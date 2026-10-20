@@ -187,8 +187,10 @@ export default function Index({ user, wallet, earningWallet, orders }) {
                             title="Orders"
                             description={
                                 orders?.limit > 0
-                                    ? `${orders.used} of ${orders.limit} orders used · Resets every ${orders.reset_interval_label}`
-                                    : 'No order limit is assigned yet.'
+                                    ? `${orders.used} of ${orders.limit} orders used · Resets every ${orders.reset_interval_label}${
+                                          orders.uses_global_limit ? ' (global settings)' : ''
+                                      }`
+                                    : `No order limit yet. Global limit and reset from Order Limits will apply when set.`
                             }
                         >
                             {orders?.limit > 0 && (
@@ -255,7 +257,7 @@ export default function Index({ user, wallet, earningWallet, orders }) {
                                         ? 'No more products are available for orders right now. Check back after the reset window or when new products are added.'
                                         : orders?.limit > 0
                                           ? `You have used all ${orders.limit} orders. New orders will be available after the ${orders.reset_interval_label} reset window.`
-                                          : 'Order cards will appear here once an order limit is set for your account.'}
+                                          : 'Order cards will appear here once a global order limit is saved, or a dedicated limit is added for your account.'}
                                 </p>
                             )}
                         </Card>

@@ -38,7 +38,7 @@ class OrderLimitController extends Controller
 
         return Inertia::render('Admin/OrderLimits/Index', [
             'globalOrderLimit' => $settings->global_order_limit !== null
-                ? (string) $settings->global_order_limit
+                ? (string) (int) $settings->global_order_limit
                 : '',
             'orderResetInterval' => ($settings->order_reset_interval ?? OrderResetInterval::default())->value,
             'orderResetIntervalOptions' => OrderResetInterval::options(),
@@ -126,7 +126,7 @@ class OrderLimitController extends Controller
             'userOrderLimit' => [
                 'id' => $userOrderLimit->id,
                 'user_id' => (string) $userOrderLimit->user_id,
-                'order_limit' => (string) $userOrderLimit->order_limit,
+                'order_limit' => (string) (int) $userOrderLimit->order_limit,
                 'order_reset_interval' => ($userOrderLimit->order_reset_interval ?? $defaultReset)->value,
                 'user_name' => $userOrderLimit->user?->name,
                 'user_email' => $userOrderLimit->user?->email,

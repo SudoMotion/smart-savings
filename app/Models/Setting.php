@@ -28,7 +28,7 @@ class Setting extends Model
     {
         return [
             'social_media' => 'array',
-            'global_order_limit' => 'decimal:2',
+            'global_order_limit' => 'integer',
             'order_reset_interval' => OrderResetInterval::class,
         ];
     }

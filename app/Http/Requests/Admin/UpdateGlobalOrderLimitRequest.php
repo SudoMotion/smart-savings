@@ -19,7 +19,7 @@ class UpdateGlobalOrderLimitRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'global_order_limit' => ['nullable', 'numeric', 'min:0'],
+            'global_order_limit' => ['nullable', 'integer', 'min:0'],
             'order_reset_interval' => ['required', Rule::enum(OrderResetInterval::class)],
         ];
     }
