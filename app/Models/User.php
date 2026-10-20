@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\AccountType;
+use App\Enums\UserType;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -14,7 +15,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'email', 'password', 'percentage', 'account_type'])]
+#[Fillable(['name', 'email', 'password', 'percentage', 'account_type', 'user_type'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -33,6 +34,7 @@ class User extends Authenticatable
             'password' => 'hashed',
             'percentage' => 'decimal:2',
             'account_type' => AccountType::class,
+            'user_type' => UserType::class,
         ];
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Customer;
 
+use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Support\WalletData;
 use Illuminate\Http\Request;
@@ -18,6 +19,8 @@ class ProfileController extends Controller
             'user' => [
                 'name' => $user->name,
                 'email' => $user->email,
+                'user_type' => ($user->user_type ?? UserType::Regular)->value,
+                'user_type_label' => ($user->user_type ?? UserType::Regular)->label(),
                 'created_at' => $user->created_at?->format('F j, Y'),
             ],
             'wallet' => WalletData::forUser($user),

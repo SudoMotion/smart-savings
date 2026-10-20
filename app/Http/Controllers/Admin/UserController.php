@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\AccountType;
+use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreUserRequest;
 use App\Http\Requests\Admin\UpdateUserAccountTypeRequest;
 use App\Http\Requests\Admin\UpdateUserPercentageRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
+use App\Http\Requests\Admin\UpdateUserTypeRequest;
 use App\Models\User;
 use App\Support\Permissions;
 use App\Support\WalletData;
@@ -54,6 +56,8 @@ class UserController extends Controller
                 'portal_type' => $this->portalType($user),
                 'account_type' => ($user->account_type ?? AccountType::InactiveMember)->value,
                 'account_type_label' => ($user->account_type ?? AccountType::InactiveMember)->label(),
+                'user_type' => ($user->user_type ?? UserType::Regular)->value,
+                'user_type_label' => ($user->user_type ?? UserType::Regular)->label(),
                 'vendor_shop' => $user->vendor?->shop_name,
                 'percentage' => (float) ($user->percentage ?? 0),
                 'wallet_balance' => WalletData::balanceFromWallet($user->wallet),
@@ -75,6 +79,7 @@ class UserController extends Controller
             ],
             'counts' => $counts,
             'accountTypeOptions' => AccountType::options(),
+            'userTypeOptions' => UserType::options(),
             'can' => [
                 'create' => auth()->user()?->can('users.create') ?? false,
                 'edit' => auth()->user()?->can('users.edit') ?? false,
@@ -139,6 +144,17 @@ class UserController extends Controller
         return redirect()
             ->back()
             ->with('success', "Member type updated for {$user->name}.");
+    }
+
+    public function updateUserType(UpdateUserTypeRequest $request, User $user): RedirectResponse
+    {
+        $user->update([
+            'user_type' => $request->validated('user_type'),
+        ]);
+
+        return redirect()
+            ->back()
+            ->with('success', "User type updated for {$user->name}.");
     }
 
     public function update(UpdateUserRequest $request, User $user): RedirectResponse

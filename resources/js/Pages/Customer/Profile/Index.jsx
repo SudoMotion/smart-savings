@@ -37,6 +37,12 @@ export default function Index({ user, wallet }) {
                                 <dt className="font-medium text-neutral-500">Email</dt>
                                 <dd className="mt-1 text-neutral-900">{user.email}</dd>
                             </div>
+                            <div>
+                                <dt className="font-medium text-neutral-500">User type</dt>
+                                <dd className="mt-1 text-neutral-900">
+                                    {user.user_type_label || user.user_type}
+                                </dd>
+                            </div>
                             {user.created_at && (
                                 <div>
                                     <dt className="font-medium text-neutral-500">Member since</dt>
