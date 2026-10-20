@@ -23,7 +23,7 @@ class ProfileController extends Controller
                 'user_type_label' => ($user->user_type ?? UserType::Regular)->label(),
                 'created_at' => $user->created_at?->format('F j, Y'),
             ],
-            'wallet' => WalletData::forUser($user),
+            'wallet' => WalletData::totalForUser($user),
         ]);
     }
 }
