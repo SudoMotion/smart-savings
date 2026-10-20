@@ -1,5 +1,4 @@
 import Container from '@/Components/Frontend/Container';
-import { Alert, Button } from '@/Components/UI';
 import CustomerPanelLayout from '@/Layouts/Frontend/CustomerPanelLayout';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 
@@ -32,9 +31,9 @@ export default function Index({ user, wallet }) {
                     </div>
 
                     {flash?.success && (
-                        <Alert variant="success" className="mb-3">
+                        <p className="mb-3 rounded-xl bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
                             {flash.success}
-                        </Alert>
+                        </p>
                     )}
 
                     <div className="rounded-xl bg-[#1e3a2d] px-4 py-3.5 text-white">
@@ -104,15 +103,19 @@ export default function Index({ user, wallet }) {
                             />
                             {errors.email && <p className="mt-1 text-xs text-rose-600">{errors.email}</p>}
                         </div>
-                        <Button type="submit" disabled={processing} className="h-10 w-full bg-[#0f281c] hover:bg-[#1e3a2d]">
+                        <button
+                            type="submit"
+                            disabled={processing}
+                            className="h-10 w-full rounded-lg bg-[#0f281c] text-sm font-medium text-white transition hover:bg-[#1e3a2d] disabled:cursor-not-allowed disabled:opacity-50"
+                        >
                             Save changes
-                        </Button>
+                        </button>
                     </form>
 
                     <div className="mt-3 flex items-center justify-between gap-3 text-sm">
                         <Link
                             href={route('guest.reset.password')}
-                            className="font-medium text-[#1e3a2d] hover:underline"
+                            className="invisible font-medium text-[#1e3a2d] hover:underline"
                         >
                             Reset password
                         </Link>
