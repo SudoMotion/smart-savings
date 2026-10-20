@@ -10,9 +10,9 @@ export default function Index() {
     const { site, flash, auth } = usePage().props;
     const Layout = auth?.user ? CustomerPanelLayout : FrontendLayout;
 
-    const { data, setData, post, processing, errors } = useForm({
-        name: '',
-        email: '',
+    const { data, setData, post, processing, errors, reset } = useForm({
+        name: auth?.user?.name ?? '',
+        email: auth?.user?.email ?? '',
         subject: '',
         message: '',
     });
@@ -22,12 +22,11 @@ export default function Index() {
         post(route('contact.store'), {
             preserveScroll: true,
             onSuccess: () => {
-                setData({
-                    name: '',
-                    email: '',
-                    subject: '',
-                    message: '',
-                });
+                if (auth?.user) {
+                    reset('subject', 'message');
+                } else {
+                    reset();
+                }
             },
         });
     };
