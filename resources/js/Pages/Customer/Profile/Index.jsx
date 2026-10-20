@@ -21,7 +21,7 @@ export default function Index({ user, wallet }) {
 
             <section className="py-10 sm:py-12">
                 <Container className="max-w-lg">
-                    <Card title="Wallet balance" className="mb-4">
+                    <Card title="Total balance" className="mb-4">
                         <p className="text-2xl font-bold text-neutral-900">
                             ${wallet?.formatted_balance ?? '0.00'}
                         </p>
