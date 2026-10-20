@@ -38,7 +38,7 @@ function ChevronRightIcon({ className }) {
 
 export default function Index({ user, orders }) {
     const { flash } = usePage().props;
-    const [busyProductId, setBusyProductId] = useState(null);
+    const [busySlot, setBusySlot] = useState(null);
     const [index, setIndex] = useState(0);
     const trackRef = useRef(null);
     const isRegular = user?.user_type === 'regular' || orders?.enabled;
@@ -55,13 +55,13 @@ export default function Index({ user, orders }) {
         track.scrollTo({ left: index * width, behavior: 'smooth' });
     }, [index, orderList.length]);
 
-    const handleOrder = (productId, action) => {
-        if (busyProductId) return;
+    const handleOrder = (product, action) => {
+        if (busySlot !== null) return;
 
-        setBusyProductId(productId);
-        router.post(route(`account.orders.${action}`, productId), {}, {
+        setBusySlot(product.slot);
+        router.post(route(`account.orders.${action}`, product.id), {}, {
             preserveScroll: true,
-            onFinish: () => setBusyProductId(null),
+            onFinish: () => setBusySlot(null),
         });
     };
 
@@ -95,7 +95,7 @@ export default function Index({ user, orders }) {
 
             <section className="py-8 sm:py-10">
                 <Container className="max-w-lg">
-                    {flash?.success && (
+                    {/* {flash?.success && (
                         <Alert variant="success" className="mb-5">
                             {flash.success}
                         </Alert>
@@ -104,7 +104,7 @@ export default function Index({ user, orders }) {
                         <Alert variant="error" className="mb-5">
                             {flash.error}
                         </Alert>
-                    )}
+                    )} */}
 
                     {isRegular && orders?.limit > 0 && (
                         <p className="mb-5 text-center text-sm text-neutral-600">
@@ -146,11 +146,11 @@ export default function Index({ user, orders }) {
                                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                             >
                                 {orderList.map((product) => {
-                                    const busy = busyProductId === product.id;
+                                    const busy = busySlot === product.slot;
 
                                     return (
                                         <article
-                                            key={product.id}
+                                            key={`${product.id}-${product.slot}`}
                                             className="w-full shrink-0 snap-center px-1"
                                         >
                                             <div className="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-sm">
@@ -172,8 +172,8 @@ export default function Index({ user, orders }) {
                                                     <div className="mt-5 flex items-center justify-center gap-8">
                                                         <button
                                                             type="button"
-                                                            disabled={busy || !!busyProductId}
-                                                            onClick={() => handleOrder(product.id, 'reject')}
+                                                            disabled={busy || busySlot !== null}
+                                                            onClick={() => handleOrder(product, 'reject')}
                                                             className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-red-600 text-white shadow-md transition hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-50"
                                                             aria-label={`Decline ${product.name}`}
                                                         >
@@ -181,8 +181,8 @@ export default function Index({ user, orders }) {
                                                         </button>
                                                         <button
                                                             type="button"
-                                                            disabled={busy || !!busyProductId}
-                                                            onClick={() => handleOrder(product.id, 'confirm')}
+                                                            disabled={busy || busySlot !== null}
+                                                            onClick={() => handleOrder(product, 'confirm')}
                                                             className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-emerald-600 text-white shadow-md transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
                                                             aria-label={`Confirm ${product.name}`}
                                                         >
@@ -200,7 +200,7 @@ export default function Index({ user, orders }) {
                                 <div className="mt-5 flex justify-center gap-2">
                                     {orderList.map((product, dotIndex) => (
                                         <button
-                                            key={product.id}
+                                            key={`${product.id}-${product.slot}`}
                                             type="button"
                                             onClick={() => goTo(dotIndex)}
                                             className={`h-2 rounded-full transition ${

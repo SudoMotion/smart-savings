@@ -50,17 +50,6 @@ class CustomerOrderService
             $windowStart = OrderLimitData::windowStartForUser($lockedUser);
             $limit = OrderLimitData::orderCountForUser($lockedUser);
 
-            $alreadyProcessed = CustomerOrder::query()
-                ->where('user_id', $lockedUser->id)
-                ->where('product_id', $product->id)
-                ->where('created_at', '>=', $windowStart)
-                ->lockForUpdate()
-                ->exists();
-
-            if ($alreadyProcessed) {
-                throw new InvalidArgumentException('You already handled this order.');
-            }
-
             $used = CustomerOrder::query()
                 ->where('user_id', $lockedUser->id)
                 ->where('created_at', '>=', $windowStart)

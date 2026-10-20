@@ -12,7 +12,7 @@ class CustomerOrderData
     /**
      * @return array{
      *     enabled: bool,
-     *     products: list<array{id: int, name: string, image_url: ?string}>,
+     *     products: list<array{id: int, slot: int, name: string, image_url: ?string}>,
      *     limit: int,
      *     used: int,
      *     remaining: int,
@@ -41,27 +41,29 @@ class CustomerOrderData
         $deposit = (float) $user->ensureWallet()->balance;
         $earningPerOrder = (new CustomerOrderService())->earningPerOrder($user);
 
-        $processedProductIds = CustomerOrder::query()
-            ->where('user_id', $user->id)
-            ->where('created_at', '>=', $windowStart)
-            ->pluck('product_id');
-
         $products = [];
 
         if ($user->isRegular() && $remaining > 0) {
-            $products = Product::query()
+            $catalog = Product::query()
                 ->where('status', 'active')
-                ->whereNotIn('id', $processedProductIds)
-                ->inRandomOrder()
-                ->limit(min($remaining, 12))
-                ->get(['id', 'name', 'image'])
-                ->map(fn (Product $product) => [
-                    'id' => $product->id,
-                    'name' => $product->name,
-                    'image_url' => $product->image_url,
-                ])
-                ->values()
-                ->all();
+                ->orderBy('id')
+                ->get(['id', 'name', 'image']);
+
+            $catalogCount = $catalog->count();
+
+            if ($catalogCount > 0) {
+                $show = $remaining;
+
+                for ($i = 0; $i < $show; $i++) {
+                    $product = $catalog[($used + $i) % $catalogCount];
+                    $products[] = [
+                        'id' => $product->id,
+                        'slot' => $i,
+                        'name' => $product->name,
+                        'image_url' => $product->image_url,
+                    ];
+                }
+            }
         }
 
         return [
