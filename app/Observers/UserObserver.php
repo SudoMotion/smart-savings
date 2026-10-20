@@ -8,6 +8,7 @@ class UserObserver
 {
     public function created(User $user): void
     {
-        $user->wallet()->create(['balance' => 0]);
+        $user->wallet()->firstOrCreate([], ['balance' => 0]);
+        $user->earningWallet()->firstOrCreate([], ['balance' => 0]);
     }
 }

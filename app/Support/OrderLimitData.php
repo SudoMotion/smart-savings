@@ -5,6 +5,7 @@ namespace App\Support;
 use App\Enums\OrderResetInterval;
 use App\Models\Setting;
 use App\Models\User;
+use Illuminate\Support\Carbon;
 
 class OrderLimitData
 {
@@ -56,5 +57,21 @@ class OrderLimitData
     public static function resetIntervalHoursForUser(?User $user): int
     {
         return self::resetIntervalForUser($user)->hours();
+    }
+
+    public static function orderCountForUser(?User $user): int
+    {
+        $limit = self::forUser($user);
+
+        if ($limit === null) {
+            return 0;
+        }
+
+        return max(0, (int) round($limit));
+    }
+
+    public static function windowStartForUser(?User $user): Carbon
+    {
+        return now()->subHours(self::resetIntervalHoursForUser($user));
     }
 }

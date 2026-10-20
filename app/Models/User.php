@@ -51,6 +51,29 @@ class User extends Authenticatable
         return $wallet;
     }
 
+    public function earningWallet(): HasOne
+    {
+        return $this->hasOne(EarningWallet::class);
+    }
+
+    public function ensureEarningWallet(): EarningWallet
+    {
+        /** @var EarningWallet $wallet */
+        $wallet = $this->earningWallet()->firstOrCreate([], ['balance' => 0]);
+
+        return $wallet;
+    }
+
+    public function isRegular(): bool
+    {
+        return ($this->user_type ?? UserType::Regular) === UserType::Regular;
+    }
+
+    public function customerOrders(): HasMany
+    {
+        return $this->hasMany(CustomerOrder::class);
+    }
+
     public function vendor(): HasOne
     {
         return $this->hasOne(Vendor::class);
