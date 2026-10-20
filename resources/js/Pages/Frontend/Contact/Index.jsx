@@ -2,11 +2,13 @@ import Container from '@/Components/Frontend/Container';
 import SectionHeading from '@/Components/Frontend/SectionHeading';
 import { AdminForm, AdminFormGrid } from '@/Components/Admin/AdminForm';
 import { Alert, Button, Card, Input, Textarea } from '@/Components/UI';
+import CustomerPanelLayout from '@/Layouts/Frontend/CustomerPanelLayout';
 import FrontendLayout from '@/Layouts/Frontend/FrontendLayout';
 import { Head, useForm, usePage } from '@inertiajs/react';
 
 export default function Index() {
-    const { site, flash } = usePage().props;
+    const { site, flash, auth } = usePage().props;
+    const Layout = auth?.user ? CustomerPanelLayout : FrontendLayout;
 
     const { data, setData, post, processing, errors } = useForm({
         name: '',
@@ -31,7 +33,7 @@ export default function Index() {
     };
 
     return (
-        <FrontendLayout>
+        <Layout>
             <Head title="Contact Us" />
 
             <section className="border-b border-neutral-200 bg-neutral-50 py-14 sm:py-16">
@@ -148,6 +150,6 @@ export default function Index() {
                     </div>
                 </Container>
             </section>
-        </FrontendLayout>
+        </Layout>
     );
 }
