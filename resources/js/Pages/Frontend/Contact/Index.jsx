@@ -52,8 +52,8 @@ export default function Index() {
                         </Alert>
                     )}
 
-                    <div className="grid gap-10 lg:grid-cols-5">
-                        <div className="lg:col-span-2">
+                    <div className="">
+                        {/* <div className="lg:col-span-2">
                             <Card bodyClassName="p-5">
                                 <h3 className="text-base font-medium text-neutral-900">
                                     Contact Information
@@ -91,7 +91,7 @@ export default function Index() {
                                     />
                                 </Card>
                             )}
-                        </div>
+                        </div> */}
 
                         <div className="lg:col-span-3">
                             <Card title="Send a Message">
