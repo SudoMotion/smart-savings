@@ -122,11 +122,11 @@ export default function Index({ users, filters, counts, accountTypeOptions = [],
     };
 
     return (
-        <AdminLayout title="User List">
-            <Head title="User List" />
+        <AdminLayout title="User Management">
+            <Head title="User Management" />
 
             <AdminPageHeader
-                title="User List"
+                title="User Management"
                 description="View and manage customers, vendors, and staff accounts."
                 actions={
                     can.create ? (
