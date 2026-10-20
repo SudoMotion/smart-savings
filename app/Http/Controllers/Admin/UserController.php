@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\AccountType;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreUserRequest;
-use App\Http\Requests\Admin\UpdateUserAccountTypeRequest;
 use App\Http\Requests\Admin\UpdateUserPercentageRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Models\User;
@@ -53,10 +51,8 @@ class UserController extends Controller
                 'email' => $user->email,
                 'role' => $user->roles->pluck('name')->join(', ') ?: null,
                 'portal_type' => $this->portalType($user),
-                'account_type' => ($user->account_type ?? AccountType::InactiveMember)->value,
-                'account_type_label' => ($user->account_type ?? AccountType::InactiveMember)->label(),
-                'user_type' => ($user->user_type ?? UserType::Regular)->value,
-                'user_type_label' => ($user->user_type ?? UserType::Regular)->label(),
+                'user_type' => $user->userType()->value,
+                'user_type_label' => $user->userType()->label(),
                 'vendor_shop' => $user->vendor?->shop_name,
                 'percentage' => (float) ($user->percentage ?? 0),
                 'wallet_balance' => WalletData::balanceFromWallet($user->wallet),
@@ -77,7 +73,6 @@ class UserController extends Controller
                 'type' => $type ?? '',
             ],
             'counts' => $counts,
-            'accountTypeOptions' => AccountType::options(),
             'can' => [
                 'create' => auth()->user()?->can('users.create') ?? false,
                 'edit' => auth()->user()?->can('users.edit') ?? false,
@@ -117,7 +112,7 @@ class UserController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'role' => $user->roles->first()?->name ?? '',
-                'user_type' => ($user->user_type ?? UserType::Regular)->value,
+                'user_type' => $user->userType()->value,
             ],
             'roles' => $this->roleOptions(),
             'userTypeOptions' => UserType::options(),
@@ -133,17 +128,6 @@ class UserController extends Controller
         return redirect()
             ->back()
             ->with('success', "Percentage updated for {$user->name}.");
-    }
-
-    public function updateAccountType(UpdateUserAccountTypeRequest $request, User $user): RedirectResponse
-    {
-        $user->update([
-            'account_type' => $request->validated('account_type'),
-        ]);
-
-        return redirect()
-            ->back()
-            ->with('success', "Member type updated for {$user->name}.");
     }
 
     public function update(UpdateUserRequest $request, User $user): RedirectResponse

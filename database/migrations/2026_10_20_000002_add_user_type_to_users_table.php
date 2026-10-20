@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\UserType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,7 +10,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('user_type', 32)
-                ->default(UserType::Regular->value)
+                ->default('inactive_member')
                 ->after('account_type');
         });
     }

@@ -9,9 +9,7 @@ import {
     DeleteAction,
     EditAction,
     Input,
-    MemberTypeAction,
     PercentageAction,
-    Select,
     ViewAction,
 } from '@/Components/UI';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/react';
@@ -29,23 +27,17 @@ const portalTypeLabels = {
     staff: 'Staff',
 };
 
-const memberAccountTypeStyles = {
+const userTypeStyles = {
     inactive_member: 'bg-neutral-100 text-neutral-600',
     gold_member: 'bg-amber-50 text-amber-800 ring-1 ring-amber-200',
     diamond_member: 'bg-cyan-50 text-cyan-800 ring-1 ring-cyan-200',
     disable: 'bg-rose-50 text-rose-800 ring-1 ring-rose-200',
 };
 
-const userTypeStyles = {
-    regular: 'bg-neutral-100 text-neutral-700',
-    exclusive: 'bg-violet-50 text-violet-800 ring-1 ring-violet-200',
-};
-
-export default function Index({ users, filters, counts, accountTypeOptions = [], can }) {
+export default function Index({ users, filters, counts, can }) {
     const { flash } = usePage().props;
     const [search, setSearch] = useState(filters.search || '');
     const [percentageUser, setPercentageUser] = useState(null);
-    const [memberTypeUser, setMemberTypeUser] = useState(null);
 
     const {
         data: percentageData,
@@ -66,25 +58,6 @@ export default function Index({ users, filters, counts, accountTypeOptions = [],
         }
     }, [percentageUser, resetPercentageForm, setPercentageData]);
 
-    const {
-        data: memberTypeData,
-        setData: setMemberTypeData,
-        patch: patchMemberType,
-        processing: memberTypeProcessing,
-        errors: memberTypeErrors,
-        reset: resetMemberTypeForm,
-    } = useForm({
-        account_type: '',
-    });
-
-    useEffect(() => {
-        if (memberTypeUser) {
-            setMemberTypeData('account_type', memberTypeUser.account_type ?? 'inactive_member');
-        } else {
-            resetMemberTypeForm();
-        }
-    }, [memberTypeUser, resetMemberTypeForm, setMemberTypeData]);
-
     const userList = users.data ?? [];
 
     const submitPercentage = (e) => {
@@ -94,16 +67,6 @@ export default function Index({ users, filters, counts, accountTypeOptions = [],
         patchPercentage(route('admin.users.update-percentage', percentageUser.id), {
             preserveScroll: true,
             onSuccess: () => setPercentageUser(null),
-        });
-    };
-
-    const submitMemberType = (e) => {
-        e.preventDefault();
-        if (!memberTypeUser) return;
-
-        patchMemberType(route('admin.users.update-account-type', memberTypeUser.id), {
-            preserveScroll: true,
-            onSuccess: () => setMemberTypeUser(null),
         });
     };
 
@@ -224,9 +187,6 @@ export default function Index({ users, filters, counts, accountTypeOptions = [],
                                     Portal
                                 </th>
                                 <th className="px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">
-                                    Member type
-                                </th>
-                                <th className="px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">
                                     User type
                                 </th>
                                 <th className="px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">
@@ -249,7 +209,7 @@ export default function Index({ users, filters, counts, accountTypeOptions = [],
                         <tbody className="divide-y divide-neutral-100 bg-white">
                             {userList.length === 0 ? (
                                 <tr>
-                                    <td colSpan={9} className="px-4 py-12 text-center">
+                                    <td colSpan={8} className="px-4 py-12 text-center">
                                         <div className="mx-auto max-w-sm text-center">
                                             <svg
                                                 className="mx-auto h-12 w-12 text-neutral-400"
@@ -300,16 +260,6 @@ export default function Index({ users, filters, counts, accountTypeOptions = [],
                                         <td className="whitespace-nowrap px-4 py-3 text-sm">
                                             <span
                                                 className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${
-                                                    memberAccountTypeStyles[user.account_type] ||
-                                                    'bg-neutral-100 text-neutral-600'
-                                                }`}
-                                            >
-                                                {user.account_type_label || user.account_type}
-                                            </span>
-                                        </td>
-                                        <td className="whitespace-nowrap px-4 py-3 text-sm">
-                                            <span
-                                                className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${
                                                     userTypeStyles[user.user_type] ||
                                                     'bg-neutral-100 text-neutral-600'
                                                 }`}
@@ -335,12 +285,6 @@ export default function Index({ users, filters, counts, accountTypeOptions = [],
                                                     title="Order logs"
                                                     href={route('admin.users.order-logs', user.id)}
                                                 />
-                                                {can.edit && (
-                                                    <MemberTypeAction
-                                                        title="Set member type"
-                                                        onClick={() => setMemberTypeUser(user)}
-                                                    />
-                                                )}
                                                 {can.edit && (
                                                     <PercentageAction
                                                         title="Set user percentage"
@@ -391,41 +335,6 @@ export default function Index({ users, filters, counts, accountTypeOptions = [],
                     </div>
                 )}
             </Card>
-
-            <Modal show={!!memberTypeUser} onClose={() => setMemberTypeUser(null)} maxWidth="sm">
-                <form onSubmit={submitMemberType} className="p-6">
-                    <h3 className="text-base font-semibold text-neutral-900">Set member type</h3>
-                    <p className="mt-1 text-xs text-neutral-600">
-                        {memberTypeUser?.name} ({memberTypeUser?.email})
-                    </p>
-
-                    <div className="mt-4">
-                        <Select
-                            id="user-account-type"
-                            label="Account type"
-                            value={memberTypeData.account_type}
-                            error={memberTypeErrors.account_type}
-                            options={accountTypeOptions}
-                            required
-                            onChange={(e) => setMemberTypeData('account_type', e.target.value)}
-                        />
-                    </div>
-
-                    <div className="mt-6 flex items-center justify-end gap-3">
-                        <Button
-                            type="button"
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => setMemberTypeUser(null)}
-                        >
-                            Cancel
-                        </Button>
-                        <Button type="submit" size="sm" disabled={memberTypeProcessing}>
-                            Save
-                        </Button>
-                    </div>
-                </form>
-            </Modal>
 
             <Modal show={!!percentageUser} onClose={() => setPercentageUser(null)} maxWidth="sm">
                 <form onSubmit={submitPercentage} className="p-6">

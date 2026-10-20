@@ -33,7 +33,7 @@ class CustomerOrderService
     private function process(User $user, Product $product, CustomerOrderStatus $status): float
     {
         if (! $user->isRegular()) {
-            throw new InvalidArgumentException('Order cards are only available for Regular accounts.');
+            throw new InvalidArgumentException('Order cards are not available for disabled accounts.');
         }
 
         if ($product->status !== 'active') {

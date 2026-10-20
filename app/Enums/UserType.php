@@ -4,15 +4,24 @@ namespace App\Enums;
 
 enum UserType: string
 {
-    case Regular = 'regular';
-    case Exclusive = 'exclusive';
+    case InactiveMember = 'inactive_member';
+    case GoldMember = 'gold_member';
+    case DiamondMember = 'diamond_member';
+    case Disable = 'disable';
 
     public function label(): string
     {
         return match ($this) {
-            self::Regular => 'Regular',
-            self::Exclusive => 'Exclusive',
+            self::InactiveMember => 'Inactive member',
+            self::GoldMember => 'Gold Member',
+            self::DiamondMember => 'Diamond Member',
+            self::Disable => 'Disable',
         };
+    }
+
+    public function canProcessOrders(): bool
+    {
+        return $this !== self::Disable;
     }
 
     /**

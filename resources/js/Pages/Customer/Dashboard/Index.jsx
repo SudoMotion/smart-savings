@@ -41,7 +41,7 @@ export default function Index({ user, orders }) {
     const [busySlot, setBusySlot] = useState(null);
     const [index, setIndex] = useState(0);
     const trackRef = useRef(null);
-    const isRegular = user?.user_type === 'regular' || orders?.enabled;
+    const isRegular = Boolean(orders?.enabled);
     const orderList = orders?.products ?? [];
 
     useEffect(() => {

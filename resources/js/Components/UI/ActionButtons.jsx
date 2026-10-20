@@ -12,8 +12,6 @@ const variants = {
     remove: 'border-red-200 bg-white text-red-600 hover:bg-red-50 focus:ring-red-400',
     percentage:
         'border-emerald-200 bg-white text-emerald-700 hover:bg-emerald-50 hover:text-emerald-900 focus:ring-emerald-400',
-    member:
-        'border-amber-200 bg-white text-amber-700 hover:bg-amber-50 hover:text-amber-900 focus:ring-amber-400',
 };
 
 function ActionIcon({ type }) {
@@ -63,15 +61,6 @@ function ActionIcon({ type }) {
             <span className="text-xs font-bold leading-none" aria-hidden="true">
                 %
             </span>
-        );
-    }
-
-    if (type === 'member') {
-        return (
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <circle cx="12" cy="8" r="5" strokeLinecap="round" strokeLinejoin="round" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M20 21a8 8 0 0 0-16 0" />
-            </svg>
         );
     }
 
@@ -167,10 +156,6 @@ export function RemoveAction({ title = 'Remove', ...props }) {
 
 export function PercentageAction({ title = 'Set percentage', ...props }) {
     return <ActionButton type="percentage" title={title} {...props} />;
-}
-
-export function MemberTypeAction({ title = 'Set member type', ...props }) {
-    return <ActionButton type="member" title={title} {...props} />;
 }
 
 export function ActionButtonGroup({ children, className = '' }) {

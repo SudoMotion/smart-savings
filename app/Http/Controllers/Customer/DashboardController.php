@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Customer;
 
-use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Support\CustomerOrderData;
 use Illuminate\Http\Request;
@@ -17,7 +16,7 @@ class DashboardController extends Controller
 
         return Inertia::render('Customer/Dashboard/Index', [
             'user' => [
-                'user_type' => ($user->user_type ?? UserType::Regular)->value,
+                'user_type' => $user->userType()->value,
             ],
             'orders' => CustomerOrderData::forDashboard($user),
         ]);

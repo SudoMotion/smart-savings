@@ -11,7 +11,7 @@ export default function Edit({ user, roles, userTypeOptions = [] }) {
         password: '',
         password_confirmation: '',
         role: user.role,
-        user_type: user.user_type ?? 'regular',
+        user_type: user.user_type ?? 'inactive_member',
     });
 
     const submit = (e) => {

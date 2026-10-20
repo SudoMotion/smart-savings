@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Customer;
 
-use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\UpdateProfileRequest;
 use App\Support\WalletData;
@@ -21,8 +20,8 @@ class ProfileController extends Controller
             'user' => [
                 'name' => $user->name,
                 'email' => $user->email,
-                'user_type' => ($user->user_type ?? UserType::Regular)->value,
-                'user_type_label' => ($user->user_type ?? UserType::Regular)->label(),
+                'user_type' => $user->userType()->value,
+                'user_type_label' => $user->userType()->label(),
                 'created_at' => $user->created_at?->format('F j, Y'),
             ],
             'wallet' => WalletData::totalForUser($user),

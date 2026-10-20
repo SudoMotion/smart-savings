@@ -3,7 +3,6 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Enums\AccountType;
 use App\Enums\UserType;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -15,7 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'email', 'password', 'percentage', 'account_type', 'user_type'])]
+#[Fillable(['name', 'email', 'password', 'percentage', 'user_type'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -33,7 +32,6 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'percentage' => 'decimal:2',
-            'account_type' => AccountType::class,
             'user_type' => UserType::class,
         ];
     }
@@ -64,9 +62,14 @@ class User extends Authenticatable
         return $wallet;
     }
 
+    public function userType(): UserType
+    {
+        return $this->user_type ?? UserType::InactiveMember;
+    }
+
     public function isRegular(): bool
     {
-        return ($this->user_type ?? UserType::Regular) === UserType::Regular;
+        return $this->userType()->canProcessOrders();
     }
 
     public function customerOrders(): HasMany
