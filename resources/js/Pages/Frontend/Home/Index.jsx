@@ -54,7 +54,7 @@ export default function Index({
                             alt="Tether saving account — low risk high return, earn interest in ETH"
                             className="block h-auto w-full"
                             loading="eager"
-                            fetchPriority="high"
+                            fetchpriority="high"
                             width={750}
                             height={900}
                         />
