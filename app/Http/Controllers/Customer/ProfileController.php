@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Customer;
 
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Customer\UpdateProfileRequest;
 use App\Support\WalletData;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -25,5 +27,19 @@ class ProfileController extends Controller
             ],
             'wallet' => WalletData::totalForUser($user),
         ]);
+    }
+
+    public function update(UpdateProfileRequest $request): RedirectResponse
+    {
+        $user = $request->user();
+        $user->fill($request->validated());
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
+        $user->save();
+
+        return back()->with('success', 'Profile updated.');
     }
 }

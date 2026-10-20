@@ -37,6 +37,7 @@ Route::prefix('account')->name('account.')->group(function () {
         Route::get('withdraw', [WithdrawController::class, 'index'])->name('withdraw');
         Route::post('withdraw', [WithdrawController::class, 'store'])->name('withdraw.store');
         Route::get('profile', [ProfileController::class, 'index'])->name('profile');
+        Route::patch('profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::get('percentage', [PercentageController::class, 'index'])->name('percentage');
     });
 });
