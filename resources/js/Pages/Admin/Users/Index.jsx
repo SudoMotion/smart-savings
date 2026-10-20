@@ -40,12 +40,11 @@ const userTypeStyles = {
     exclusive: 'bg-violet-50 text-violet-800 ring-1 ring-violet-200',
 };
 
-export default function Index({ users, filters, counts, accountTypeOptions = [], userTypeOptions = [], can }) {
+export default function Index({ users, filters, counts, accountTypeOptions = [], can }) {
     const { flash } = usePage().props;
     const [search, setSearch] = useState(filters.search || '');
     const [percentageUser, setPercentageUser] = useState(null);
     const [memberTypeUser, setMemberTypeUser] = useState(null);
-    const [userTypeUser, setUserTypeUser] = useState(null);
 
     const {
         data: percentageData,
@@ -85,25 +84,6 @@ export default function Index({ users, filters, counts, accountTypeOptions = [],
         }
     }, [memberTypeUser, resetMemberTypeForm, setMemberTypeData]);
 
-    const {
-        data: userTypeData,
-        setData: setUserTypeData,
-        patch: patchUserType,
-        processing: userTypeProcessing,
-        errors: userTypeErrors,
-        reset: resetUserTypeForm,
-    } = useForm({
-        user_type: '',
-    });
-
-    useEffect(() => {
-        if (userTypeUser) {
-            setUserTypeData('user_type', userTypeUser.user_type ?? 'regular');
-        } else {
-            resetUserTypeForm();
-        }
-    }, [userTypeUser, resetUserTypeForm, setUserTypeData]);
-
     const userList = users.data ?? [];
 
     const submitPercentage = (e) => {
@@ -123,16 +103,6 @@ export default function Index({ users, filters, counts, accountTypeOptions = [],
         patchMemberType(route('admin.users.update-account-type', memberTypeUser.id), {
             preserveScroll: true,
             onSuccess: () => setMemberTypeUser(null),
-        });
-    };
-
-    const submitUserType = (e) => {
-        e.preventDefault();
-        if (!userTypeUser) return;
-
-        patchUserType(route('admin.users.update-user-type', userTypeUser.id), {
-            preserveScroll: true,
-            onSuccess: () => setUserTypeUser(null),
         });
     };
 
@@ -367,12 +337,6 @@ export default function Index({ users, filters, counts, accountTypeOptions = [],
                                                     />
                                                 )}
                                                 {can.edit && (
-                                                    <MemberTypeAction
-                                                        title="Set user type"
-                                                        onClick={() => setUserTypeUser(user)}
-                                                    />
-                                                )}
-                                                {can.edit && (
                                                     <PercentageAction
                                                         title="Set user percentage"
                                                         onClick={() => setPercentageUser(user)}
@@ -452,41 +416,6 @@ export default function Index({ users, filters, counts, accountTypeOptions = [],
                             Cancel
                         </Button>
                         <Button type="submit" size="sm" disabled={memberTypeProcessing}>
-                            Save
-                        </Button>
-                    </div>
-                </form>
-            </Modal>
-
-            <Modal show={!!userTypeUser} onClose={() => setUserTypeUser(null)} maxWidth="sm">
-                <form onSubmit={submitUserType} className="p-6">
-                    <h3 className="text-base font-semibold text-neutral-900">Set user type</h3>
-                    <p className="mt-1 text-xs text-neutral-600">
-                        {userTypeUser?.name} ({userTypeUser?.email})
-                    </p>
-
-                    <div className="mt-4">
-                        <Select
-                            id="user-type"
-                            label="User type"
-                            value={userTypeData.user_type}
-                            error={userTypeErrors.user_type}
-                            options={userTypeOptions}
-                            required
-                            onChange={(e) => setUserTypeData('user_type', e.target.value)}
-                        />
-                    </div>
-
-                    <div className="mt-6 flex items-center justify-end gap-3">
-                        <Button
-                            type="button"
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => setUserTypeUser(null)}
-                        >
-                            Cancel
-                        </Button>
-                        <Button type="submit" size="sm" disabled={userTypeProcessing}>
                             Save
                         </Button>
                     </div>

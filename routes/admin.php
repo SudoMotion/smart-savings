@@ -110,9 +110,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::patch('users/{user}/account-type', [UserController::class, 'updateAccountType'])
                 ->middleware('permission:users.edit')
                 ->name('users.update-account-type');
-            Route::patch('users/{user}/user-type', [UserController::class, 'updateUserType'])
-                ->middleware('permission:users.edit')
-                ->name('users.update-user-type');
             Route::delete('users/{user}', [UserController::class, 'destroy'])
                 ->middleware('permission:users.delete')
                 ->name('users.destroy');

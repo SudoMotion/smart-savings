@@ -4,13 +4,14 @@ import AdminLayout from '@/Layouts/Admin/AdminLayout';
 import { Button, Card, Input, Select } from '@/Components/UI';
 import { Head, Link, useForm } from '@inertiajs/react';
 
-export default function Edit({ user, roles }) {
+export default function Edit({ user, roles, userTypeOptions = [] }) {
     const { data, setData, put, processing, errors } = useForm({
         name: user.name,
         email: user.email,
         password: '',
         password_confirmation: '',
         role: user.role,
+        user_type: user.user_type ?? 'regular',
     });
 
     const submit = (e) => {
@@ -49,6 +50,16 @@ export default function Edit({ user, roles }) {
                             error={errors.role}
                             options={roles}
                             onChange={(e) => setData('role', e.target.value)}
+                        />
+
+                        <Select
+                            id="user_type"
+                            label="User type"
+                            value={data.user_type}
+                            error={errors.user_type}
+                            options={userTypeOptions}
+                            required
+                            onChange={(e) => setData('user_type', e.target.value)}
                         />
 
                         <Input

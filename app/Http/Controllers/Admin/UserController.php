@@ -9,7 +9,6 @@ use App\Http\Requests\Admin\StoreUserRequest;
 use App\Http\Requests\Admin\UpdateUserAccountTypeRequest;
 use App\Http\Requests\Admin\UpdateUserPercentageRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
-use App\Http\Requests\Admin\UpdateUserTypeRequest;
 use App\Models\User;
 use App\Support\Permissions;
 use App\Support\WalletData;
@@ -79,7 +78,6 @@ class UserController extends Controller
             ],
             'counts' => $counts,
             'accountTypeOptions' => AccountType::options(),
-            'userTypeOptions' => UserType::options(),
             'can' => [
                 'create' => auth()->user()?->can('users.create') ?? false,
                 'edit' => auth()->user()?->can('users.edit') ?? false,
@@ -119,8 +117,10 @@ class UserController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'role' => $user->roles->first()?->name ?? '',
+                'user_type' => ($user->user_type ?? UserType::Regular)->value,
             ],
             'roles' => $this->roleOptions(),
+            'userTypeOptions' => UserType::options(),
         ]);
     }
 
@@ -146,22 +146,12 @@ class UserController extends Controller
             ->with('success', "Member type updated for {$user->name}.");
     }
 
-    public function updateUserType(UpdateUserTypeRequest $request, User $user): RedirectResponse
-    {
-        $user->update([
-            'user_type' => $request->validated('user_type'),
-        ]);
-
-        return redirect()
-            ->back()
-            ->with('success', "User type updated for {$user->name}.");
-    }
-
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
         $user->update([
             'name' => $request->validated('name'),
             'email' => $request->validated('email'),
+            'user_type' => $request->validated('user_type'),
         ]);
 
         if ($request->filled('password')) {
