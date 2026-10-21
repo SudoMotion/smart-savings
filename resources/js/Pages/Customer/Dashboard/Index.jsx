@@ -96,8 +96,14 @@ export default function Index({ user, orders, event }) {
         <CustomerPanelLayout>
             <Head title="Orders" />
 
-            <section className="py-8 sm:py-10">
-                <Container className="max-w-lg">
+            <section
+                className={
+                    isDiamond
+                        ? 'flex min-h-[calc(100dvh-11rem)] items-center justify-center px-4 py-10'
+                        : 'py-8 sm:py-10'
+                }
+            >
+                <Container className="w-full max-w-lg">
                     {/* {flash?.success && (
                         <Alert variant="success" className="mb-5">
                             {flash.success}
@@ -111,8 +117,8 @@ export default function Index({ user, orders, event }) {
 
                     {isDiamond ? (
                         event ? (
-                            <div className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
-                                <p className="whitespace-pre-wrap text-sm leading-relaxed text-neutral-800">
+                            <div className="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm sm:p-8">
+                                <p className="whitespace-pre-wrap text-center text-lg font-medium leading-relaxed text-neutral-800 sm:text-xl sm:leading-relaxed">
                                     {event.first_window_text}
                                 </p>
                                 <Link
@@ -123,7 +129,7 @@ export default function Index({ user, orders, event }) {
                                 </Link>
                             </div>
                         ) : (
-                            <div className="rounded-2xl border border-neutral-200 bg-white px-6 py-16 text-center">
+                            <div className="w-full rounded-2xl border border-neutral-200 bg-white px-6 py-16 text-center">
                                 <p className="text-sm text-neutral-600">{emptyMessage}</p>
                             </div>
                         )
