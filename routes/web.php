@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Customer\UserEventController;
 use App\Http\Controllers\Frontend\AboutController;
 use App\Http\Controllers\Frontend\ContactController;
 use App\Http\Controllers\Frontend\HomeController;
@@ -17,6 +18,8 @@ Route::post('/become-a-vendor', [VendorApplicationController::class, 'store'])->
 Route::get('/become-a-vendor/verify', [VendorApplicationController::class, 'verify'])->name('vendor.verify');
 Route::post('/become-a-vendor/verify', [VendorApplicationController::class, 'verifyCode'])->name('vendor.verify.code');
 Route::post('/become-a-vendor/verify/resend', [VendorApplicationController::class, 'resendCode'])->name('vendor.verify.resend');
+
+Route::middleware('auth')->get('/event/{userEvent}', [UserEventController::class, 'show'])->name('event.show');
 
 Route::redirect('/dashboard', '/account/dashboard');
 Route::redirect('/login', '/account/login');

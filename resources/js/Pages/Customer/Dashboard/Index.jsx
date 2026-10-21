@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import Container from '@/Components/Frontend/Container';
 import { Alert } from '@/Components/UI';
 import CustomerPanelLayout from '@/Layouts/Frontend/CustomerPanelLayout';
-import { Head, router, usePage } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 
 function CheckIcon({ className }) {
     return (
@@ -36,11 +36,12 @@ function ChevronRightIcon({ className }) {
     );
 }
 
-export default function Index({ user, orders }) {
+export default function Index({ user, orders, event }) {
     const { flash } = usePage().props;
     const [busySlot, setBusySlot] = useState(null);
     const [index, setIndex] = useState(0);
     const trackRef = useRef(null);
+    const isDiamond = Boolean(user?.is_diamond);
     const isRegular = Boolean(orders?.enabled);
     const orderList = orders?.products ?? [];
 
@@ -81,7 +82,9 @@ export default function Index({ user, orders }) {
         }
     };
 
-    const emptyMessage = !isRegular
+    const emptyMessage = isDiamond
+        ? 'No active event is available right now.'
+        : !isRegular
         ? 'Orders are not available for this account type.'
         : orders?.remaining > 0
           ? 'No more products are available for orders right now.'
@@ -106,15 +109,33 @@ export default function Index({ user, orders }) {
                         </Alert>
                     )} */}
 
-                    {isRegular && orders?.limit > 0 && (
+                    {isDiamond ? (
+                        event ? (
+                            <div className="rounded-xl border border-neutral-200 bg-white p-5 shadow-sm">
+                                <p className="whitespace-pre-wrap text-sm leading-relaxed text-neutral-800">
+                                    {event.first_window_text}
+                                </p>
+                                <Link
+                                    href={route('event.show', event.id)}
+                                    className="mt-5 flex w-full items-center justify-center rounded-lg bg-[#0f281c] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#1e3a2d]"
+                                >
+                                    Submit
+                                </Link>
+                            </div>
+                        ) : (
+                            <div className="rounded-2xl border border-neutral-200 bg-white px-6 py-16 text-center">
+                                <p className="text-sm text-neutral-600">{emptyMessage}</p>
+                            </div>
+                        )
+                    ) : isRegular && orders?.limit > 0 ? (
                         <p className="mb-5 text-center text-sm text-neutral-600">
                             {orders.used} of {orders.limit} orders
                             <span className="text-neutral-400"> · </span>
                             Resets every {orders.reset_interval_label}
                         </p>
-                    )}
+                    ) : null}
 
-                    {orderList.length > 0 ? (
+                    {!isDiamond && orderList.length > 0 ? (
                         <div className="relative">
                             {orderList.length > 1 && (
                                 <>
@@ -214,11 +235,11 @@ export default function Index({ user, orders }) {
                                 </div>
                             )}
                         </div>
-                    ) : (
+                    ) : !isDiamond ? (
                         <div className="rounded-2xl border border-neutral-200 bg-white px-6 py-16 text-center">
                             <p className="text-sm text-neutral-600">{emptyMessage}</p>
                         </div>
-                    )}
+                    ) : null}
                 </Container>
             </section>
         </CustomerPanelLayout>

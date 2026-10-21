@@ -24,7 +24,7 @@ enum UserType: string
 
     public function canProcessOrders(): bool
     {
-        return $this->canLogin();
+        return $this === self::GoldMember;
     }
 
     /**
