@@ -19,9 +19,14 @@ enum UserType: string
         };
     }
 
-    public function canProcessOrders(): bool
+    public function canLogin(): bool
     {
         return $this !== self::Disable;
+    }
+
+    public function canProcessOrders(): bool
+    {
+        return $this->canLogin();
     }
 
     /**

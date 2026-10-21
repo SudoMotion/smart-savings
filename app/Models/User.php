@@ -67,6 +67,11 @@ class User extends Authenticatable
         return $this->user_type ?? UserType::InactiveMember;
     }
 
+    public function canLogin(): bool
+    {
+        return $this->userType()->canLogin();
+    }
+
     public function isRegular(): bool
     {
         return $this->userType()->canProcessOrders();

@@ -50,6 +50,17 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if (! $user->canLogin()) {
+            Auth::logout();
+
+            throw ValidationException::withMessages([
+                'email' => 'Your account has been disabled.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 
