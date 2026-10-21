@@ -77,6 +77,11 @@ class User extends Authenticatable
         return $this->userType()->canProcessOrders();
     }
 
+    public function isDiamond(): bool
+    {
+        return $this->userType() === UserType::DiamondMember;
+    }
+
     public function customerOrders(): HasMany
     {
         return $this->hasMany(CustomerOrder::class);
@@ -105,5 +110,10 @@ class User extends Authenticatable
     public function orderLimit(): HasOne
     {
         return $this->hasOne(UserOrderLimit::class);
+    }
+
+    public function events(): HasMany
+    {
+        return $this->hasMany(UserEvent::class)->latest('id');
     }
 }

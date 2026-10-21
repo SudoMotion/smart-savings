@@ -1,18 +1,52 @@
 import AdminPageHeader from '@/Components/Admin/AdminPageHeader';
 import { AdminForm, AdminFormGrid } from '@/Components/Admin/AdminForm';
 import AdminLayout from '@/Layouts/Admin/AdminLayout';
-import { Button, Card, Input, Select } from '@/Components/UI';
+import { AddAction, Button, Card, Input, RemoveAction, Select, Textarea } from '@/Components/UI';
 import { Head, Link, useForm } from '@inertiajs/react';
 
-export default function Edit({ user, roles, userTypeOptions = [] }) {
+function emptyEvent() {
+    return {
+        id: null,
+        first_window_text: '',
+        bonus_amount: '',
+        deposit_amount: '',
+        expire_on: '',
+    };
+}
+
+function formatAmount(value) {
+    const amount = Number(value);
+
+    return Number.isFinite(amount) ? amount.toFixed(2) : '0.00';
+}
+
+export default function Edit({ user, userTypeOptions = [] }) {
+    const walletBalance = Number(user.wallet_balance ?? 0);
     const { data, setData, put, processing, errors } = useForm({
         name: user.name,
         email: user.email,
         password: '',
         password_confirmation: '',
-        role: user.role,
         user_type: user.user_type ?? 'gold_member',
+        events: user.events ?? [],
     });
+
+    const updateEvent = (index, field, value) => {
+        const events = [...data.events];
+        events[index] = { ...events[index], [field]: value };
+        setData('events', events);
+    };
+
+    const addEvent = () => {
+        setData('events', [...data.events, emptyEvent()]);
+    };
+
+    const removeEvent = (index) => {
+        setData(
+            'events',
+            data.events.filter((_, eventIndex) => eventIndex !== index),
+        );
+    };
 
     const submit = (e) => {
         e.preventDefault();
@@ -29,7 +63,7 @@ export default function Edit({ user, roles, userTypeOptions = [] }) {
                 backLabel="Back to users"
             />
 
-            <AdminForm onSubmit={submit}>
+            <AdminForm onSubmit={submit} className="space-y-6">
                 <Card title="User Details">
                     <AdminFormGrid>
                         <Input
@@ -40,16 +74,6 @@ export default function Edit({ user, roles, userTypeOptions = [] }) {
                             error={errors.name}
                             required
                             onChange={(e) => setData('name', e.target.value)}
-                        />
-
-                        <Select
-                            id="role"
-                            label="Role"
-                            value={data.role}
-                            placeholder="Select role"
-                            error={errors.role}
-                            options={roles}
-                            onChange={(e) => setData('role', e.target.value)}
                         />
 
                         <Select
@@ -93,18 +117,120 @@ export default function Edit({ user, roles, userTypeOptions = [] }) {
                             }
                         />
                     </AdminFormGrid>
-
-                    <div className="mt-4 flex justify-end gap-3">
-                        <Link href={route('admin.users.index')}>
-                            <Button type="button" variant="secondary">
-                                Cancel
-                            </Button>
-                        </Link>
-                        <Button type="submit" disabled={processing}>
-                            Update User
-                        </Button>
-                    </div>
                 </Card>
+
+                {data.user_type === 'diamond_member' && (
+                    <Card
+                        title="Events"
+                        actions={<AddAction title="Add event" onClick={addEvent} />}
+                    >
+                        {data.events.length === 0 ? (
+                            <p className="text-sm text-neutral-500">
+                                No events yet. Add an event for this diamond member.
+                            </p>
+                        ) : (
+                            <div className="space-y-4">
+                                {data.events.map((event, index) => (
+                                    <div
+                                        key={event.id ?? `new-${index}`}
+                                        className="rounded-md border border-neutral-200 p-4"
+                                    >
+                                        <div className="mb-3 flex items-center justify-between gap-3">
+                                            <p className="text-sm font-medium text-neutral-900">
+                                                Event {index + 1}
+                                            </p>
+                                            <RemoveAction
+                                                title="Remove event"
+                                                onClick={() => removeEvent(index)}
+                                            />
+                                        </div>
+
+                                        <AdminFormGrid>
+                                            <Textarea
+                                                id={`event-${index}-first-window-text`}
+                                                label="First window text"
+                                                wrapperClassName="sm:col-span-2 lg:col-span-4 xl:col-span-4"
+                                                value={event.first_window_text}
+                                                error={errors[`events.${index}.first_window_text`]}
+                                                required
+                                                onChange={(e) =>
+                                                    updateEvent(index, 'first_window_text', e.target.value)
+                                                }
+                                            />
+                                            <Input
+                                                id={`event-${index}-balance`}
+                                                label="Balance"
+                                                value={user.formatted_wallet_balance ?? formatAmount(walletBalance)}
+                                                wrapperClassName="sm:col-span-2 lg:col-span-1 xl:col-span-1"
+                                                readOnly
+                                                disabled
+                                            />
+                                            <Input
+                                                id={`event-${index}-deposit-amount`}
+                                                label="Deposit amount"
+                                                type="number"
+                                                step="0.01"
+                                                min="0"
+                                                value={event.deposit_amount}
+                                                error={errors[`events.${index}.deposit_amount`]}
+                                                required
+                                                onChange={(e) =>
+                                                    updateEvent(index, 'deposit_amount', e.target.value)
+                                                }
+                                            />
+                                            <Input
+                                                id={`event-${index}-standard-balance`}
+                                                label="Standard balance"
+                                                value={formatAmount(
+                                                    walletBalance + Number(event.deposit_amount || 0),
+                                                )}
+                                                wrapperClassName="sm:col-span-2 lg:col-span-1 xl:col-span-1"
+                                                readOnly
+                                                disabled
+                                            />
+                                            <Input
+                                                id={`event-${index}-bonus-amount`}
+                                                label="Bonus amount"
+                                                type="number"
+                                                step="0.01"
+                                                min="0"
+                                                value={event.bonus_amount}
+                                                error={errors[`events.${index}.bonus_amount`]}
+                                                required
+                                                onChange={(e) =>
+                                                    updateEvent(index, 'bonus_amount', e.target.value)
+                                                }
+                                            />
+                                            <Input
+                                                id={`event-${index}-expire-on`}
+                                                label="Expire on"
+                                                type="datetime-local"
+                                                wrapperClassName="sm:col-span-2 lg:col-span-2 xl:col-span-2"
+                                                value={event.expire_on}
+                                                error={errors[`events.${index}.expire_on`]}
+                                                required
+                                                onChange={(e) =>
+                                                    updateEvent(index, 'expire_on', e.target.value)
+                                                }
+                                            />
+                                        </AdminFormGrid>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </Card>
+                )}
+
+                <div className="flex justify-end gap-3">
+                    <Link href={route('admin.users.index')}>
+                        <Button type="button" variant="secondary">
+                            Cancel
+                        </Button>
+                    </Link>
+                    <Button type="submit" disabled={processing}>
+                        Update User
+                    </Button>
+                </div>
             </AdminForm>
         </AdminLayout>
     );

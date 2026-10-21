@@ -189,9 +189,6 @@ export default function Index({ users, filters, counts, can }) {
                                     User type
                                 </th>
                                 <th className="px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">
-                                    Role
-                                </th>
-                                <th className="px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">
                                     Wallet
                                 </th>
                                 <th className="px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">
@@ -208,7 +205,7 @@ export default function Index({ users, filters, counts, can }) {
                         <tbody className="divide-y divide-neutral-100 bg-white">
                             {userList.length === 0 ? (
                                 <tr>
-                                    <td colSpan={8} className="px-4 py-12 text-center">
+                                    <td colSpan={7} className="px-4 py-12 text-center">
                                         <div className="mx-auto max-w-sm text-center">
                                             <svg
                                                 className="mx-auto h-12 w-12 text-neutral-400"
@@ -265,9 +262,6 @@ export default function Index({ users, filters, counts, can }) {
                                             >
                                                 {user.user_type_label || user.user_type}
                                             </span>
-                                        </td>
-                                        <td className="whitespace-nowrap px-4 py-3 text-sm capitalize text-neutral-600">
-                                            {user.role ?? '—'}
                                         </td>
                                         <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-neutral-900">
                                             ${Number(user.wallet_balance ?? 0).toFixed(2)}

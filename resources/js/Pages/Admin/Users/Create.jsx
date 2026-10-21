@@ -1,16 +1,15 @@
 import AdminPageHeader from '@/Components/Admin/AdminPageHeader';
 import { AdminForm, AdminFormGrid } from '@/Components/Admin/AdminForm';
 import AdminLayout from '@/Layouts/Admin/AdminLayout';
-import { Button, Card, Input, Select } from '@/Components/UI';
+import { Button, Card, Input } from '@/Components/UI';
 import { Head, Link, useForm } from '@inertiajs/react';
 
-export default function Create({ roles }) {
+export default function Create() {
     const { data, setData, post, processing, errors } = useForm({
         name: '',
         email: '',
         password: '',
         password_confirmation: '',
-        role: '',
     });
 
     const submit = (e) => {
@@ -39,16 +38,6 @@ export default function Create({ roles }) {
                             error={errors.name}
                             required
                             onChange={(e) => setData('name', e.target.value)}
-                        />
-
-                        <Select
-                            id="role"
-                            label="Role"
-                            value={data.role}
-                            placeholder="Select role"
-                            error={errors.role}
-                            options={roles}
-                            onChange={(e) => setData('role', e.target.value)}
                         />
 
                         <Input

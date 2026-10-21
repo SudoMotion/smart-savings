@@ -8,13 +8,14 @@ use App\Http\Requests\Admin\StoreUserRequest;
 use App\Http\Requests\Admin\UpdateUserPercentageRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Models\User;
+use App\Models\UserEvent;
 use App\Support\Permissions;
 use App\Support\WalletData;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
-use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -49,7 +50,6 @@ class UserController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'role' => $user->roles->pluck('name')->join(', ') ?: null,
                 'portal_type' => $this->portalType($user),
                 'user_type' => $user->userType()->value,
                 'user_type_label' => $user->userType()->label(),
@@ -83,9 +83,7 @@ class UserController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('Admin/Users/Create', [
-            'roles' => $this->roleOptions(),
-        ]);
+        return Inertia::render('Admin/Users/Create');
     }
 
     public function store(StoreUserRequest $request): RedirectResponse
@@ -98,8 +96,6 @@ class UserController extends Controller
             'user_type' => UserType::GoldMember,
         ]);
 
-        $user->syncRoles([$request->validated('role')]);
-
         return redirect()
             ->route('admin.users.index')
             ->with('success', 'User created successfully.');
@@ -107,15 +103,28 @@ class UserController extends Controller
 
     public function edit(User $user): Response
     {
+        $wallet = WalletData::totalForUser($user);
+
         return Inertia::render('Admin/Users/Edit', [
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'role' => $user->roles->first()?->name ?? '',
                 'user_type' => $user->userType()->value,
+                'wallet_balance' => $wallet['balance'],
+                'formatted_wallet_balance' => $wallet['formatted_balance'],
+                'events' => $user->events()
+                    ->get()
+                    ->map(fn (UserEvent $event) => [
+                        'id' => $event->id,
+                        'first_window_text' => $event->first_window_text,
+                        'bonus_amount' => $event->bonus_amount,
+                        'deposit_amount' => $event->deposit_amount,
+                        'expire_on' => $event->expire_on?->format('Y-m-d\TH:i'),
+                    ])
+                    ->values()
+                    ->all(),
             ],
-            'roles' => $this->roleOptions(),
             'userTypeOptions' => UserType::options(),
         ]);
     }
@@ -133,19 +142,23 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
-        $user->update([
-            'name' => $request->validated('name'),
-            'email' => $request->validated('email'),
-            'user_type' => $request->validated('user_type'),
-        ]);
-
-        if ($request->filled('password')) {
+        DB::transaction(function () use ($request, $user) {
             $user->update([
-                'password' => $request->validated('password'),
+                'name' => $request->validated('name'),
+                'email' => $request->validated('email'),
+                'user_type' => $request->validated('user_type'),
             ]);
-        }
 
-        $user->syncRoles([$request->validated('role')]);
+            if ($request->filled('password')) {
+                $user->update([
+                    'password' => $request->validated('password'),
+                ]);
+            }
+
+            if ($user->isDiamond()) {
+                $this->syncEvents($user, $request->validated('events') ?? []);
+            }
+        });
 
         return redirect()
             ->route('admin.users.index')
@@ -168,19 +181,36 @@ class UserController extends Controller
     }
 
     /**
-     * @return list<array{value: string, label: string}>
+     * @param  list<array{id?: int|null, first_window_text: string, bonus_amount: mixed, deposit_amount: mixed, expire_on: string}>  $events
      */
-    private function roleOptions(): array
+    private function syncEvents(User $user, array $events): void
     {
-        return Role::query()
-            ->orderBy('name')
-            ->get(['name'])
-            ->map(fn (Role $role) => [
-                'value' => $role->name,
-                'label' => ucfirst($role->name),
-            ])
-            ->values()
-            ->all();
+        $keepIds = [];
+
+        foreach ($events as $event) {
+            $payload = [
+                'first_window_text' => $event['first_window_text'],
+                'bonus_amount' => $event['bonus_amount'],
+                'deposit_amount' => $event['deposit_amount'],
+                'expire_on' => $event['expire_on'],
+            ];
+
+            if (! empty($event['id'])) {
+                $user->events()->whereKey($event['id'])->update($payload);
+                $keepIds[] = (int) $event['id'];
+            } else {
+                $created = $user->events()->create($payload);
+                $keepIds[] = $created->id;
+            }
+        }
+
+        $query = $user->events();
+
+        if ($keepIds !== []) {
+            $query->whereNotIn('id', $keepIds);
+        }
+
+        $query->delete();
     }
 
     private function portalType(User $user): string
