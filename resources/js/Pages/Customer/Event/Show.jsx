@@ -1,4 +1,3 @@
-import BirthdayHat from '@/Components/Frontend/BirthdayHat';
 import CelebrationSprinkles from '@/Components/Frontend/CelebrationSprinkles';
 import Container from '@/Components/Frontend/Container';
 import CustomerPanelLayout from '@/Layouts/Frontend/CustomerPanelLayout';
@@ -33,8 +32,12 @@ export default function Show({ event }) {
 
                 <Container className="relative z-10 w-full max-w-md">
                     <div className="relative">
-                        <div className="absolute -top-14 left-1/2 z-20 -translate-x-1/2">
-                            <BirthdayHat className="h-28 w-28 drop-shadow-lg sm:h-32 sm:w-32" />
+                        <div className="absolute -top-16 left-1/2 z-20 -translate-x-1/2">
+                            <img
+                                src="/images/congratulation-hat.png"
+                                alt=""
+                                className="h-32 w-auto drop-shadow-lg sm:h-36"
+                            />
                         </div>
 
                         <div className="overflow-hidden rounded-2xl border-2 border-[#febd69]/40 bg-white/95 shadow-xl shadow-[#1e3a2d]/10 backdrop-blur-sm">
