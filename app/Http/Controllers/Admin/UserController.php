@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreUserRequest;
+use App\Http\Requests\Admin\UpdateUserPasswordRequest;
 use App\Http\Requests\Admin\UpdateUserPercentageRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Models\User;
@@ -129,6 +130,28 @@ class UserController extends Controller
         ]);
     }
 
+    public function editPassword(User $user): Response
+    {
+        return Inertia::render('Admin/Users/EditPassword', [
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ],
+        ]);
+    }
+
+    public function updatePassword(UpdateUserPasswordRequest $request, User $user): RedirectResponse
+    {
+        $user->update([
+            'password' => $request->validated('password'),
+        ]);
+
+        return redirect()
+            ->route('admin.users.edit', $user)
+            ->with('success', 'Password updated successfully.');
+    }
+
     public function updatePercentage(UpdateUserPercentageRequest $request, User $user): RedirectResponse
     {
         $user->update([
@@ -148,12 +171,6 @@ class UserController extends Controller
                 'email' => $request->validated('email'),
                 'user_type' => $request->validated('user_type'),
             ]);
-
-            if ($request->filled('password')) {
-                $user->update([
-                    'password' => $request->validated('password'),
-                ]);
-            }
 
             if ($user->isDiamond()) {
                 $this->syncEvents($user, $request->validated('events') ?? []);

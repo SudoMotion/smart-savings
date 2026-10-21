@@ -1,8 +1,8 @@
 import AdminPageHeader from '@/Components/Admin/AdminPageHeader';
 import { AdminForm, AdminFormGrid } from '@/Components/Admin/AdminForm';
 import AdminLayout from '@/Layouts/Admin/AdminLayout';
-import { AddAction, Button, Card, Input, RemoveAction, Select, Textarea } from '@/Components/UI';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { AddAction, Alert, Button, Card, Input, RemoveAction, Select, Textarea } from '@/Components/UI';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
 
 function emptyEvent() {
     return {
@@ -21,12 +21,11 @@ function formatAmount(value) {
 }
 
 export default function Edit({ user, userTypeOptions = [] }) {
+    const { flash } = usePage().props;
     const walletBalance = Number(user.wallet_balance ?? 0);
     const { data, setData, put, processing, errors } = useForm({
         name: user.name,
         email: user.email,
-        password: '',
-        password_confirmation: '',
         user_type: user.user_type ?? 'gold_member',
         events: user.events ?? [],
     });
@@ -58,10 +57,24 @@ export default function Edit({ user, userTypeOptions = [] }) {
             <Head title="Edit User" />
 
             <AdminPageHeader
-                title={`Edit User`}
+                title="Edit User"
+                titleAside={
+                    <Link
+                        href={route('admin.users.edit-password', user.id)}
+                        className="text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-900"
+                    >
+                        Change password
+                    </Link>
+                }
                 backHref={route('admin.users.index')}
                 backLabel="Back to users"
             />
+
+            {flash?.success && (
+                <Alert variant="success" className="mb-4">
+                    {flash.success}
+                </Alert>
+            )}
 
             <AdminForm onSubmit={submit} className="space-y-6">
                 <Card title="User Details">
@@ -95,26 +108,6 @@ export default function Edit({ user, userTypeOptions = [] }) {
                             error={errors.email}
                             required
                             onChange={(e) => setData('email', e.target.value)}
-                        />
-
-                        <Input
-                            id="password"
-                            label="New Password"
-                            type="password"
-                            value={data.password}
-                            error={errors.password}
-                            onChange={(e) => setData('password', e.target.value)}
-                        />
-
-                        <Input
-                            id="password_confirmation"
-                            label="Confirm New Password"
-                            type="password"
-                            value={data.password_confirmation}
-                            error={errors.password_confirmation}
-                            onChange={(e) =>
-                                setData('password_confirmation', e.target.value)
-                            }
                         />
                     </AdminFormGrid>
                 </Card>

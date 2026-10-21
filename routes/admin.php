@@ -104,6 +104,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('users/{user}/edit', [UserController::class, 'edit'])
                 ->middleware('permission:users.edit')
                 ->name('users.edit');
+            Route::get('users/{user}/edit-password', [UserController::class, 'editPassword'])
+                ->middleware('permission:users.edit')
+                ->name('users.edit-password');
+            Route::put('users/{user}/password', [UserController::class, 'updatePassword'])
+                ->middleware('permission:users.edit')
+                ->name('users.update-password');
             Route::put('users/{user}', [UserController::class, 'update'])
                 ->middleware('permission:users.edit')
                 ->name('users.update');
