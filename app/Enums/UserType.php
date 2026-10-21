@@ -4,7 +4,6 @@ namespace App\Enums;
 
 enum UserType: string
 {
-    case InactiveMember = 'inactive_member';
     case GoldMember = 'gold_member';
     case DiamondMember = 'diamond_member';
     case Disable = 'disable';
@@ -12,7 +11,6 @@ enum UserType: string
     public function label(): string
     {
         return match ($this) {
-            self::InactiveMember => 'Inactive member',
             self::GoldMember => 'Gold Member',
             self::DiamondMember => 'Diamond Member',
             self::Disable => 'Disable',

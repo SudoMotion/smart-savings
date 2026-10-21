@@ -28,7 +28,6 @@ const portalTypeLabels = {
 };
 
 const userTypeStyles = {
-    inactive_member: 'bg-neutral-100 text-neutral-600',
     gold_member: 'bg-amber-50 text-amber-800 ring-1 ring-amber-200',
     diamond_member: 'bg-cyan-50 text-cyan-800 ring-1 ring-cyan-200',
     disable: 'bg-rose-50 text-rose-800 ring-1 ring-rose-200',
