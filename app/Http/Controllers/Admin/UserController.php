@@ -95,6 +95,7 @@ class UserController extends Controller
             'email' => $request->validated('email'),
             'password' => $request->validated('password'),
             'email_verified_at' => now(),
+            'user_type' => UserType::GoldMember,
         ]);
 
         $user->syncRoles([$request->validated('role')]);

@@ -64,7 +64,7 @@ class User extends Authenticatable
 
     public function userType(): UserType
     {
-        return $this->user_type ?? UserType::InactiveMember;
+        return $this->user_type ?? UserType::GoldMember;
     }
 
     public function canLogin(): bool
