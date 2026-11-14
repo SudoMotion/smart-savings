@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
-use App\Support\WalletData;
+use App\Support\CustomerOrderData;
+use App\Support\UserEventData;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -16,11 +17,11 @@ class DashboardController extends Controller
 
         return Inertia::render('Customer/Dashboard/Index', [
             'user' => [
-                'name' => $user->name,
-                'email' => $user->email,
-                'created_at' => $user->created_at?->format('F j, Y'),
+                'user_type' => $user->userType()->value,
+                'is_diamond' => $user->isDiamond(),
             ],
-            'wallet' => WalletData::forUser($user),
+            'orders' => CustomerOrderData::forDashboard($user),
+            'event' => UserEventData::activeForDashboard($user),
         ]);
     }
 }

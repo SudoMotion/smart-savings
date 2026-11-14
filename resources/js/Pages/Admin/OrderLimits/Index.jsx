@@ -16,7 +16,7 @@ import { useState } from 'react';
 function formatLimit(value) {
     const n = Number(value);
     if (Number.isNaN(n)) return value;
-    return n.toFixed(2);
+    return String(Math.trunc(n));
 }
 
 export default function Index({
@@ -83,9 +83,9 @@ export default function Index({
                         <Input
                             id="global_order_limit"
                             type="number"
-                            step="0.01"
+                            step="1"
                             min="0"
-                            label="Global limit"
+                            label="Global order limit"
                             wrapperClassName="sm:max-w-xs flex-1"
                             value={globalForm.data.global_order_limit}
                             error={globalForm.errors.global_order_limit}

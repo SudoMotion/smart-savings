@@ -63,6 +63,30 @@ class HandleInertiaRequests extends Middleware
 
                 return WalletData::forUser($user);
             },
+            'totalWallet' => function () use ($request) {
+                $user = $request->user();
+
+                if (! $user) {
+                    return [
+                        'balance' => 0,
+                        'formatted_balance' => '0.00',
+                    ];
+                }
+
+                return WalletData::totalForUser($user);
+            },
+            'earningWallet' => function () use ($request) {
+                $user = $request->user();
+
+                if (! $user) {
+                    return [
+                        'balance' => 0,
+                        'formatted_balance' => '0.00',
+                    ];
+                }
+
+                return WalletData::earningForUser($user);
+            },
             'vendor_email' => fn () => session('vendor_application_data')['email'] ?? null,
         ];
     }

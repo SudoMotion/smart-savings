@@ -23,7 +23,7 @@ class UserOrderLimit extends Model
     protected function casts(): array
     {
         return [
-            'order_limit' => 'decimal:2',
+            'order_limit' => 'integer',
             'order_reset_interval' => OrderResetInterval::class,
         ];
     }

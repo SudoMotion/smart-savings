@@ -2,8 +2,8 @@ import { Link, usePage, router } from '@inertiajs/react';
 import { useState, useEffect, useRef } from 'react';
 
 export default function FrontendNavbar({ categories = [] }) {
-    const { site, auth, filters: pageFilters, wallet } = usePage().props;
-    const walletBalance = wallet?.formatted_balance ?? '0.00';
+    const { site, auth, filters: pageFilters, totalWallet, wallet } = usePage().props;
+    const walletBalance = totalWallet?.formatted_balance ?? wallet?.formatted_balance ?? '0.00';
     const [searchTerm, setSearchTerm] = useState(pageFilters?.search || '');
     const [selectedCategory, setSelectedCategory] = useState(pageFilters?.category || '');
     const [drawerOpen, setDrawerOpen] = useState(false);

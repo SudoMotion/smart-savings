@@ -36,6 +36,17 @@ class AuthenticatedSessionController extends Controller
         }
 
         $user = Auth::user();
+
+        if (! $user->canLogin()) {
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            throw ValidationException::withMessages([
+                'email' => 'Your account has been disabled.',
+            ]);
+        }
+
         $isSuperAdmin = $user->hasRole(Permissions::SUPERADMIN_ROLE);
         $isVendor = $user->hasRole('vendor') || $user->vendor()->exists();
 

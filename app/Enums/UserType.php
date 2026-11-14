@@ -2,9 +2,8 @@
 
 namespace App\Enums;
 
-enum AccountType: string
+enum UserType: string
 {
-    case InactiveMember = 'inactive_member';
     case GoldMember = 'gold_member';
     case DiamondMember = 'diamond_member';
     case Disable = 'disable';
@@ -12,11 +11,20 @@ enum AccountType: string
     public function label(): string
     {
         return match ($this) {
-            self::InactiveMember => 'Inactive member',
             self::GoldMember => 'Gold Member',
             self::DiamondMember => 'Diamond Member',
             self::Disable => 'Disable',
         };
+    }
+
+    public function canLogin(): bool
+    {
+        return $this !== self::Disable;
+    }
+
+    public function canProcessOrders(): bool
+    {
+        return $this === self::GoldMember;
     }
 
     /**

@@ -20,6 +20,14 @@ function MenuProfileIcon({ className }) {
     );
 }
 
+function MenuLogsIcon({ className }) {
+    return (
+        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2Z" />
+        </svg>
+    );
+}
+
 function MenuPercentIcon({ className }) {
     return (
         <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
@@ -83,6 +91,7 @@ function MenuLink({ href, icon: Icon, children, onNavigate }) {
 
 const panelMenuItems = [
     { href: () => route('account.dashboard'), label: 'Home', icon: MenuHomeIcon },
+    { href: () => route('account.order-logs'), label: 'Order logs', icon: MenuLogsIcon },
     { href: () => route('account.profile'), label: 'Profile', icon: MenuProfileIcon },
     { href: () => route('account.percentage'), label: 'My percentage', icon: MenuPercentIcon },
     { href: () => route('account.deposit'), label: 'Deposit funds', icon: MenuDepositIcon },

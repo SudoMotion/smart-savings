@@ -2,15 +2,17 @@ import Container from '@/Components/Frontend/Container';
 import SectionHeading from '@/Components/Frontend/SectionHeading';
 import { AdminForm, AdminFormGrid } from '@/Components/Admin/AdminForm';
 import { Alert, Button, Card, Input, Textarea } from '@/Components/UI';
+import CustomerPanelLayout from '@/Layouts/Frontend/CustomerPanelLayout';
 import FrontendLayout from '@/Layouts/Frontend/FrontendLayout';
 import { Head, useForm, usePage } from '@inertiajs/react';
 
 export default function Index() {
-    const { site, flash } = usePage().props;
+    const { site, flash, auth } = usePage().props;
+    const Layout = auth?.user ? CustomerPanelLayout : FrontendLayout;
 
-    const { data, setData, post, processing, errors } = useForm({
-        name: '',
-        email: '',
+    const { data, setData, post, processing, errors, reset } = useForm({
+        name: auth?.user?.name ?? '',
+        email: auth?.user?.email ?? '',
         subject: '',
         message: '',
     });
@@ -20,18 +22,17 @@ export default function Index() {
         post(route('contact.store'), {
             preserveScroll: true,
             onSuccess: () => {
-                setData({
-                    name: '',
-                    email: '',
-                    subject: '',
-                    message: '',
-                });
+                if (auth?.user) {
+                    reset('subject', 'message');
+                } else {
+                    reset();
+                }
             },
         });
     };
 
     return (
-        <FrontendLayout>
+        <Layout>
             <Head title="Contact Us" />
 
             <section className="border-b border-neutral-200 bg-neutral-50 py-14 sm:py-16">
@@ -52,8 +53,8 @@ export default function Index() {
                         </Alert>
                     )}
 
-                    <div className="grid gap-10 lg:grid-cols-5">
-                        <div className="lg:col-span-2">
+                    <div className="">
+                        {/* <div className="lg:col-span-2">
                             <Card bodyClassName="p-5">
                                 <h3 className="text-base font-medium text-neutral-900">
                                     Contact Information
@@ -91,7 +92,7 @@ export default function Index() {
                                     />
                                 </Card>
                             )}
-                        </div>
+                        </div> */}
 
                         <div className="lg:col-span-3">
                             <Card title="Send a Message">
@@ -148,6 +149,6 @@ export default function Index() {
                     </div>
                 </Container>
             </section>
-        </FrontendLayout>
+        </Layout>
     );
 }

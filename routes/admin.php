@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\SubcategoryController;
 use App\Http\Controllers\Admin\SubsubcategoryController;
 use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\UserOrderLogController;
 use App\Http\Controllers\Admin\VendorApplicationController;
 use App\Http\Controllers\Admin\VendorController;
 use App\Http\Controllers\Admin\VendorPermissionController;
@@ -98,18 +99,23 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('users', [UserController::class, 'store'])
                 ->middleware('permission:users.create')
                 ->name('users.store');
+            Route::get('users/{user}/order-logs', [UserOrderLogController::class, 'index'])
+                ->name('users.order-logs');
             Route::get('users/{user}/edit', [UserController::class, 'edit'])
                 ->middleware('permission:users.edit')
                 ->name('users.edit');
+            Route::get('users/{user}/edit-password', [UserController::class, 'editPassword'])
+                ->middleware('permission:users.edit')
+                ->name('users.edit-password');
+            Route::put('users/{user}/password', [UserController::class, 'updatePassword'])
+                ->middleware('permission:users.edit')
+                ->name('users.update-password');
             Route::put('users/{user}', [UserController::class, 'update'])
                 ->middleware('permission:users.edit')
                 ->name('users.update');
             Route::patch('users/{user}/percentage', [UserController::class, 'updatePercentage'])
                 ->middleware('permission:users.edit')
                 ->name('users.update-percentage');
-            Route::patch('users/{user}/account-type', [UserController::class, 'updateAccountType'])
-                ->middleware('permission:users.edit')
-                ->name('users.update-account-type');
             Route::delete('users/{user}', [UserController::class, 'destroy'])
                 ->middleware('permission:users.delete')
                 ->name('users.destroy');

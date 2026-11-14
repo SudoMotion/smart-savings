@@ -2,11 +2,9 @@
 
 namespace App\Http\Requests\Admin;
 
-use App\Enums\AccountType;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class UpdateUserAccountTypeRequest extends FormRequest
+class UpdateUserPasswordRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -19,7 +17,7 @@ class UpdateUserAccountTypeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'account_type' => ['required', Rule::enum(AccountType::class)],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ];
     }
 }

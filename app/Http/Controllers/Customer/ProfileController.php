@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Customer\UpdateProfileRequest;
 use App\Support\WalletData;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -18,9 +20,25 @@ class ProfileController extends Controller
             'user' => [
                 'name' => $user->name,
                 'email' => $user->email,
+                'user_type' => $user->userType()->value,
+                'user_type_label' => $user->userType()->label(),
                 'created_at' => $user->created_at?->format('F j, Y'),
             ],
-            'wallet' => WalletData::forUser($user),
+            'wallet' => WalletData::totalForUser($user),
         ]);
+    }
+
+    public function update(UpdateProfileRequest $request): RedirectResponse
+    {
+        $user = $request->user();
+        $user->fill($request->validated());
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
+        $user->save();
+
+        return back()->with('success', 'Profile updated.');
     }
 }

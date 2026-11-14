@@ -2,6 +2,7 @@ import { Link } from '@inertiajs/react';
 
 export default function AdminPageHeader({
     title,
+    titleAside,
     description,
     backHref,
     backLabel,
@@ -18,9 +19,12 @@ export default function AdminPageHeader({
                         &larr; {backLabel}
                     </Link>
                 )}
-                <h2 className={`text-xl font-medium text-neutral-900 ${backHref ? 'mt-2' : ''}`}>
-                    {title}
-                </h2>
+                <div
+                    className={`flex flex-wrap items-center gap-x-3 gap-y-1 ${backHref ? 'mt-2' : ''}`}
+                >
+                    <h2 className="text-xl font-medium text-neutral-900">{title}</h2>
+                    {titleAside}
+                </div>
                 {description && (
                     <p className="mt-1 text-sm text-neutral-500">{description}</p>
                 )}

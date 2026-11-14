@@ -54,10 +54,10 @@ export default function Create({
                             <Input
                                 id="order_limit"
                                 type="number"
-                                step="0.01"
+                                step="1"
                                 min="0"
                                 label="Order limit"
-                                placeholder="0.00"
+                                placeholder="0"
                                 wrapperClassName="sm:col-span-2 lg:col-span-1 xl:col-span-2"
                                 value={data.order_limit}
                                 error={errors.order_limit}

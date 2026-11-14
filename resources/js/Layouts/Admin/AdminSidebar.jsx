@@ -91,7 +91,7 @@ const vendorCatalogItems = [
 
 const topLevelItems = [
     { name: 'Dashboard', href: 'admin.dashboard', active: 'admin.dashboard', icon: DashboardIcon, permission: 'dashboard.view' },
-    { name: 'User List', href: 'admin.users.index', active: 'admin.users.*', icon: UsersIcon, permission: 'users.view' },
+    { name: 'User Management', href: 'admin.users.index', active: 'admin.users.*', icon: UsersIcon, permission: 'users.view' },
     { name: 'Deposit Options', href: 'admin.deposit-options.index', active: 'admin.deposit-options.*', icon: DepositOptionsIcon, permission: 'deposit-options.view' },
     { name: 'Deposit Requests', href: 'admin.deposit-requests.index', active: 'admin.deposit-requests.*', icon: DepositOptionsIcon, permission: 'deposit-requests.view' },
     { name: 'Withdraw Requests', href: 'admin.withdraw-requests.index', active: 'admin.withdraw-requests.*', icon: DepositOptionsIcon, permission: 'withdraw-requests.view' },

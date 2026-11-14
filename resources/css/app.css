@@ -1,3 +1,16 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Tawk.to widget — sit above bottom safe area / mobile nav */
+#tawk-bubble-container,
+.tawk-min-container {
+    bottom: 3rem !important;
+}
+
+@media (max-width: 767px) {
+    #tawk-bubble-container,
+    .tawk-min-container {
+        bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)) !important;
+    }
+}

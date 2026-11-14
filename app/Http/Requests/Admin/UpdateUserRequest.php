@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Enums\UserType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Spatie\Permission\Models\Role;
 
 class UpdateUserRequest extends FormRequest
 {
@@ -24,8 +24,17 @@ class UpdateUserRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
-            'password' => ['nullable', 'string', 'min:8', 'confirmed'],
-            'role' => ['required', 'string', Rule::exists('roles', 'name')->where('guard_name', 'web')],
+            'user_type' => ['required', Rule::enum(UserType::class)],
+            'events' => ['exclude_unless:user_type,diamond_member', 'nullable', 'array'],
+            'events.*.id' => [
+                'nullable',
+                'integer',
+                Rule::exists('user_events', 'id')->where('user_id', $user->id),
+            ],
+            'events.*.first_window_text' => ['required', 'string'],
+            'events.*.bonus_amount' => ['required', 'numeric', 'min:0'],
+            'events.*.deposit_amount' => ['required', 'numeric', 'min:0'],
+            'events.*.expire_on' => ['required', 'date'],
         ];
     }
 }
