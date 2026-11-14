@@ -56,7 +56,7 @@ export default function Create({
                                 type="number"
                                 step="0.01"
                                 min="0"
-                                label="Order limit (USD)"
+                                label="Order limit"
                                 placeholder="0.00"
                                 wrapperClassName="sm:col-span-2 lg:col-span-1 xl:col-span-2"
                                 value={data.order_limit}

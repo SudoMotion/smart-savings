@@ -85,7 +85,7 @@ export default function Index({
                             type="number"
                             step="0.01"
                             min="0"
-                            label="Global limit (USD)"
+                            label="Global limit"
                             wrapperClassName="sm:max-w-xs flex-1"
                             value={globalForm.data.global_order_limit}
                             error={globalForm.errors.global_order_limit}
@@ -168,7 +168,7 @@ export default function Index({
                                             <div className="text-xs text-neutral-500">{row.user?.email}</div>
                                         </td>
                                         <td className="px-4 py-3 text-sm font-semibold text-neutral-900">
-                                            ${formatLimit(row.order_limit)}
+                                            {formatLimit(row.order_limit)}
                                         </td>
                                         <td className="px-4 py-3 text-xs text-neutral-600">
                                             {row.updated_at
