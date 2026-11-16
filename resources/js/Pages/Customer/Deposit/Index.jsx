@@ -2,7 +2,7 @@ import Container from '@/Components/Frontend/Container';
 import ResultPopup from '@/Components/Frontend/ResultPopup';
 import SectionHeading from '@/Components/Frontend/SectionHeading';
 import Modal from '@/Components/Modal';
-import { Button, Card, FileInput, Input, Select } from '@/Components/UI';
+import { Button, Card, Input, Select } from '@/Components/UI';
 import CustomerPanelLayout from '@/Layouts/Frontend/CustomerPanelLayout';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -88,8 +88,6 @@ export default function Index({ depositOptions = [], recentRequests = [], wallet
     const { data, setData, post, processing, errors, reset } = useForm({
         deposit_option_id: optionChoices[0]?.value ?? '',
         amount: '',
-        transaction_id: '',
-        proof: null,
     });
 
     const selectedOption = useMemo(
@@ -100,10 +98,9 @@ export default function Index({ depositOptions = [], recentRequests = [], wallet
     const submit = (e) => {
         e.preventDefault();
         post(route('account.deposit.store'), {
-            forceFormData: true,
             preserveScroll: true,
             onSuccess: () => {
-                reset('amount', 'transaction_id', 'proof');
+                reset('amount');
             },
             onError: (pageErrors) => {
                 setResultPopup({
@@ -242,25 +239,6 @@ export default function Index({ depositOptions = [], recentRequests = [], wallet
                                         onChange={(e) => setData('amount', e.target.value)}
                                     />
 
-                                    <Input
-                                        id="transaction_id"
-                                        label="Transaction ID"
-                                        placeholder="Paste your on-chain or payment reference"
-                                        value={data.transaction_id}
-                                        error={errors.transaction_id}
-                                        required
-                                        onChange={(e) => setData('transaction_id', e.target.value)}
-                                    />
-
-                                    <FileInput
-                                        id="proof"
-                                        label="Screenshot / proof (optional)"
-                                        accept="image/jpeg,image/png,image/jpg,image/webp"
-                                        hint="JPEG, PNG, or WebP, max 5 MB"
-                                        error={errors.proof}
-                                        onChange={(e) => setData('proof', e.target.files?.[0] ?? null)}
-                                    />
-
                                     <Button type="submit" disabled={processing} className="w-full sm:w-auto">
                                         {processing ? 'Submitting…' : 'Submit for review'}
                                     </Button>
@@ -278,9 +256,7 @@ export default function Index({ depositOptions = [], recentRequests = [], wallet
                                             <th className="pb-2 pr-4">Date</th>
                                             <th className="pb-2 pr-4">Coin</th>
                                             <th className="pb-2 pr-4">Amount</th>
-                                            <th className="pb-2 pr-4">Transaction ID</th>
-                                            <th className="pb-2 pr-4">Status</th>
-                                            <th className="pb-2">Proof</th>
+                                            <th className="pb-2">Status</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-neutral-100">
@@ -297,10 +273,7 @@ export default function Index({ depositOptions = [], recentRequests = [], wallet
                                                         {req.coin_type}
                                                     </td>
                                                     <td className="py-3 pr-4">${formatAmount(req.amount)}</td>
-                                                    <td className="max-w-[10rem] truncate py-3 pr-4 font-mono text-xs text-neutral-700">
-                                                        {req.transaction_id}
-                                                    </td>
-                                                    <td className="py-3 pr-4">
+                                                    <td className="py-3">
                                                         <span
                                                             className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset ${badge.className}`}
                                                         >
@@ -310,20 +283,6 @@ export default function Index({ depositOptions = [], recentRequests = [], wallet
                                                             <p className="mt-1 text-xs text-neutral-500">
                                                                 {req.admin_note}
                                                             </p>
-                                                        )}
-                                                    </td>
-                                                    <td className="py-3">
-                                                        {req.proof_url ? (
-                                                            <a
-                                                                href={req.proof_url}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                className="text-[#007185] hover:underline"
-                                                            >
-                                                                View
-                                                            </a>
-                                                        ) : (
-                                                            <span className="text-neutral-400">—</span>
                                                         )}
                                                     </td>
                                                 </tr>

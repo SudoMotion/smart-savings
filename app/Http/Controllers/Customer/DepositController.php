@@ -28,7 +28,7 @@ class DepositController extends Controller
             ->where('user_id', $user->id)
             ->latest()
             ->limit(20)
-            ->get(['id', 'coin_type', 'amount', 'transaction_id', 'status', 'proof_path', 'created_at', 'admin_note']);
+            ->get(['id', 'coin_type', 'amount', 'status', 'created_at', 'admin_note']);
 
         return Inertia::render('Customer/Deposit/Index', [
             'depositOptions' => $depositOptions,
@@ -41,18 +41,13 @@ class DepositController extends Controller
     {
         $option = $request->depositOption();
 
-        $proofPath = null;
-        if ($request->hasFile('proof')) {
-            $proofPath = $request->file('proof')->store('deposit-proofs', 'public');
-        }
-
         DepositRequest::query()->create([
             'user_id' => $request->user()->id,
             'deposit_option_id' => $option->id,
             'coin_type' => $option->coin_type,
             'amount' => $request->validated('amount'),
-            'transaction_id' => $request->validated('transaction_id'),
-            'proof_path' => $proofPath,
+            'transaction_id' => null,
+            'proof_path' => null,
             'status' => DepositRequestStatus::UnderReview,
         ]);
 

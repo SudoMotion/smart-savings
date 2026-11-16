@@ -25,8 +25,6 @@ class StoreDepositRequest extends FormRequest
                 Rule::exists('deposit_options', 'id')->where('status', 'active'),
             ],
             'amount' => ['required', 'numeric', 'min:0.01'],
-            'transaction_id' => ['required', 'string', 'max:255'],
-            'proof' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:5120'],
         ];
     }
 
