@@ -10,7 +10,6 @@ use App\Http\Requests\Admin\UpdateUserPercentageRequest;
 use App\Http\Requests\Admin\UpdateUserRequest;
 use App\Models\User;
 use App\Models\UserEvent;
-use App\Support\Permissions;
 use App\Support\WalletData;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -26,6 +25,7 @@ class UserController extends Controller
         $type = $request->query('type');
 
         $query = User::query()
+            ->excludingStaffAccounts()
             ->with(['roles', 'vendor', 'wallet'])
             ->latest('id');
 
@@ -40,8 +40,6 @@ class UserController extends Controller
             $query->whereDoesntHave('roles')->whereDoesntHave('vendor');
         } elseif ($type === 'vendor') {
             $query->whereHas('vendor');
-        } elseif ($type === 'staff') {
-            $query->whereHas('roles');
         }
 
         $users = $query
@@ -60,11 +58,12 @@ class UserController extends Controller
                 'created_at' => $user->created_at?->format('Y-m-d H:i'),
             ]);
 
+        $managedUsers = User::query()->excludingStaffAccounts();
+
         $counts = [
-            'all' => User::count(),
-            'customer' => User::whereDoesntHave('roles')->whereDoesntHave('vendor')->count(),
-            'vendor' => User::whereHas('vendor')->count(),
-            'staff' => User::whereHas('roles')->count(),
+            'all' => (clone $managedUsers)->count(),
+            'customer' => (clone $managedUsers)->whereDoesntHave('vendor')->count(),
+            'vendor' => (clone $managedUsers)->whereHas('vendor')->count(),
         ];
 
         return Inertia::render('Admin/Users/Index', [
@@ -104,6 +103,8 @@ class UserController extends Controller
 
     public function edit(User $user): Response
     {
+        $this->ensureManagedUser($user);
+
         $wallet = WalletData::totalForUser($user);
 
         return Inertia::render('Admin/Users/Edit', [
@@ -132,6 +133,8 @@ class UserController extends Controller
 
     public function editPassword(User $user): Response
     {
+        $this->ensureManagedUser($user);
+
         return Inertia::render('Admin/Users/EditPassword', [
             'user' => [
                 'id' => $user->id,
@@ -143,6 +146,8 @@ class UserController extends Controller
 
     public function updatePassword(UpdateUserPasswordRequest $request, User $user): RedirectResponse
     {
+        $this->ensureManagedUser($user);
+
         $user->update([
             'password' => $request->validated('password'),
         ]);
@@ -154,6 +159,8 @@ class UserController extends Controller
 
     public function updatePercentage(UpdateUserPercentageRequest $request, User $user): RedirectResponse
     {
+        $this->ensureManagedUser($user);
+
         $user->update([
             'percentage' => $request->validated('percentage'),
         ]);
@@ -165,6 +172,8 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, User $user): RedirectResponse
     {
+        $this->ensureManagedUser($user);
+
         DB::transaction(function () use ($request, $user) {
             $user->update([
                 'name' => $request->validated('name'),
@@ -184,6 +193,8 @@ class UserController extends Controller
 
     public function destroy(User $user): RedirectResponse
     {
+        $this->ensureManagedUser($user);
+
         if ($user->id === auth()->id()) {
             return redirect()
                 ->route('admin.users.index')
@@ -232,14 +243,17 @@ class UserController extends Controller
 
     private function portalType(User $user): string
     {
-        if ($user->hasRole(Permissions::SUPERADMIN_ROLE) || $user->roles->isNotEmpty()) {
-            return 'staff';
-        }
-
         if ($user->vendor) {
             return 'vendor';
         }
 
         return 'customer';
+    }
+
+    private function ensureManagedUser(User $user): void
+    {
+        if ($user->isStaffAccount()) {
+            abort(404);
+        }
     }
 }

@@ -4,9 +4,11 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\UserType;
+use App\Support\Permissions;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -71,6 +73,25 @@ class User extends Authenticatable
     public function canLogin(): bool
     {
         return $this->userType()->canLogin();
+    }
+
+    public function isStaffAccount(): bool
+    {
+        return $this->hasRole(Permissions::SUPERADMIN_ROLE) || $this->roles()->exists();
+    }
+
+    public function canAccessAdminPanel(): bool
+    {
+        return $this->hasRole(Permissions::SUPERADMIN_ROLE) || $this->can('dashboard.view');
+    }
+
+    /**
+     * @param  Builder<User>  $query
+     * @return Builder<User>
+     */
+    public function scopeExcludingStaffAccounts(Builder $query): Builder
+    {
+        return $query->whereDoesntHave('roles');
     }
 
     public function isRegular(): bool

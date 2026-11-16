@@ -18,13 +18,11 @@ import { useEffect, useState } from 'react';
 const portalTypeStyles = {
     customer: 'bg-sky-50 text-sky-700',
     vendor: 'bg-emerald-50 text-emerald-700',
-    staff: 'bg-indigo-50 text-indigo-700',
 };
 
 const portalTypeLabels = {
     customer: 'Customer',
     vendor: 'Vendor',
-    staff: 'Staff',
 };
 
 const userTypeStyles = {
@@ -95,7 +93,7 @@ export default function Index({ users, filters, counts, can }) {
 
             <AdminPageHeader
                 title="User Management"
-                description="View and manage customers, vendors, and staff accounts."
+                description="View and manage customer and vendor accounts. Admin/staff users are managed via Roles and are not listed here."
                 actions={
                     can.create ? (
                         <Link href={route('admin.users.create')}>
@@ -145,17 +143,6 @@ export default function Index({ users, filters, counts, can }) {
                         }`}
                     >
                         Vendors ({counts.vendor})
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => handleFilterType('staff')}
-                        className={`rounded-md px-3 py-1.5 text-xs font-medium transition ${
-                            filters.type === 'staff'
-                                ? 'bg-indigo-600 text-white'
-                                : 'border border-neutral-200 bg-white text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
-                        }`}
-                    >
-                        Staff ({counts.staff})
                     </button>
                 </div>
 
