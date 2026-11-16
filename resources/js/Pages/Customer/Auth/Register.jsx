@@ -1,15 +1,16 @@
 import Container from '@/Components/Frontend/Container';
 import SectionHeading from '@/Components/Frontend/SectionHeading';
-import { Button, Input } from '@/Components/UI';
+import { Alert, Button, Input } from '@/Components/UI';
 import FrontendLayout from '@/Layouts/Frontend/FrontendLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 
-export default function Register() {
+export default function Register({ referralCode = null, referrerName = null }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
         password: '',
         password_confirmation: '',
+        referral_code: referralCode ?? '',
     });
 
     const submit = (e) => {
@@ -37,6 +38,18 @@ export default function Register() {
             <section className="py-10 sm:py-12">
                 <Container>
                     <div className="mx-auto max-w-md rounded-sm border border-neutral-200 bg-white p-6 shadow-sm">
+                        {errors.referral_code && (
+                            <Alert variant="error" className="mb-4">
+                                {errors.referral_code}
+                            </Alert>
+                        )}
+                        {referralCode && (
+                            <div className="mb-4 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-900">
+                                {referrerName
+                                    ? `You were invited by ${referrerName}. Complete signup, then make a deposit to activate their referral reward.`
+                                    : 'You are signing up with a referral link.'}
+                            </div>
+                        )}
                         <form onSubmit={submit} className="space-y-4">
                             <Input
                                 id="name"

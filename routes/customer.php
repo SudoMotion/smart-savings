@@ -8,6 +8,7 @@ use App\Http\Controllers\Customer\DepositController;
 use App\Http\Controllers\Customer\OrderLogController;
 use App\Http\Controllers\Customer\PercentageController;
 use App\Http\Controllers\Customer\ProfileController;
+use App\Http\Controllers\Customer\ReferralController;
 use App\Http\Controllers\Customer\WithdrawController;
 use Illuminate\Support\Facades\Route;
 
@@ -39,5 +40,6 @@ Route::prefix('account')->name('account.')->group(function () {
         Route::get('profile', [ProfileController::class, 'index'])->name('profile');
         Route::patch('profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::get('percentage', [PercentageController::class, 'index'])->name('percentage');
+        Route::get('referral', [ReferralController::class, 'index'])->name('referral');
     });
 });

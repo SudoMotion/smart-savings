@@ -10,6 +10,10 @@ use InvalidArgumentException;
 
 class DepositRequestService
 {
+    public function __construct(
+        private ReferralService $referralService,
+    ) {}
+
     public function approve(DepositRequest $depositRequest, User $reviewer): void
     {
         DB::transaction(function () use ($depositRequest, $reviewer) {
@@ -31,6 +35,8 @@ class DepositRequestService
                 'reviewed_by' => $reviewer->id,
                 'reviewed_at' => now(),
             ]);
+
+            $this->referralService->processRewardForApprovedDeposit($locked->fresh(['user.referrer']));
         });
     }
 
