@@ -5,7 +5,6 @@ namespace App\Http\Requests\Customer;
 use App\Enums\DepositRequestStatus;
 use App\Models\DepositOption;
 use App\Models\WithdrawRequest;
-use App\Support\WithdrawRules;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -29,17 +28,7 @@ class StoreWithdrawRequest extends FormRequest
                 Rule::exists('deposit_options', 'id')->where('status', 'active'),
             ],
             'wallet_address' => ['required', 'string', 'max:500'],
-            'amount' => ['required', 'numeric', 'min:'.WithdrawRules::MINIMUM_AMOUNT_USD],
-        ];
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    public function messages(): array
-    {
-        return [
-            'amount.min' => 'Each withdraw request must be at least $'.number_format(WithdrawRules::MINIMUM_AMOUNT_USD, 2, '.', '').'.',
+            'amount' => ['required', 'numeric', 'min:0.01'],
         ];
     }
 
@@ -59,15 +48,6 @@ class StoreWithdrawRequest extends FormRequest
                 ->sum('amount');
 
             $available = (float) $wallet->balance - (float) $pending;
-
-            if ($available < WithdrawRules::MINIMUM_AMOUNT_USD) {
-                $validator->errors()->add(
-                    'amount',
-                    'You need at least $'.number_format(WithdrawRules::MINIMUM_AMOUNT_USD, 2, '.', '').' available balance to request a withdrawal.'
-                );
-
-                return;
-            }
 
             if ($amount > $available) {
                 $validator->errors()->add(

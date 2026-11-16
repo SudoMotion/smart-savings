@@ -8,7 +8,6 @@ use App\Http\Requests\Customer\StoreWithdrawRequest;
 use App\Models\DepositOption;
 use App\Models\WithdrawRequest;
 use App\Support\WalletData;
-use App\Support\WithdrawRules;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -39,19 +38,10 @@ class WithdrawController extends Controller
                 'admin_note',
             ]);
 
-        $wallet = WalletData::forUser($user);
-        $pending = (float) WithdrawRequest::query()
-            ->where('user_id', $user->id)
-            ->where('status', DepositRequestStatus::UnderReview)
-            ->sum('amount');
-        $availableBalance = (float) ($wallet['balance'] ?? 0) - $pending;
-
         return Inertia::render('Customer/Withdraw/Index', [
             'depositOptions' => $depositOptions,
             'recentRequests' => $recentRequests,
-            'wallet' => $wallet,
-            'minimumWithdrawAmount' => WithdrawRules::MINIMUM_AMOUNT_USD,
-            'canSubmitWithdraw' => $availableBalance >= WithdrawRules::MINIMUM_AMOUNT_USD,
+            'wallet' => WalletData::forUser($user),
         ]);
     }
 
