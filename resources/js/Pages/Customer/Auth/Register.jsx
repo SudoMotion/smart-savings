@@ -98,6 +98,16 @@ export default function Register({ referralCode = null, referrerName = null }) {
                                 onChange={(e) => setData('password_confirmation', e.target.value)}
                             />
 
+                            <Input
+                                id="referral_code"
+                                label="Referral code (optional)"
+                                placeholder="Friend's referral code"
+                                value={data.referral_code}
+                                error={errors.referral_code}
+                                autoComplete="off"
+                                onChange={(e) => setData('referral_code', e.target.value.toUpperCase())}
+                            />
+
                             <Button type="submit" className="w-full" disabled={processing}>
                                 Create account
                             </Button>

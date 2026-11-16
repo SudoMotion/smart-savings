@@ -24,11 +24,10 @@ class RegisteredUserController extends Controller
 
     public function create(Request $request): Response
     {
-        if ($request->filled('ref')) {
-            $request->session()->put('referral_code', strtoupper((string) $request->query('ref')));
-        }
+        $referralCode = $request->filled('ref')
+            ? strtoupper((string) $request->query('ref'))
+            : null;
 
-        $referralCode = $request->session()->get('referral_code');
         $referrerName = null;
 
         if ($referralCode) {
@@ -54,10 +53,10 @@ class RegisteredUserController extends Controller
             'referral_code' => ['nullable', 'string', 'max:16'],
         ]);
 
-        $referralInput = $request->input('referral_code')
-            ?? $request->session()->get('referral_code');
-
-        $referrer = $this->referralService->assertValidReferralCode($referralInput);
+        $referralInput = $request->input('referral_code');
+        $referrer = $this->referralService->assertValidReferralCode(
+            is_string($referralInput) && trim($referralInput) !== '' ? $referralInput : null
+        );
 
         $user = User::create([
             'name' => $request->name,
@@ -68,8 +67,6 @@ class RegisteredUserController extends Controller
         ]);
 
         $this->referralService->ensureReferralCode($user);
-        $request->session()->forget('referral_code');
-
         event(new Registered($user));
 
         Auth::login($user);
