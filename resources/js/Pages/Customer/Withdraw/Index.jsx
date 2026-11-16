@@ -39,7 +39,13 @@ function firstFormError(errors) {
     return null;
 }
 
-export default function Index({ depositOptions = [], recentRequests = [], wallet }) {
+export default function Index({
+    depositOptions = [],
+    recentRequests = [],
+    wallet,
+    minimumWithdrawAmount = 300,
+    canSubmitWithdraw = true,
+}) {
     const { flash } = usePage().props;
     const [resultPopup, setResultPopup] = useState({ show: false, variant: 'success', message: '' });
 
@@ -114,7 +120,8 @@ export default function Index({ depositOptions = [], recentRequests = [], wallet
                             ${wallet?.formatted_balance ?? '0.00'}
                         </p>
                         <p className="mt-1 text-sm text-neutral-500">
-                            Approved withdrawals are deducted from this balance.
+                            Approved withdrawals are deducted from this balance. Minimum withdraw amount is $
+                            {formatAmount(minimumWithdrawAmount)} (available balance must meet this minimum).
                         </p>
                     </Card>
 
@@ -162,16 +169,23 @@ export default function Index({ depositOptions = [], recentRequests = [], wallet
                             </div>
 
                             <Card title="Submit withdraw request">
+                                {!canSubmitWithdraw && (
+                                    <p className="mb-4 text-sm text-amber-800">
+                                        Your available balance is below ${formatAmount(minimumWithdrawAmount)}. You
+                                        cannot submit a withdraw request until your balance meets the minimum.
+                                    </p>
+                                )}
                                 <form onSubmit={submit} className="space-y-4">
                                     <Input
                                         id="amount"
                                         type="number"
                                         step="0.01"
-                                        min="0.01"
+                                        min={String(minimumWithdrawAmount)}
                                         label="Amount (USD)"
                                         value={data.amount}
                                         error={errors.amount}
                                         required
+                                        disabled={!canSubmitWithdraw}
                                         onChange={(e) => setData('amount', e.target.value)}
                                     />
 
@@ -190,7 +204,11 @@ export default function Index({ depositOptions = [], recentRequests = [], wallet
                                         <p className="text-sm text-red-600">{errors.deposit_option_id}</p>
                                     )}
 
-                                    <Button type="submit" disabled={processing} className="w-full sm:w-auto">
+                                    <Button
+                                        type="submit"
+                                        disabled={processing || !canSubmitWithdraw}
+                                        className="w-full sm:w-auto"
+                                    >
                                         {processing ? 'Submitting…' : 'Submit for review'}
                                     </Button>
                                 </form>
