@@ -38,6 +38,7 @@ class RegisteredUserController extends Controller
         return Inertia::render('Customer/Auth/Register', [
             'referralCode' => $referralCode,
             'referrerName' => $referrerName,
+            'referralCodeFromQuery' => $request->filled('ref'),
         ]);
     }
 

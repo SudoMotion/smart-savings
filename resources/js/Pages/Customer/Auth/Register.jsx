@@ -4,7 +4,11 @@ import { Alert, Button, Input } from '@/Components/UI';
 import FrontendLayout from '@/Layouts/Frontend/FrontendLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 
-export default function Register({ referralCode = null, referrerName = null }) {
+export default function Register({
+    referralCode = null,
+    referrerName = null,
+    referralCodeFromQuery = false,
+}) {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
@@ -105,6 +109,8 @@ export default function Register({ referralCode = null, referrerName = null }) {
                                 value={data.referral_code}
                                 error={errors.referral_code}
                                 autoComplete="off"
+                                readOnly={referralCodeFromQuery}
+                                className={referralCodeFromQuery ? 'bg-neutral-50 text-neutral-700' : ''}
                                 onChange={(e) => setData('referral_code', e.target.value.toUpperCase())}
                             />
 
