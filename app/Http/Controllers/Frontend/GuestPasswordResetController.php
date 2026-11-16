@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Mail\GuestPasswordResetMail;
 use App\Models\User;
+use App\Support\MailDelivery;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -45,11 +46,14 @@ class GuestPasswordResetController extends Controller
             ],
         ]);
 
-        try {
-            Mail::to($email)->send(
+        $sent = MailDelivery::attempt(
+            fn () => Mail::to($email)->send(
                 new GuestPasswordResetMail($verificationCode, $email)
-            );
-        } catch (\Throwable $e) {
+            ),
+            'guest_password_reset'
+        );
+
+        if (! $sent) {
             session()->forget('guest_password_reset');
 
             return redirect()
@@ -134,11 +138,14 @@ class GuestPasswordResetController extends Controller
         $resetData['verification_code_expires_at'] = now()->addMinutes(10);
         session(['guest_password_reset' => $resetData]);
 
-        try {
-            Mail::to($resetData['email'])->send(
+        $sent = MailDelivery::attempt(
+            fn () => Mail::to($resetData['email'])->send(
                 new GuestPasswordResetMail($verificationCode, $resetData['email'])
-            );
-        } catch (\Throwable $e) {
+            ),
+            'guest_password_reset_resend'
+        );
+
+        if (! $sent) {
             return redirect()
                 ->back()
                 ->with('error', 'We could not send the verification email. Please try again later.');

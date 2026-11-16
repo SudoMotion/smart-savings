@@ -212,6 +212,16 @@ php artisan route:cache
 php artisan view:cache
 ```
 
+### Email (production VPS)
+
+Set `MAIL_MAILER=smtp`, host/port/credentials, and `MAIL_FROM_ADDRESS` (must match or be allowed by your SMTP provider). After any `.env` mail change, run `php artisan config:clear` or re-run `config:cache`. Verify delivery with:
+
+```bash
+php artisan mail:test you@example.com
+```
+
+If sending fails, check `storage/logs/laravel.log` for `Outgoing mail failed.` (host, port, scheme, and error message). Ensure outbound **465** (SMTPS) or **587** (STARTTLS) is open; on Debian/Ubuntu install `ca-certificates`. Gmail may reject connections from some datacenter IPs—use a transactional provider if SMTP auth fails from the server.
+
 ## Testing
 
 ```bash

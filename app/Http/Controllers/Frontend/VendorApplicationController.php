@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Mail\VendorVerificationCode;
 use App\Models\User;
 use App\Models\Vendor;
-use App\Models\VendorApplication;
-use Illuminate\Http\Request;
+use App\Support\MailDelivery;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
@@ -53,15 +53,17 @@ class VendorApplicationController extends Controller
                 'password' => Hash::make($validated['password']),
                 'verification_code' => $verificationCode,
                 'verification_code_expires_at' => now()->addMinutes(10),
-            ]
+            ],
         ]);
 
-        try {
-            Mail::to($validated['email'])->send(
+        $sent = MailDelivery::attempt(
+            fn () => Mail::to($validated['email'])->send(
                 new VendorVerificationCode($verificationCode, $validated['name'])
-            );
-        } catch (\Throwable $e) {
-            // If email fails, clean up and return error
+            ),
+            'vendor_application'
+        );
+
+        if (! $sent) {
             session()->forget('vendor_application_data');
 
             return redirect()
@@ -88,7 +90,7 @@ class VendorApplicationController extends Controller
 
         $applicationData = session('vendor_application_data');
 
-        if (!$applicationData) {
+        if (! $applicationData) {
             return redirect()
                 ->route('vendor.apply')
                 ->with('error', 'Session expired. Please submit your application again.');
@@ -143,7 +145,7 @@ class VendorApplicationController extends Controller
     {
         $applicationData = session('vendor_application_data');
 
-        if (!$applicationData) {
+        if (! $applicationData) {
             return redirect()
                 ->route('vendor.apply')
                 ->with('error', 'Session expired. Please submit your application again.');
@@ -157,11 +159,14 @@ class VendorApplicationController extends Controller
         $applicationData['verification_code_expires_at'] = now()->addMinutes(10);
         session(['vendor_application_data' => $applicationData]);
 
-        try {
-            Mail::to($applicationData['email'])->send(
+        $sent = MailDelivery::attempt(
+            fn () => Mail::to($applicationData['email'])->send(
                 new VendorVerificationCode($verificationCode, $applicationData['name'])
-            );
-        } catch (\Throwable $e) {
+            ),
+            'vendor_application_resend'
+        );
+
+        if (! $sent) {
             return redirect()
                 ->back()
                 ->with('error', 'We could not send the verification email. Please try again later.');

@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\CustomerRegistrationVerificationMail;
 use App\Models\User;
 use App\Services\ReferralService;
+use App\Support\MailDelivery;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -77,15 +78,18 @@ class RegisteredUserController extends Controller
             ],
         ]);
 
-        try {
-            Mail::to($request->email)->send(
+        $sent = MailDelivery::attempt(
+            fn () => Mail::to($request->email)->send(
                 new CustomerRegistrationVerificationMail(
                     $verificationCode,
                     $request->string('email')->toString(),
                     $request->string('name')->toString(),
                 )
-            );
-        } catch (\Throwable $e) {
+            ),
+            'customer_registration'
+        );
+
+        if (! $sent) {
             session()->forget(self::SESSION_KEY);
 
             return redirect()
@@ -192,15 +196,18 @@ class RegisteredUserController extends Controller
         $pending['verification_code_expires_at'] = now()->addMinutes(10);
         session([self::SESSION_KEY => $pending]);
 
-        try {
-            Mail::to($pending['email'])->send(
+        $sent = MailDelivery::attempt(
+            fn () => Mail::to($pending['email'])->send(
                 new CustomerRegistrationVerificationMail(
                     $verificationCode,
                     $pending['email'],
                     $pending['name'],
                 )
-            );
-        } catch (\Throwable $e) {
+            ),
+            'customer_registration_resend'
+        );
+
+        if (! $sent) {
             return redirect()
                 ->back()
                 ->with('error', 'We could not send the verification email. Please try again later.');

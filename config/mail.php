@@ -1,5 +1,7 @@
 <?php
 
+use App\Support\MailConfig;
+
 return [
 
     /*
@@ -14,7 +16,7 @@ return [
     |
     */
 
-    'default' => env('MAIL_MAILER', 'log'),
+    'default' => MailConfig::defaultMailer(),
 
     /*
     |--------------------------------------------------------------------------
@@ -39,14 +41,15 @@ return [
 
         'smtp' => [
             'transport' => 'smtp',
-            'scheme' => env('MAIL_SCHEME'),
-            'url' => env('MAIL_URL'),
-            'host' => env('MAIL_HOST', '127.0.0.1'),
-            'port' => env('MAIL_PORT', 2525),
-            'username' => env('MAIL_USERNAME'),
-            'password' => env('MAIL_PASSWORD'),
-            'timeout' => null,
-            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
+            'scheme' => MailConfig::smtpScheme(),
+            'url' => MailConfig::envString('MAIL_URL'),
+            'host' => MailConfig::envString('MAIL_HOST') ?? '127.0.0.1',
+            'port' => (int) (MailConfig::envString('MAIL_PORT') ?? 587),
+            'username' => MailConfig::smtpUsername(),
+            'password' => MailConfig::smtpPassword(),
+            'timeout' => (int) (MailConfig::envString('MAIL_TIMEOUT') ?? 30),
+            'local_domain' => MailConfig::envString('MAIL_EHLO_DOMAIN')
+                ?? parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST),
         ],
 
         'ses' => [
@@ -111,8 +114,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
-        'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
+        'address' => MailConfig::envString('MAIL_FROM_ADDRESS') ?? 'hello@example.com',
+        'name' => MailConfig::envString('MAIL_FROM_NAME') ?? env('APP_NAME', 'Laravel'),
     ],
 
 ];
