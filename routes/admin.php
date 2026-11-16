@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\DepositRequestController;
 use App\Http\Controllers\Admin\OrderLimitController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ReferralTierController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\SubcategoryController;
@@ -198,6 +199,25 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('withdraw-requests/{withdrawRequest}/reject', [WithdrawRequestController::class, 'reject'])
                 ->middleware('permission:withdraw-requests.review')
                 ->name('withdraw-requests.reject');
+        });
+
+        Route::middleware('permission:referral-tiers.view')->group(function () {
+            Route::get('referral-tiers', [ReferralTierController::class, 'index'])->name('referral-tiers.index');
+            Route::get('referral-tiers/create', [ReferralTierController::class, 'create'])
+                ->middleware('permission:referral-tiers.create')
+                ->name('referral-tiers.create');
+            Route::post('referral-tiers', [ReferralTierController::class, 'store'])
+                ->middleware('permission:referral-tiers.create')
+                ->name('referral-tiers.store');
+            Route::get('referral-tiers/{referralTier}/edit', [ReferralTierController::class, 'edit'])
+                ->middleware('permission:referral-tiers.edit')
+                ->name('referral-tiers.edit');
+            Route::put('referral-tiers/{referralTier}', [ReferralTierController::class, 'update'])
+                ->middleware('permission:referral-tiers.edit')
+                ->name('referral-tiers.update');
+            Route::delete('referral-tiers/{referralTier}', [ReferralTierController::class, 'destroy'])
+                ->middleware('permission:referral-tiers.delete')
+                ->name('referral-tiers.destroy');
         });
 
         Route::middleware('permission:order-limits.view')->group(function () {

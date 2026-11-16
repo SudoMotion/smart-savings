@@ -5,16 +5,12 @@ namespace App\Services;
 use App\Models\DepositRequest;
 use App\Models\ReferralReward;
 use App\Models\User;
+use App\Support\ReferralTierData;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class ReferralService
 {
-    public static function rewardAmount(): float
-    {
-        return (float) config('referral.reward_amount', 100);
-    }
-
     public function ensureReferralCode(User $user): string
     {
         if ($user->referral_code) {
@@ -91,20 +87,27 @@ class ReferralService
             return;
         }
 
-        $amount = self::rewardAmount();
-
-        $created = ReferralReward::query()->firstOrCreate(
-            ['referred_user_id' => $referred->id],
-            [
-                'referrer_user_id' => $referrer->id,
-                'deposit_request_id' => $depositRequest->id,
-                'amount' => $amount,
-            ]
-        );
-
-        if (! $created->wasRecentlyCreated) {
+        if (ReferralReward::query()->where('referred_user_id', $referred->id)->exists()) {
             return;
         }
+
+        $paidCount = ReferralReward::query()
+            ->where('referrer_user_id', $referrer->id)
+            ->count();
+
+        $rewardNumber = $paidCount + 1;
+        $amount = ReferralTierData::amountForRewardNumber($rewardNumber);
+
+        if ($amount === null || $amount <= 0) {
+            return;
+        }
+
+        ReferralReward::query()->create([
+            'referrer_user_id' => $referrer->id,
+            'referred_user_id' => $referred->id,
+            'deposit_request_id' => $depositRequest->id,
+            'amount' => $amount,
+        ]);
 
         $referrer->ensureWallet()->increment('balance', $amount);
     }

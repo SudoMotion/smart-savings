@@ -18,7 +18,9 @@ async function copyText(text) {
 export default function Index({
     referralCode,
     referralUrl,
-    formattedRewardAmount,
+    referralTiers = [],
+    formattedNextRewardAmount,
+    nextRewardNumber,
     referredCount,
     formattedTotalEarned,
     rewards = [],
@@ -42,7 +44,7 @@ export default function Index({
                     <SectionHeading
                         eyebrow="Customer panel"
                         title="Referral program"
-                        description={`Share your link. When someone signs up and their first deposit is approved, you earn $${formattedRewardAmount}.`}
+                        description="Share your link. When someone signs up and their first deposit is approved, you earn a tier bonus based on how many referrals you have already completed."
                     />
                 </Container>
             </section>
@@ -58,6 +60,33 @@ export default function Index({
                             <p className="mt-1 text-xs text-neutral-500">Credited to your deposit wallet</p>
                         </Card>
                     </div>
+
+                    {referralTiers.length > 0 && (
+                        <Card title="Reward tiers">
+                            {formattedNextRewardAmount && (
+                                <p className="mb-3 text-sm text-neutral-600">
+                                    Your next successful referral pays{' '}
+                                    <span className="font-semibold text-neutral-900">
+                                        ${formattedNextRewardAmount}
+                                    </span>{' '}
+                                    (referral #{nextRewardNumber}).
+                                </p>
+                            )}
+                            <ul className="divide-y divide-neutral-100 text-sm">
+                                {referralTiers.map((tier) => (
+                                    <li
+                                        key={tier.id}
+                                        className="flex items-center justify-between gap-4 py-2.5"
+                                    >
+                                        <span className="text-neutral-700">{tier.range_label}</span>
+                                        <span className="font-semibold text-neutral-900">
+                                            ${tier.formatted_reward_amount}
+                                        </span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </Card>
+                    )}
 
                     <Card title="Your referral link">
                         <p className="text-sm text-neutral-600">

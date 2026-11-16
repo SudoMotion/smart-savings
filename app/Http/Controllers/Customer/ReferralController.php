@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ReferralReward;
 use App\Models\User;
 use App\Services\ReferralService;
+use App\Support\ReferralTierData;
 use App\Support\WalletData;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -35,13 +36,21 @@ class ReferralController extends Controller
             ->where('referred_by_user_id', $user->id)
             ->count();
 
-        $rewardAmount = ReferralService::rewardAmount();
+        $paidRewardsCount = ReferralReward::query()
+            ->where('referrer_user_id', $user->id)
+            ->count();
+        $nextRewardNumber = $paidRewardsCount + 1;
+        $nextRewardAmount = ReferralTierData::amountForRewardNumber($nextRewardNumber);
 
         return Inertia::render('Customer/Referral/Index', [
             'referralCode' => $user->referral_code,
             'referralUrl' => $referralService->referralRegisterUrl($user),
-            'rewardAmount' => $rewardAmount,
-            'formattedRewardAmount' => WalletData::format($rewardAmount),
+            'referralTiers' => ReferralTierData::tiersForDisplay(),
+            'nextRewardNumber' => $nextRewardNumber,
+            'nextRewardAmount' => $nextRewardAmount,
+            'formattedNextRewardAmount' => $nextRewardAmount !== null
+                ? WalletData::format($nextRewardAmount)
+                : null,
             'referredCount' => $referredCount,
             'totalEarned' => $totalEarned,
             'formattedTotalEarned' => WalletData::format($totalEarned),

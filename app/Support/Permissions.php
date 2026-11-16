@@ -46,6 +46,12 @@ class Permissions
                 'order-limits.edit' => 'Edit User Order Limits',
                 'order-limits.delete' => 'Delete User Order Limits',
             ],
+            'Referral Rewards' => [
+                'referral-tiers.view' => 'View Referral Reward Tiers',
+                'referral-tiers.create' => 'Create Referral Reward Tiers',
+                'referral-tiers.edit' => 'Edit Referral Reward Tiers',
+                'referral-tiers.delete' => 'Delete Referral Reward Tiers',
+            ],
             'Brands' => [
                 'brands.view' => 'View Brands',
                 'brands.create' => 'Create Brands',
