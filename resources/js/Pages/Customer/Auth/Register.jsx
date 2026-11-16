@@ -2,13 +2,14 @@ import Container from '@/Components/Frontend/Container';
 import SectionHeading from '@/Components/Frontend/SectionHeading';
 import { Alert, Button, Input } from '@/Components/UI';
 import FrontendLayout from '@/Layouts/Frontend/FrontendLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
 
 export default function Register({
     referralCode = null,
     referrerName = null,
     referralCodeFromQuery = false,
 }) {
+    const { flash } = usePage().props;
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         email: '',
@@ -34,7 +35,7 @@ export default function Register({
                     <SectionHeading
                         eyebrow="Customer account"
                         title="Create your account"
-                        description="Register to track orders and manage your profile on the public storefront."
+                        description="Register to track orders and manage your profile. We will email you a verification code before your account is created."
                     />
                 </Container>
             </section>
@@ -42,6 +43,11 @@ export default function Register({
             <section className="py-10 sm:py-12">
                 <Container>
                     <div className="mx-auto max-w-md rounded-sm border border-neutral-200 bg-white p-6 shadow-sm">
+                        {flash?.error && (
+                            <Alert variant="error" className="mb-4">
+                                {flash.error}
+                            </Alert>
+                        )}
                         {errors.referral_code && (
                             <Alert variant="error" className="mb-4">
                                 {errors.referral_code}
@@ -115,7 +121,7 @@ export default function Register({
                             />
 
                             <Button type="submit" className="w-full" disabled={processing}>
-                                Create account
+                                {processing ? 'Sending code…' : 'Continue — verify email'}
                             </Button>
                         </form>
 

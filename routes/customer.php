@@ -25,6 +25,9 @@ Route::prefix('account')->name('account.')->group(function () {
 
         Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
         Route::post('register', [RegisteredUserController::class, 'store']);
+        Route::get('register/verify', [RegisteredUserController::class, 'verify'])->name('register.verify');
+        Route::post('register/verify', [RegisteredUserController::class, 'verifyCode'])->name('register.verify.code');
+        Route::post('register/verify/resend', [RegisteredUserController::class, 'resendCode'])->name('register.verify.resend');
     });
 
     Route::middleware('auth')->group(function () {
