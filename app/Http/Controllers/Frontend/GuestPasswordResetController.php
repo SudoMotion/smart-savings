@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -22,10 +23,17 @@ class GuestPasswordResetController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'email' => ['required', 'string', 'email', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255'],
         ]);
 
         $email = $validated['email'];
+
+        if (! User::query()->where('email', $email)->exists()) {
+            throw ValidationException::withMessages([
+                'email' => 'No account is registered with this email address.',
+            ]);
+        }
+
         $verificationCode = (string) random_int(100000, 999999);
 
         session([
@@ -43,6 +51,7 @@ class GuestPasswordResetController extends Controller
             );
         } catch (\Throwable $e) {
             session()->forget('guest_password_reset');
+
             return redirect()
                 ->back()
                 ->withInput()
@@ -57,11 +66,12 @@ class GuestPasswordResetController extends Controller
     public function verify(): Response
     {
         $resetData = session('guest_password_reset');
-        if (!$resetData) {
+        if (! $resetData) {
             return redirect()
                 ->route('guest.reset.password')
                 ->with('error', 'Session expired. Please submit your email again.');
         }
+
         return Inertia::render('Guest/ResetPassword/Verify', [
             'email' => $resetData['email'],
         ]);
@@ -75,7 +85,7 @@ class GuestPasswordResetController extends Controller
 
         $resetData = session('guest_password_reset');
 
-        if (!$resetData) {
+        if (! $resetData) {
             return redirect()
                 ->route('guest.reset.password')
                 ->with('error', 'Session expired. Please submit your email again.');
@@ -105,10 +115,18 @@ class GuestPasswordResetController extends Controller
     {
         $resetData = session('guest_password_reset');
 
-        if (!$resetData) {
+        if (! $resetData) {
             return redirect()
                 ->route('guest.reset.password')
                 ->with('error', 'Session expired. Please submit your email again.');
+        }
+
+        if (! User::query()->where('email', $resetData['email'])->exists()) {
+            session()->forget('guest_password_reset');
+
+            return redirect()
+                ->route('guest.reset.password')
+                ->with('error', 'No account is registered with this email address.');
         }
 
         $verificationCode = (string) random_int(100000, 999999);
@@ -134,11 +152,12 @@ class GuestPasswordResetController extends Controller
     public function newPassword(): Response
     {
         $resetData = session('guest_password_reset');
-        if (!$resetData || !$resetData['verified_at']) {
+        if (! $resetData || ! $resetData['verified_at']) {
             return redirect()
                 ->route('guest.reset.verify')
                 ->with('error', 'Please verify your code before setting a new password.');
         }
+
         return Inertia::render('Guest/ResetPassword/NewPassword', [
             'email' => $resetData['email'],
         ]);
@@ -147,7 +166,7 @@ class GuestPasswordResetController extends Controller
     public function finalStore(Request $request): RedirectResponse
     {
         $resetData = session('guest_password_reset');
-        if (!$resetData || !$resetData['verified_at']) {
+        if (! $resetData || ! $resetData['verified_at']) {
             return redirect()
                 ->route('guest.reset.verify')
                 ->with('error', 'Please verify your code before setting a new password.');
@@ -159,24 +178,24 @@ class GuestPasswordResetController extends Controller
         ]);
 
         $email = $resetData['email'];
-        $user = User::where('email', $email)->first();
+        $user = User::query()->where('email', $email)->first();
 
-        if ($user) {
-            $user->forceFill([
-                'password' => Hash::make($request->password),
-            ])->save();
-        } else {
-            User::create([
-                'name' => $email,
-                'email' => $email,
-                'password' => Hash::make($request->password),
-            ]);
+        if (! $user) {
+            session()->forget('guest_password_reset');
+
+            return redirect()
+                ->route('guest.reset.password')
+                ->with('error', 'No account is registered with this email address.');
         }
+
+        $user->forceFill([
+            'password' => Hash::make($request->password),
+        ])->save();
 
         session()->forget('guest_password_reset');
 
         return redirect()
             ->route('guest.reset.password')
             ->with('success', 'Password reset successfully!');
-}
+    }
 }
