@@ -1,4 +1,7 @@
-import { Link } from '@inertiajs/react';
+import Modal from '@/Components/Modal';
+import { Link, router } from '@inertiajs/react';
+import { useState } from 'react';
+import Button from './Button';
 import { cn } from './cn';
 
 const baseClassName =
@@ -134,15 +137,84 @@ export function EditAction(props) {
     return <ActionButton type="edit" title="Edit" {...props} />;
 }
 
-export function DeleteAction({ method = 'delete', as = 'button', ...props }) {
+export function DeleteAction({
+    href,
+    confirmTitle = 'Confirm delete',
+    confirmMessage = 'Are you sure you want to delete this item? This action cannot be undone.',
+    confirmLabel = 'Delete',
+    preserveScroll = true,
+    onClick,
+    onDeleted,
+    title = 'Delete',
+    ...props
+}) {
+    const [open, setOpen] = useState(false);
+    const [processing, setProcessing] = useState(false);
+
+    const handleOpen = (event) => {
+        event?.preventDefault?.();
+
+        if (href) {
+            setOpen(true);
+
+            return;
+        }
+
+        onClick?.(event);
+    };
+
+    const handleConfirm = () => {
+        if (!href) {
+            return;
+        }
+
+        setProcessing(true);
+
+        router.delete(href, {
+            preserveScroll,
+            onSuccess: () => {
+                onDeleted?.();
+            },
+            onFinish: () => {
+                setProcessing(false);
+                setOpen(false);
+            },
+        });
+    };
+
     return (
-        <ActionButton
-            type="delete"
-            title="Delete"
-            method={method}
-            as={as}
-            {...props}
-        />
+        <>
+            <ActionButton type="delete" title={title} onClick={handleOpen} {...props} />
+
+            {href ? (
+                <Modal show={open} onClose={() => !processing && setOpen(false)} maxWidth="sm">
+                    <div className="p-6">
+                        <h3 className="text-base font-semibold text-neutral-900">{confirmTitle}</h3>
+                        <div className="mt-2 text-sm text-neutral-600">{confirmMessage}</div>
+                        <div className="mt-6 flex items-center justify-end gap-3">
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                size="sm"
+                                disabled={processing}
+                                onClick={() => setOpen(false)}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="danger"
+                                size="sm"
+                                loading={processing}
+                                onClick={handleConfirm}
+                            >
+                                {confirmLabel}
+                            </Button>
+                        </div>
+                    </div>
+                </Modal>
+            ) : null}
+        </>
     );
 }
 

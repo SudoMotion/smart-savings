@@ -5,7 +5,6 @@ import {
     Alert,
     Button,
     Card,
-    DeleteAction,
     ViewAction,
 } from '@/Components/UI';
 import AdminLayout from '@/Layouts/Admin/AdminLayout';

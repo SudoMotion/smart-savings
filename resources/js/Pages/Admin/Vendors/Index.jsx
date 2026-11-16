@@ -1,9 +1,7 @@
 import AdminPageHeader from '@/Components/Admin/AdminPageHeader';
-import Modal from '@/Components/Modal';
 import {
     ActionButtonGroup,
     Alert,
-    Button,
     Card,
     DeleteAction,
     EditAction,
@@ -15,7 +13,6 @@ import { useState } from 'react';
 export default function Index({ vendors, filters, counts, can }) {
     const { flash } = usePage().props;
     const [search, setSearch] = useState(filters.search || '');
-    const [deletingVendor, setDeletingVendor] = useState(null);
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -37,14 +34,6 @@ export default function Index({ vendors, filters, counts, can }) {
     const handleToggleStatus = (vendor) => {
         router.post(route('admin.vendors.toggle-status', vendor.id), {}, {
             preserveScroll: true,
-        });
-    };
-
-    const handleDelete = () => {
-        if (!deletingVendor) return;
-        router.delete(route('admin.vendors.destroy', deletingVendor.id), {
-            preserveScroll: true,
-            onSuccess: () => setDeletingVendor(null),
         });
     };
 
@@ -249,8 +238,18 @@ export default function Index({ vendors, filters, counts, can }) {
 
                                                 {can.delete && (
                                                     <DeleteAction
-                                                        onClick={() => setDeletingVendor(vendor)}
+                                                        href={route('admin.vendors.destroy', vendor.id)}
                                                         title="Delete Vendor"
+                                                        confirmTitle="Delete vendor"
+                                                        confirmMessage={
+                                                            <>
+                                                                Are you sure you want to remove{' '}
+                                                                <strong>{vendor.shop_name}</strong>? This will delete
+                                                                the vendor profile and revoke access to the vendor
+                                                                panel.
+                                                            </>
+                                                        }
+                                                        confirmLabel="Delete vendor"
                                                     />
                                                 )}
                                             </ActionButtonGroup>
@@ -288,32 +287,6 @@ export default function Index({ vendors, filters, counts, can }) {
                     </div>
                 )}
             </Card>
-
-            {/* Delete Modal */}
-            <Modal show={!!deletingVendor} onClose={() => setDeletingVendor(null)} maxWidth="sm">
-                <div className="p-6">
-                    <h3 className="text-base font-semibold text-neutral-900">Delete Vendor</h3>
-                    <p className="mt-2 text-xs text-neutral-600">
-                        Are you sure you want to remove <strong>{deletingVendor?.shop_name}</strong>? This will delete the vendor profile and revoke access to the vendor panel.
-                    </p>
-                    <div className="mt-6 flex items-center justify-end gap-3">
-                        <Button
-                            variant="secondary"
-                            size="sm"
-                            onClick={() => setDeletingVendor(null)}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            variant="danger"
-                            size="sm"
-                            onClick={handleDelete}
-                        >
-                            Delete Vendor
-                        </Button>
-                    </div>
-                </div>
-            </Modal>
         </AdminLayout>
     );
 }
