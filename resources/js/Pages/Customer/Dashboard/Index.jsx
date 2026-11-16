@@ -4,22 +4,6 @@ import { Alert } from '@/Components/UI';
 import CustomerPanelLayout from '@/Layouts/Frontend/CustomerPanelLayout';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 
-function CheckIcon({ className }) {
-    return (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-        </svg>
-    );
-}
-
-function CrossIcon({ className }) {
-    return (
-        <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-        </svg>
-    );
-}
-
 function ChevronLeftIcon({ className }) {
     return (
         <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -196,26 +180,14 @@ export default function Index({ user, orders, event }) {
                                                     <h2 className="line-clamp-2 min-h-[3.25rem] text-center text-lg font-semibold text-neutral-900">
                                                         {product.name}
                                                     </h2>
-                                                    <div className="mt-5 flex items-center justify-center gap-8">
-                                                        <button
-                                                            type="button"
-                                                            disabled={busy || busySlot !== null}
-                                                            onClick={() => handleOrder(product, 'reject')}
-                                                            className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-red-600 text-white shadow-md transition hover:bg-red-500 disabled:cursor-not-allowed disabled:opacity-50"
-                                                            aria-label={`Decline ${product.name}`}
-                                                        >
-                                                            <CrossIcon className="h-6 w-6" />
-                                                        </button>
-                                                        <button
-                                                            type="button"
-                                                            disabled={busy || busySlot !== null}
-                                                            onClick={() => handleOrder(product, 'confirm')}
-                                                            className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-emerald-600 text-white shadow-md transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
-                                                            aria-label={`Confirm ${product.name}`}
-                                                        >
-                                                            <CheckIcon className="h-6 w-6" />
-                                                        </button>
-                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        disabled={busy || busySlot !== null}
+                                                        onClick={() => handleOrder(product, 'confirm')}
+                                                        className="mt-5 flex w-full items-center justify-center rounded-lg bg-[#0f281c] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#1e3a2d] disabled:cursor-not-allowed disabled:opacity-50"
+                                                    >
+                                                        {busy ? 'Submitting…' : 'Submit'}
+                                                    </button>
                                                 </div>
                                             </div>
                                         </article>
