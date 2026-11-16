@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -38,11 +39,11 @@ class LoginRequest extends FormRequest
      *
      * @throws ValidationException
      */
-    public function authenticate(): void
+    public function authenticate(string $guard = 'web'): void
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        if (! Auth::guard($guard)->attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
@@ -50,11 +51,11 @@ class LoginRequest extends FormRequest
             ]);
         }
 
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
+        /** @var User $user */
+        $user = Auth::guard($guard)->user();
 
         if (! $user->canLogin()) {
-            Auth::logout();
+            Auth::guard($guard)->logout();
 
             throw ValidationException::withMessages([
                 'email' => 'Your account has been disabled.',

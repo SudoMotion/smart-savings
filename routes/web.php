@@ -3,8 +3,8 @@
 use App\Http\Controllers\Customer\UserEventController;
 use App\Http\Controllers\Frontend\AboutController;
 use App\Http\Controllers\Frontend\ContactController;
-use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\GuestPasswordResetController;
+use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\VendorApplicationController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,13 +19,13 @@ Route::get('/become-a-vendor/verify', [VendorApplicationController::class, 'veri
 Route::post('/become-a-vendor/verify', [VendorApplicationController::class, 'verifyCode'])->name('vendor.verify.code');
 Route::post('/become-a-vendor/verify/resend', [VendorApplicationController::class, 'resendCode'])->name('vendor.verify.resend');
 
-Route::middleware('auth')->get('/event/{userEvent}', [UserEventController::class, 'show'])->name('event.show');
+Route::middleware('auth:customer')->get('/event/{userEvent}', [UserEventController::class, 'show'])->name('event.show');
 
 Route::redirect('/dashboard', '/account/dashboard');
 Route::redirect('/login', '/account/login');
 Route::redirect('/register', '/account/register');
 
-Route::middleware('guest')->group(function () {
+Route::middleware('guest:customer')->group(function () {
     Route::get('/reset-password', [GuestPasswordResetController::class, 'create'])->name('guest.reset.password');
     Route::post('/reset-password', [GuestPasswordResetController::class, 'store'])->name('guest.reset.password.store');
     Route::get('/reset-password/verify', [GuestPasswordResetController::class, 'verify'])->name('guest.reset.verify');

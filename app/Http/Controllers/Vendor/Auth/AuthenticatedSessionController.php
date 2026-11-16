@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Vendor\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Support\Permissions;
+use App\Support\PortalGuard;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,18 +30,16 @@ class AuthenticatedSessionController extends Controller
 
         $remember = $request->boolean('remember');
 
-        if (! Auth::attempt($credentials, $remember)) {
+        if (! Auth::guard(PortalGuard::VENDOR)->attempt($credentials, $remember)) {
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);
         }
 
-        $user = Auth::user();
+        $user = Auth::guard(PortalGuard::VENDOR)->user();
 
         if (! $user->canLogin()) {
-            Auth::guard('web')->logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
+            Auth::guard(PortalGuard::VENDOR)->logout();
 
             throw ValidationException::withMessages([
                 'email' => 'Your account has been disabled.',
@@ -51,9 +50,7 @@ class AuthenticatedSessionController extends Controller
         $isVendor = $user->hasRole('vendor') || $user->vendor()->exists();
 
         if (! $isSuperAdmin && ! $isVendor) {
-            Auth::guard('web')->logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
+            Auth::guard(PortalGuard::VENDOR)->logout();
 
             throw ValidationException::withMessages([
                 'email' => 'This account does not have access to the Vendor Portal.',
@@ -63,9 +60,7 @@ class AuthenticatedSessionController extends Controller
         if (! $isSuperAdmin) {
             $vendor = $user->vendor;
             if ($vendor && $vendor->status === 'inactive') {
-                Auth::guard('web')->logout();
-                $request->session()->invalidate();
-                $request->session()->regenerateToken();
+                Auth::guard(PortalGuard::VENDOR)->logout();
 
                 throw ValidationException::withMessages([
                     'email' => 'Your vendor account is currently inactive. Please contact administrator.',
@@ -80,13 +75,8 @@ class AuthenticatedSessionController extends Controller
 
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
+        Auth::guard(PortalGuard::VENDOR)->logout();
 
         return redirect()->route('vendor.login');
     }
 }
-

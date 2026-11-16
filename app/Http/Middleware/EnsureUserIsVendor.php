@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Support\Permissions;
+use App\Support\PortalGuard;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +16,7 @@ class EnsureUserIsVendor
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = $request->user();
+        $user = $request->user(PortalGuard::VENDOR);
 
         if (! $user) {
             return redirect()->route('vendor.login');
@@ -25,9 +26,7 @@ class EnsureUserIsVendor
         $isVendor = $user->hasRole('vendor') || $user->vendor()->exists();
 
         if (! $isSuperAdmin && ! $isVendor) {
-            Auth::guard('web')->logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
+            Auth::guard(PortalGuard::VENDOR)->logout();
 
             return redirect()->route('vendor.login')->withErrors([
                 'email' => 'You do not have vendor permissions to access this portal.',
@@ -37,9 +36,7 @@ class EnsureUserIsVendor
         if (! $isSuperAdmin) {
             $vendor = $user->vendor;
             if ($vendor && $vendor->status === 'inactive') {
-                Auth::guard('web')->logout();
-                $request->session()->invalidate();
-                $request->session()->regenerateToken();
+                Auth::guard(PortalGuard::VENDOR)->logout();
 
                 return redirect()->route('vendor.login')->withErrors([
                     'email' => 'Your vendor account is currently inactive. Please contact support.',
@@ -50,4 +47,3 @@ class EnsureUserIsVendor
         return $next($request);
     }
 }
-

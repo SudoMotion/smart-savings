@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\PortalGuard;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,12 +12,11 @@ class EnsureUserCanLogin
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $user = $request->user();
+        $guard = PortalGuard::forRequest($request) ?? PortalGuard::CUSTOMER;
+        $user = $request->user($guard);
 
         if ($user && ! $user->canLogin()) {
-            Auth::guard('web')->logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
+            Auth::guard($guard)->logout();
 
             return redirect()->route($this->loginRoute($request))->withErrors([
                 'email' => 'Your account has been disabled.',

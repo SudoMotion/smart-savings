@@ -3,6 +3,8 @@
 namespace App\Http\Middleware;
 
 use App\Models\Category;
+use App\Support\Permissions;
+use App\Support\PortalGuard;
 use App\Support\SiteData;
 use App\Support\WalletData;
 use Illuminate\Http\Request;
@@ -32,7 +34,7 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $user = $request->user();
+        $user = PortalGuard::resolveUser($request);
 
         return [
             ...parent::share($request),
@@ -40,7 +42,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $user ? $user->loadMissing('vendor') : null,
                 'roles' => $user ? $user->getRoleNames()->values()->all() : [],
                 'permissions' => $user ? $user->getAllPermissions()->pluck('name')->values()->all() : [],
-                'isSuperAdmin' => $user?->hasRole(\App\Support\Permissions::SUPERADMIN_ROLE) ?? false,
+                'isSuperAdmin' => $user?->hasRole(Permissions::SUPERADMIN_ROLE) ?? false,
             ],
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
@@ -52,7 +54,7 @@ class HandleInertiaRequests extends Middleware
                 ->orderBy('name')
                 ->get(['id', 'name']),
             'wallet' => function () use ($request) {
-                $user = $request->user();
+                $user = PortalGuard::resolveUser($request);
 
                 if (! $user) {
                     return [
@@ -64,7 +66,7 @@ class HandleInertiaRequests extends Middleware
                 return WalletData::forUser($user);
             },
             'totalWallet' => function () use ($request) {
-                $user = $request->user();
+                $user = PortalGuard::resolveUser($request);
 
                 if (! $user) {
                     return [
@@ -76,7 +78,7 @@ class HandleInertiaRequests extends Middleware
                 return WalletData::totalForUser($user);
             },
             'earningWallet' => function () use ($request) {
-                $user = $request->user();
+                $user = PortalGuard::resolveUser($request);
 
                 if (! $user) {
                     return [

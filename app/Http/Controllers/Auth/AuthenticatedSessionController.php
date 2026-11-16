@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
+use App\Support\PortalGuard;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,15 +30,13 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        $request->authenticate(PortalGuard::ADMIN);
 
         /** @var User $user */
-        $user = Auth::user();
+        $user = Auth::guard(PortalGuard::ADMIN)->user();
 
         if (! $user->canAccessAdminPanel()) {
-            Auth::guard('web')->logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
+            Auth::guard(PortalGuard::ADMIN)->logout();
 
             throw ValidationException::withMessages([
                 'email' => 'This account is not authorized for the admin panel. Please sign in at the customer account page.',
@@ -54,11 +53,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
+        Auth::guard(PortalGuard::ADMIN)->logout();
 
         return redirect()->route('admin.login');
     }

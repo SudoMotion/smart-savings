@@ -10,16 +10,18 @@ use App\Http\Controllers\Customer\PercentageController;
 use App\Http\Controllers\Customer\ProfileController;
 use App\Http\Controllers\Customer\ReferralController;
 use App\Http\Controllers\Customer\WithdrawController;
+use App\Support\PortalGuard;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('account')->name('account.')->group(function () {
     Route::get('/', function () {
-        return auth()->check()
+        return Auth::guard(PortalGuard::CUSTOMER)->check()
             ? redirect()->route('account.dashboard')
             : redirect()->route('account.login');
     });
 
-    Route::middleware('guest')->group(function () {
+    Route::middleware('guest:customer')->group(function () {
         Route::get('login', [AuthenticatedSessionController::class, 'create'])->name('login');
         Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
@@ -30,7 +32,7 @@ Route::prefix('account')->name('account.')->group(function () {
         Route::post('register/verify/resend', [RegisteredUserController::class, 'resendCode'])->name('register.verify.resend');
     });
 
-    Route::middleware('auth')->group(function () {
+    Route::middleware('auth:customer')->group(function () {
         Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
         Route::get('order-logs', [OrderLogController::class, 'index'])->name('order-logs');

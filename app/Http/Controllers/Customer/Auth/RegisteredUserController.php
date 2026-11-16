@@ -8,6 +8,7 @@ use App\Mail\CustomerRegistrationVerificationMail;
 use App\Models\User;
 use App\Services\ReferralService;
 use App\Support\MailDelivery;
+use App\Support\PortalGuard;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -168,7 +169,7 @@ class RegisteredUserController extends Controller
         session()->forget(self::SESSION_KEY);
 
         event(new Registered($user));
-        Auth::login($user);
+        Auth::guard(PortalGuard::CUSTOMER)->login($user);
 
         return redirect(route('account.dashboard', absolute: false));
     }

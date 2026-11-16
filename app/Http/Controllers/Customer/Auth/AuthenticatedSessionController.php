@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Customer\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Models\User;
+use App\Support\PortalGuard;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,15 +24,13 @@ class AuthenticatedSessionController extends Controller
 
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->authenticate();
+        $request->authenticate(PortalGuard::CUSTOMER);
 
         /** @var User $user */
-        $user = Auth::user();
+        $user = Auth::guard(PortalGuard::CUSTOMER)->user();
 
         if ($user->canAccessAdminPanel()) {
-            Auth::guard('web')->logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
+            Auth::guard(PortalGuard::CUSTOMER)->logout();
 
             throw ValidationException::withMessages([
                 'email' => 'Staff accounts must sign in through the admin panel, not the customer account page.',
@@ -45,11 +44,7 @@ class AuthenticatedSessionController extends Controller
 
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard('web')->logout();
-
-        $request->session()->invalidate();
-
-        $request->session()->regenerateToken();
+        Auth::guard(PortalGuard::CUSTOMER)->logout();
 
         return redirect()->route('home');
     }

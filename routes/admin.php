@@ -30,17 +30,19 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Support\PortalGuard;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/', function () {
-        return auth()->check()
+        return Auth::guard(PortalGuard::ADMIN)->check()
             ? redirect()->route('admin.dashboard')
             : redirect()->route('admin.login');
     })->name('index');
 
-    Route::middleware('guest')->group(function () {
+    Route::middleware('guest:admin')->group(function () {
         Route::get('register', [RegisteredUserController::class, 'create'])
             ->name('register');
 
@@ -64,7 +66,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->name('password.store');
     });
 
-    Route::middleware('auth')->group(function () {
+    Route::middleware('auth:admin')->group(function () {
         Route::get('verify-email', EmailVerificationPromptController::class)
             ->name('verification.notice');
 
@@ -87,7 +89,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->name('logout');
     });
 
-    Route::middleware(['auth', 'verified'])->group(function () {
+    Route::middleware(['auth:admin', 'verified'])->group(function () {
         Route::get('dashboard', function () {
             return Inertia::render('Admin/Dashboard/Index');
         })->middleware('permission:dashboard.view')->name('dashboard');
