@@ -1,10 +1,18 @@
 <?php
 
+use App\Http\Middleware\EnsureUserCanLogin;
+use App\Http\Middleware\EnsureUserIsVendor;
+use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\RedirectGuestsToCustomerAuth;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Middleware\PermissionMiddleware;
+use Spatie\Permission\Middleware\RoleMiddleware;
+use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -42,23 +50,24 @@ return Application::configure(basePath: dirname(__DIR__))
                 return '/admin/dashboard';
             }
             if ($request->is('account*')) {
-                return '/account/dashboard';
+                return '/';
             }
 
-            return '/account/dashboard';
+            return '/';
         });
 
         $middleware->web(append: [
-            \App\Http\Middleware\EnsureUserCanLogin::class,
-            \App\Http\Middleware\HandleInertiaRequests::class,
-            \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
+            EnsureUserCanLogin::class,
+            RedirectGuestsToCustomerAuth::class,
+            HandleInertiaRequests::class,
+            AddLinkHeadersForPreloadedAssets::class,
         ]);
 
         $middleware->alias([
-            'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
-            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
-            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
-            'vendor' => \App\Http\Middleware\EnsureUserIsVendor::class,
+            'role' => RoleMiddleware::class,
+            'permission' => PermissionMiddleware::class,
+            'role_or_permission' => RoleOrPermissionMiddleware::class,
+            'vendor' => EnsureUserIsVendor::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

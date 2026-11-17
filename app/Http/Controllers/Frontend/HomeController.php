@@ -6,25 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
-use App\Models\User;
 use App\Models\Vendor;
-use App\Support\Permissions;
 use App\Support\SiteData;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class HomeController extends Controller
 {
-    public function index(Request $request): Response|RedirectResponse
+    public function index(Request $request): Response
     {
-        $user = $request->user();
-
-        if ($user && $this->isStorefrontCustomer($user)) {
-            return redirect()->route('account.dashboard');
-        }
-
         $search = $request->query('search');
         $categoryId = $request->query('category');
         $brandId = $request->query('brand');
@@ -120,14 +111,5 @@ class HomeController extends Controller
             ],
             'aboutUs' => SiteData::aboutUs(),
         ]);
-    }
-
-    private function isStorefrontCustomer(User $user): bool
-    {
-        if ($user->hasRole(Permissions::SUPERADMIN_ROLE) || $user->can('dashboard.view')) {
-            return false;
-        }
-
-        return ! $user->vendor()->exists();
     }
 }

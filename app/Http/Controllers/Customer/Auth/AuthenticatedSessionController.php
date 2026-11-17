@@ -39,13 +39,13 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('account.dashboard', absolute: false));
+        return redirect()->intended(route('home', absolute: false));
     }
 
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard(PortalGuard::CUSTOMER)->logout();
 
-        return redirect()->route('home');
+        return redirect()->route('account.login');
     }
 }
