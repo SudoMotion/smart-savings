@@ -95,7 +95,7 @@ const topLevelItems = [
     { name: 'Deposit Options', href: 'admin.deposit-options.index', active: 'admin.deposit-options.*', icon: DepositOptionsIcon, permission: 'deposit-options.view' },
     { name: 'Deposit Requests', href: 'admin.deposit-requests.index', active: 'admin.deposit-requests.*', icon: DepositOptionsIcon, permission: 'deposit-requests.view' },
     { name: 'Withdraw Requests', href: 'admin.withdraw-requests.index', active: 'admin.withdraw-requests.*', icon: DepositOptionsIcon, permission: 'withdraw-requests.view' },
-    { name: 'Order Limits', href: 'admin.order-limits.index', active: 'admin.order-limits.*', icon: SettingsIcon, permission: 'order-limits.view' },
+    // { name: 'Order Limits', href: 'admin.order-limits.index', active: 'admin.order-limits.*', icon: SettingsIcon, permission: 'order-limits.view' },
     { name: 'Referral Rewards', href: 'admin.referral-tiers.index', active: 'admin.referral-tiers.*', icon: UsersIcon, permission: 'referral-tiers.view' },
     { name: 'About Us', href: 'admin.about-us.index', active: 'admin.about-us.*', icon: AboutUsIcon, permission: 'about-us.view' },
     { name: 'Settings', href: 'admin.settings.index', active: 'admin.settings.*', icon: SettingsIcon, permission: 'settings.view' },
