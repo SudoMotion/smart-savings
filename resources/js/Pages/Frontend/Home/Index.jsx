@@ -11,24 +11,23 @@ export default function Index() {
         <Layout>
             <Head title={site?.name ? `${site.name} — Home` : 'Home'} />
 
-            <section className="w-full overflow-hidden bg-white">
-                <div className="mx-auto w-full max-w-[1500px]">
-                    <picture>
+            <div className="home-viewport flex min-h-0 flex-1 flex-col overflow-hidden">
+                <section className="home-hero-panel relative min-h-0 flex-[1_1_50%] overflow-hidden bg-[#0a1f16]">
+                    <picture className="block h-full w-full">
                         <source media="(min-width: 768px)" srcSet="/images/hero-desktop.png" />
                         <img
                             src="/images/hero-mobile.png"
                             alt="Tether saving account — low risk high return, earn interest in ETH"
-                            className="block h-auto w-full"
+                            className="h-full w-full object-cover object-center"
                             loading="eager"
                             fetchpriority="high"
-                            width={750}
-                            height={900}
                         />
                     </picture>
-                </div>
-            </section>
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#0f281c] to-transparent" />
+                </section>
 
-            <HomeEarningsAnimation />
+                <HomeEarningsAnimation />
+            </div>
         </Layout>
     );
 }
