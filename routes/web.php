@@ -19,7 +19,10 @@ Route::get('/become-a-vendor/verify', [VendorApplicationController::class, 'veri
 Route::post('/become-a-vendor/verify', [VendorApplicationController::class, 'verifyCode'])->name('vendor.verify.code');
 Route::post('/become-a-vendor/verify/resend', [VendorApplicationController::class, 'resendCode'])->name('vendor.verify.resend');
 
-Route::middleware('auth:customer')->get('/event/{userEvent}', [UserEventController::class, 'show'])->name('event.show');
+Route::middleware('auth:customer')->group(function () {
+    Route::get('/event/{userEvent}', [UserEventController::class, 'show'])->name('event.show');
+    Route::post('/event/{userEvent}/reveal', [UserEventController::class, 'revealSummary'])->name('event.reveal');
+});
 
 Route::redirect('/dashboard', '/account/dashboard');
 Route::redirect('/login', '/account/login');

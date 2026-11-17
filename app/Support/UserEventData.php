@@ -10,16 +10,21 @@ class UserEventData
     /**
      * @return array{id: int, first_window_text: string}|null
      */
-    public static function activeForDashboard(User $user): ?array
+    public static function activeEvent(User $user): ?UserEvent
     {
         if (! $user->isDiamond()) {
             return null;
         }
 
-        $event = $user->events()
+        return $user->events()
             ->where('expire_on', '>=', now())
             ->orderBy('expire_on')
             ->first();
+    }
+
+    public static function activeForDashboard(User $user): ?array
+    {
+        $event = self::activeEvent($user);
 
         if (! $event) {
             return null;

@@ -97,8 +97,7 @@ function MenuLink({ href, icon: Icon, children, onNavigate }) {
     );
 }
 
-const panelMenuItems = [
-    { href: () => route('home'), label: 'Home', icon: MenuHomeIcon },
+const basePanelMenuItems = [
     { href: () => route('account.order-logs'), label: 'Order logs', icon: MenuLogsIcon },
     { href: () => route('account.profile'), label: 'Profile', icon: MenuProfileIcon },
     { href: () => route('account.percentage'), label: 'My percentage', icon: MenuPercentIcon },
@@ -110,7 +109,13 @@ const panelMenuItems = [
 ];
 
 export default function CustomerPanelLayout({ children, categories }) {
-    const { categories: pageCategories, auth } = usePage().props;
+    const { categories: pageCategories, auth, customerPortal } = usePage().props;
+    const homeHref = customerPortal?.home_href ?? route('home');
+
+    const panelMenuItems = [
+        { href: () => homeHref, label: 'Home', icon: MenuHomeIcon },
+        ...basePanelMenuItems,
+    ];
     const cats = categories || pageCategories || [];
     const [menuOpen, setMenuOpen] = useState(false);
     const user = auth?.user;

@@ -78,7 +78,7 @@ export default function Index({ user, orders, event }) {
 
     return (
         <CustomerPanelLayout>
-            <Head title="Orders" />
+            <Head title={isDiamond ? 'Your event' : 'Orders'} />
 
             <section
                 className={

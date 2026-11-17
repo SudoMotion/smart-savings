@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 
 function HomeIcon({ className }) {
     return (
@@ -33,7 +33,11 @@ function MenuIcon({ className }) {
 }
 
 export default function CustomerBottomNav({ onOpenMenu }) {
-    const isHome = route().current('home') || route().current('account.dashboard');
+    const { customerPortal } = usePage().props;
+    const homeHref = customerPortal?.home_href ?? route('home');
+    const isHome = customerPortal?.is_diamond
+        ? route().current('event.show')
+        : route().current('home') || route().current('account.dashboard');
     const isDeposit = route().current('account.deposit');
     const isProfile = route().current('account.profile');
     const isPercentage = route().current('account.percentage');
@@ -53,7 +57,7 @@ export default function CustomerBottomNav({ onOpenMenu }) {
                 <div className="flex min-w-0 flex-1">
                     <div className="flex flex-1 justify-center">
                         <Link
-                            href={route('home')}
+                            href={homeHref}
                             className={`flex w-full max-w-[5.5rem] flex-col items-center justify-end gap-0.5 pb-2 pt-1 text-[10px] font-medium transition ${
                                 isHome ? 'text-[#febd69]' : 'text-gray-300 hover:text-white'
                             }`}

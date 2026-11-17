@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\Category;
+use App\Support\CustomerPortal;
 use App\Support\Permissions;
 use App\Support\PortalGuard;
 use App\Support\SiteData;
@@ -90,6 +91,18 @@ class HandleInertiaRequests extends Middleware
                 return WalletData::earningForUser($user);
             },
             'vendor_email' => fn () => session('vendor_application_data')['email'] ?? null,
+            'customerPortal' => function () use ($request) {
+                $user = PortalGuard::resolveUser($request);
+
+                if (! $user) {
+                    return null;
+                }
+
+                return [
+                    'is_diamond' => $user->isDiamond(),
+                    'home_href' => CustomerPortal::defaultLandingUrl($user),
+                ];
+            },
         ];
     }
 }
