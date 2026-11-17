@@ -1,1 +1,0 @@
-import{t as e}from"./app-CLLLZWiS.js";import{y as t}from"./UI-DaZu9_cS.js";var n=e();function r(e){return(0,n.jsx)(t,{variant:`primary`,size:`sm`,...e})}export{r as t};

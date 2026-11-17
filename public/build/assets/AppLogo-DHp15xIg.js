@@ -1,0 +1,1 @@
+import{o as e,t}from"./app-DROAxLkm.js";var n=t();function r({className:t=`h-7 w-auto`,...r}){let{site:i}=e().props;return(0,n.jsx)(`img`,{src:i?.logo_url||`/images/logo.png`,alt:i?.name||`Application logo`,className:`object-contain ${t}`,...r})}export{r as t};
