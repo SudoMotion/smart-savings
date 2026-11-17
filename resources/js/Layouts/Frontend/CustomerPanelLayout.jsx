@@ -98,7 +98,7 @@ function MenuLink({ href, icon: Icon, children, onNavigate }) {
 }
 
 const panelMenuItems = [
-    { href: () => route('account.dashboard'), label: 'Home', icon: MenuHomeIcon },
+    { href: () => route('home'), label: 'Home', icon: MenuHomeIcon },
     { href: () => route('account.order-logs'), label: 'Order logs', icon: MenuLogsIcon },
     { href: () => route('account.profile'), label: 'Profile', icon: MenuProfileIcon },
     { href: () => route('account.percentage'), label: 'My percentage', icon: MenuPercentIcon },
