@@ -24,7 +24,7 @@ Route::middleware('auth:customer')->group(function () {
     Route::post('/event/{userEvent}/reveal', [UserEventController::class, 'revealSummary'])->name('event.reveal');
 });
 
-Route::redirect('/dashboard', '/account/dashboard');
+Route::redirect('/dashboard', '/');
 Route::redirect('/login', '/account/login');
 Route::redirect('/register', '/account/register');
 

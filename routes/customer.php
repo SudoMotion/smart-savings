@@ -3,22 +3,28 @@
 use App\Http\Controllers\Customer\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Customer\Auth\RegisteredUserController;
 use App\Http\Controllers\Customer\CustomerOrderController;
-use App\Http\Controllers\Customer\DashboardController;
 use App\Http\Controllers\Customer\DepositController;
 use App\Http\Controllers\Customer\OrderLogController;
 use App\Http\Controllers\Customer\PercentageController;
 use App\Http\Controllers\Customer\ProfileController;
 use App\Http\Controllers\Customer\ReferralController;
 use App\Http\Controllers\Customer\WithdrawController;
+use App\Models\User;
+use App\Support\CustomerPortal;
 use App\Support\PortalGuard;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('account')->name('account.')->group(function () {
     Route::get('/', function () {
-        return Auth::guard(PortalGuard::CUSTOMER)->check()
-            ? redirect()->route('account.dashboard')
-            : redirect()->route('account.login');
+        if (! Auth::guard(PortalGuard::CUSTOMER)->check()) {
+            return redirect()->route('account.login');
+        }
+
+        /** @var User $user */
+        $user = Auth::guard(PortalGuard::CUSTOMER)->user();
+
+        return redirect()->to(CustomerPortal::defaultLandingUrl($user));
     });
 
     Route::middleware('guest:customer')->group(function () {
@@ -34,7 +40,7 @@ Route::prefix('account')->name('account.')->group(function () {
 
     Route::middleware('auth:customer')->group(function () {
         Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
-        Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('dashboard', fn () => redirect()->route('home'))->name('dashboard');
         Route::get('order-logs', [OrderLogController::class, 'index'])->name('order-logs');
         Route::post('orders/{product}/confirm', [CustomerOrderController::class, 'confirm'])->name('orders.confirm');
         Route::post('orders/{product}/reject', [CustomerOrderController::class, 'reject'])->name('orders.reject');

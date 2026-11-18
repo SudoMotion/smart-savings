@@ -134,10 +134,10 @@ export default function CustomerPanelLayout({ children, categories }) {
     }, [menuOpen]);
 
     return (
-        <div className="flex min-h-screen flex-col bg-[#eaeded] text-neutral-900 font-sans antialiased">
+        <div className="flex h-[100dvh] flex-col overflow-hidden bg-[#eaeded] text-neutral-900 font-sans antialiased">
             <SiteFavicon />
             <FrontendNavbar categories={cats} />
-            <main className="flex min-h-0 flex-1 flex-col pb-[calc(4.25rem+env(safe-area-inset-bottom))]">
+            <main className="flex min-h-0 flex-1 flex-col overflow-hidden pb-[calc(4.25rem+env(safe-area-inset-bottom))]">
                 {children}
             </main>
             <CustomerBottomNav onOpenMenu={() => setMenuOpen(true)} />

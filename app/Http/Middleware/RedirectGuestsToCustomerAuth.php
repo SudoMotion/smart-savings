@@ -33,6 +33,10 @@ class RedirectGuestsToCustomerAuth
     private function guestMayAccess(Request $request): bool
     {
         if ($request->routeIs(
+            'home',
+            'about',
+            'contact',
+            'contact.store',
             'account.login',
             'account.register',
             'account.register.verify',
@@ -49,7 +53,13 @@ class RedirectGuestsToCustomerAuth
             return true;
         }
 
+        if ($request->path() === '' || $request->path() === '/') {
+            return true;
+        }
+
         return $request->is(
+            'about',
+            'contact',
             'account/login',
             'account/register',
             'account/register/verify',

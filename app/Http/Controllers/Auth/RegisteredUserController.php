@@ -50,6 +50,6 @@ class RegisteredUserController extends Controller
 
         Auth::guard(PortalGuard::ADMIN)->login($user);
 
-        return redirect(route('account.dashboard', absolute: false));
+        return redirect(route('home', absolute: false));
     }
 }

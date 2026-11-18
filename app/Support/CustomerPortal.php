@@ -15,7 +15,7 @@ class CustomerPortal
                 return route('event.show', $event, absolute: false);
             }
 
-            return route('account.dashboard', absolute: false);
+            return route('home', absolute: false);
         }
 
         return route('home', absolute: false);

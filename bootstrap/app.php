@@ -3,6 +3,7 @@
 use App\Http\Middleware\EnsureUserCanLogin;
 use App\Http\Middleware\EnsureUserIsVendor;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\RedirectCustomerDashboardToHome;
 use App\Http\Middleware\RedirectGuestsToCustomerAuth;
 use App\Support\CustomerPortal;
 use App\Support\PortalGuard;
@@ -75,6 +76,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->alias([
+            'redirect.customer.dashboard' => RedirectCustomerDashboardToHome::class,
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class,
             'role_or_permission' => RoleOrPermissionMiddleware::class,

@@ -37,7 +37,7 @@ export default function CustomerBottomNav({ onOpenMenu }) {
     const homeHref = customerPortal?.home_href ?? route('home');
     const isHome = customerPortal?.is_diamond
         ? route().current('event.show')
-        : route().current('home') || route().current('account.dashboard');
+        : route().current('home');
     const isDeposit = route().current('account.deposit');
     const isProfile = route().current('account.profile');
     const isPercentage = route().current('account.percentage');

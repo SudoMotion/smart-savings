@@ -2,7 +2,8 @@ import { Link, usePage, router } from '@inertiajs/react';
 import { useState, useEffect, useRef } from 'react';
 
 export default function FrontendNavbar({ categories = [] }) {
-    const { site, auth, filters: pageFilters, totalWallet, wallet } = usePage().props;
+    const { site, auth, filters: pageFilters, totalWallet, wallet, customerPortal } = usePage().props;
+    const customerHomeHref = customerPortal?.home_href ?? route('home');
     const walletBalance = totalWallet?.formatted_balance ?? wallet?.formatted_balance ?? '0.00';
     const [searchTerm, setSearchTerm] = useState(pageFilters?.search || '');
     const [selectedCategory, setSelectedCategory] = useState(pageFilters?.category || '');
@@ -169,7 +170,7 @@ export default function FrontendNavbar({ categories = [] }) {
                     {/* Mobile: balance when signed in, account entry when guest */}
                     {user ? (
                         <Link
-                            href={route('account.dashboard')}
+                            href={customerHomeHref}
                             className="flex md:hidden flex-col items-end rounded-sm px-2 py-1 leading-tight transition hover:ring-1 hover:ring-white"
                         >
                             <span className="text-[10px] font-medium text-gray-300">Balance</span>
@@ -291,11 +292,11 @@ export default function FrontendNavbar({ categories = [] }) {
                                         <div className="space-y-1">
                                             {user && (
                                                 <Link
-                                                    href={route('account.dashboard')}
+                                                    href={route('account.profile')}
                                                     className="flex items-center justify-between rounded px-2 py-1.5 font-semibold text-neutral-800 hover:bg-neutral-100"
                                                     onClick={() => setAccountMenuOpen(false)}
                                                 >
-                                                    <span>My Account</span>
+                                                    <span>Profile</span>
                                                     <span className="text-[10px] bg-neutral-100 text-neutral-700 px-1.5 py-0.5 rounded">
                                                         Customer
                                                     </span>

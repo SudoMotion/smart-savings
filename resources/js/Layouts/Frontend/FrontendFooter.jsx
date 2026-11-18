@@ -1,7 +1,7 @@
 import { Link, usePage } from '@inertiajs/react';
 
 export default function FrontendFooter() {
-    const { site } = usePage().props;
+    const { site, auth } = usePage().props;
     const year = new Date().getFullYear();
 
     const scrollToTop = () => {
@@ -116,7 +116,10 @@ export default function FrontendFooter() {
                         <h4 className="text-sm font-bold text-white">Let Us Help You</h4>
                         <ul className="space-y-2 text-gray-300">
                             <li>
-                                <Link href={route('account.dashboard')} className="hover:underline">
+                                <Link
+                                    href={auth?.user ? route('account.profile') : route('account.login')}
+                                    className="hover:underline"
+                                >
                                     Your Account
                                 </Link>
                             </li>
