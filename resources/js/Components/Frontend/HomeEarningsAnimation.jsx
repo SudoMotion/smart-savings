@@ -1,5 +1,11 @@
 import { useMemo } from 'react';
 
+const COIN_IMAGES = [
+    '/images/coin-images/eth.png',
+    '/images/coin-images/usdt.webp',
+    '/images/coin-images/usdc.webp',
+];
+
 function GearIcon({ className }) {
     return (
         <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -8,12 +14,9 @@ function GearIcon({ className }) {
     );
 }
 
-function Coin({ sizeClass, style }) {
+function FallingCoin({ src, sizeClass, style }) {
     return (
-        <div className={`home-earnings-coin ${sizeClass}`} style={style} aria-hidden>
-            <span className="home-earnings-coin-face">$</span>
-            <span className="home-earnings-coin-shine" />
-        </div>
+        <img src={src} alt="" className={`home-earnings-coin-img ${sizeClass}`} style={style} aria-hidden draggable={false} />
     );
 }
 
@@ -22,16 +25,13 @@ export default function HomeEarningsAnimation() {
         () =>
             Array.from({ length: 18 }, (_, i) => ({
                 id: i,
-                left: `${4 + ((i * 11) % 92)}%`,
-                delay: `${(i * 0.38) % 5.5}s`,
-                duration: `${3.8 + (i % 5) * 0.5}s`,
-                drift: `${(i % 7) - 3}rem`,
+                src: COIN_IMAGES[i % COIN_IMAGES.length],
+                left: `${6 + ((i * 17) % 78)}%`,
+                delay: `${(i * 0.35) % 4}s`,
+                duration: `${2.8 + (i % 4) * 0.45}s`,
+                drift: `${((i % 5) - 2) * 0.35}rem`,
                 sizeClass:
-                    i % 4 === 0
-                        ? 'home-earnings-coin--lg'
-                        : i % 4 === 1
-                          ? 'home-earnings-coin--md'
-                          : 'home-earnings-coin--sm',
+                    i % 3 === 0 ? 'home-earnings-coin-img--lg' : i % 3 === 1 ? 'home-earnings-coin-img--md' : 'home-earnings-coin-img--sm',
             })),
         [],
     );
@@ -47,25 +47,31 @@ export default function HomeEarningsAnimation() {
     );
 
     return (
-        <section className="home-earnings-panel home-earnings-scene relative min-h-0 flex-[1_1_50%] overflow-hidden">
+        <section className="home-earnings-panel home-earnings-scene relative flex h-full min-h-0 flex-[1_1_50%] overflow-hidden">
             <div className="home-earnings-grid pointer-events-none absolute inset-0 opacity-40" />
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_40%,rgba(254,189,105,0.18),transparent_70%)]" />
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_70%_50%,rgba(254,189,105,0.16),transparent_65%)]" />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#0f281c] via-[#142f24] to-[#0a1f16]" />
 
-            {coins.map((coin) => (
-                <Coin
-                    key={coin.id}
-                    sizeClass={coin.sizeClass}
-                    style={{
-                        left: coin.left,
-                        animationDelay: coin.delay,
-                        animationDuration: coin.duration,
-                        '--coin-drift': coin.drift,
-                    }}
-                />
-            ))}
+            {/* Left: crypto coins falling from top */}
+            <div className="home-earnings-coin-lane" aria-hidden>
+                <div className="pointer-events-none absolute inset-y-0 right-0 z-0 w-px bg-gradient-to-b from-transparent via-[#febd69]/25 to-transparent" />
+                {coins.map((coin) => (
+                    <FallingCoin
+                        key={coin.id}
+                        src={coin.src}
+                        sizeClass={coin.sizeClass}
+                        style={{
+                            left: coin.left,
+                            animationDelay: coin.delay,
+                            animationDuration: coin.duration,
+                            '--coin-drift': coin.drift,
+                        }}
+                    />
+                ))}
+            </div>
 
-            <div className="relative flex h-full min-h-0 flex-col items-center justify-center px-4 py-6">
+            {/* Right: gear machine + caption */}
+            <div className="relative z-[1] flex min-h-0 h-full w-full flex-1 flex-col items-center justify-center pl-[44%] pr-3 py-6 sm:pl-[40%] sm:pr-6">
                 <div className="home-earnings-machine relative flex items-center justify-center">
                     <div className="home-earnings-orbit pointer-events-none absolute rounded-full border border-dashed border-[#febd69]/25" />
 
@@ -97,7 +103,7 @@ export default function HomeEarningsAnimation() {
                     <div className="home-earnings-vault pointer-events-none absolute -bottom-2 left-1/2 z-0 h-3 w-32 -translate-x-1/2 rounded-full bg-[#febd69]/30 blur-md" />
                 </div>
 
-                <div className="mt-8 text-center">
+                <div className="mt-6 text-center sm:mt-8">
                     <p className="home-earnings-pulse text-base font-semibold tracking-wide text-[#febd69] sm:text-lg">
                         Earnings in motion
                     </p>
