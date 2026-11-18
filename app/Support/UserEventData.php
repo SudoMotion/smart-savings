@@ -12,7 +12,7 @@ class UserEventData
      */
     public static function activeEvent(User $user): ?UserEvent
     {
-        if (! $user->isDiamond()) {
+        if (! $user->canLogin()) {
             return null;
         }
 

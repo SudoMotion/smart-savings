@@ -7,6 +7,7 @@ use App\Support\CustomerPortal;
 use App\Support\Permissions;
 use App\Support\PortalGuard;
 use App\Support\SiteData;
+use App\Support\UserEventData;
 use App\Support\WalletData;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -98,9 +99,11 @@ class HandleInertiaRequests extends Middleware
                     return null;
                 }
 
+                $activeEvent = UserEventData::activeEvent($user);
+
                 return [
-                    'is_diamond' => $user->isDiamond(),
                     'home_href' => CustomerPortal::defaultLandingUrl($user),
+                    'home_is_event' => $activeEvent !== null,
                 ];
             },
         ];

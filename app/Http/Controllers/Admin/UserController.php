@@ -50,8 +50,6 @@ class UserController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'portal_type' => $this->portalType($user),
-                'user_type' => $user->userType()->value,
-                'user_type_label' => $user->userType()->label(),
                 'vendor_shop' => $user->vendor?->shop_name,
                 'percentage' => (float) ($user->percentage ?? 0),
                 'wallet_balance' => WalletData::balanceFromWallet($user->wallet),
@@ -112,7 +110,6 @@ class UserController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'user_type' => $user->userType()->value,
                 'wallet_balance' => $wallet['balance'],
                 'formatted_wallet_balance' => $wallet['formatted_balance'],
                 'events' => $user->events()
@@ -127,7 +124,6 @@ class UserController extends Controller
                     ->values()
                     ->all(),
             ],
-            'userTypeOptions' => UserType::options(),
         ]);
     }
 
@@ -178,12 +174,9 @@ class UserController extends Controller
             $user->update([
                 'name' => $request->validated('name'),
                 'email' => $request->validated('email'),
-                'user_type' => $request->validated('user_type'),
             ]);
 
-            if ($user->isDiamond()) {
-                $this->syncEvents($user, $request->validated('events') ?? []);
-            }
+            $this->syncEvents($user, $request->validated('events') ?? []);
         });
 
         return redirect()

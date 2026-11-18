@@ -25,12 +25,6 @@ const portalTypeLabels = {
     vendor: 'Vendor',
 };
 
-const userTypeStyles = {
-    gold_member: 'bg-amber-50 text-amber-800 ring-1 ring-amber-200',
-    diamond_member: 'bg-cyan-50 text-cyan-800 ring-1 ring-cyan-200',
-    disable: 'bg-rose-50 text-rose-800 ring-1 ring-rose-200',
-};
-
 export default function Index({ users, filters, counts, can }) {
     const { flash } = usePage().props;
     const [search, setSearch] = useState(filters.search || '');
@@ -173,9 +167,6 @@ export default function Index({ users, filters, counts, can }) {
                                     Portal
                                 </th>
                                 <th className="px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">
-                                    User type
-                                </th>
-                                <th className="px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">
                                     Wallet
                                 </th>
                                 <th className="px-4 py-2.5 text-left text-xs font-medium uppercase tracking-wide text-neutral-500">
@@ -192,7 +183,7 @@ export default function Index({ users, filters, counts, can }) {
                         <tbody className="divide-y divide-neutral-100 bg-white">
                             {userList.length === 0 ? (
                                 <tr>
-                                    <td colSpan={7} className="px-4 py-12 text-center">
+                                    <td colSpan={6} className="px-4 py-12 text-center">
                                         <div className="mx-auto max-w-sm text-center">
                                             <svg
                                                 className="mx-auto h-12 w-12 text-neutral-400"
@@ -238,16 +229,6 @@ export default function Index({ users, filters, counts, can }) {
                                                 }`}
                                             >
                                                 {portalTypeLabels[user.portal_type] || user.portal_type}
-                                            </span>
-                                        </td>
-                                        <td className="whitespace-nowrap px-4 py-3 text-sm">
-                                            <span
-                                                className={`inline-flex rounded-full px-2 py-0.5 text-xs font-semibold ${
-                                                    userTypeStyles[user.user_type] ||
-                                                    'bg-neutral-100 text-neutral-600'
-                                                }`}
-                                            >
-                                                {user.user_type_label || user.user_type}
                                             </span>
                                         </td>
                                         <td className="whitespace-nowrap px-4 py-3 text-sm font-medium text-neutral-900">

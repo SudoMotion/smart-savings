@@ -35,7 +35,7 @@ function MenuIcon({ className }) {
 export default function CustomerBottomNav({ onOpenMenu }) {
     const { customerPortal } = usePage().props;
     const homeHref = customerPortal?.home_href ?? route('home');
-    const isHome = customerPortal?.is_diamond
+    const isHome = customerPortal?.home_is_event
         ? route().current('event.show')
         : route().current('home');
     const isDeposit = route().current('account.deposit');

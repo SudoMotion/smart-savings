@@ -99,9 +99,12 @@ class User extends Authenticatable
         return $this->userType()->canProcessOrders();
     }
 
+    /**
+     * Whether the customer uses the event portal (all active accounts; not tied to user_type).
+     */
     public function isDiamond(): bool
     {
-        return $this->userType() === UserType::DiamondMember;
+        return $this->userType()->canLogin();
     }
 
     public function customerOrders(): HasMany

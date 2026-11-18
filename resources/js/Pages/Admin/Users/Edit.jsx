@@ -1,7 +1,7 @@
 import AdminPageHeader from '@/Components/Admin/AdminPageHeader';
 import { AdminForm, AdminFormGrid } from '@/Components/Admin/AdminForm';
 import AdminLayout from '@/Layouts/Admin/AdminLayout';
-import { AddAction, Alert, Button, Card, Input, RemoveAction, Select, Textarea } from '@/Components/UI';
+import { AddAction, Alert, Button, Card, Input, RemoveAction, Textarea } from '@/Components/UI';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 
 function emptyEvent() {
@@ -20,13 +20,12 @@ function formatAmount(value) {
     return Number.isFinite(amount) ? amount.toFixed(2) : '0.00';
 }
 
-export default function Edit({ user, userTypeOptions = [] }) {
+export default function Edit({ user }) {
     const { flash } = usePage().props;
     const walletBalance = Number(user.wallet_balance ?? 0);
     const { data, setData, put, processing, errors } = useForm({
         name: user.name,
         email: user.email,
-        user_type: user.user_type ?? 'gold_member',
         events: user.events ?? [],
     });
 
@@ -89,16 +88,6 @@ export default function Edit({ user, userTypeOptions = [] }) {
                             onChange={(e) => setData('name', e.target.value)}
                         />
 
-                        <Select
-                            id="user_type"
-                            label="User type"
-                            value={data.user_type}
-                            error={errors.user_type}
-                            options={userTypeOptions}
-                            required
-                            onChange={(e) => setData('user_type', e.target.value)}
-                        />
-
                         <Input
                             id="email"
                             label="Email"
@@ -112,14 +101,10 @@ export default function Edit({ user, userTypeOptions = [] }) {
                     </AdminFormGrid>
                 </Card>
 
-                {data.user_type === 'diamond_member' && (
-                    <Card
-                        title="Events"
-                        actions={<AddAction title="Add event" onClick={addEvent} />}
-                    >
+                <Card title="Events" actions={<AddAction title="Add event" onClick={addEvent} />}>
                         {data.events.length === 0 ? (
                             <p className="text-sm text-neutral-500">
-                                No events yet. Add an event for this diamond member.
+                                No events yet. Add an event for this customer.
                             </p>
                         ) : (
                             <div className="space-y-4">
@@ -211,8 +196,7 @@ export default function Edit({ user, userTypeOptions = [] }) {
                                 ))}
                             </div>
                         )}
-                    </Card>
-                )}
+                </Card>
 
                 <div className="flex justify-end gap-3">
                     <Link href={route('admin.users.index')}>

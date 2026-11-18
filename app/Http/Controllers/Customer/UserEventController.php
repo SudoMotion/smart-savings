@@ -17,7 +17,7 @@ class UserEventController extends Controller
     {
         $user = $request->user(PortalGuard::CUSTOMER);
 
-        if (! $user || ! $user->isDiamond() || $userEvent->user_id !== $user->id) {
+        if (! $user || ! $user->canLogin() || $userEvent->user_id !== $user->id) {
             abort(403);
         }
 
@@ -37,7 +37,7 @@ class UserEventController extends Controller
     {
         $user = $request->user(PortalGuard::CUSTOMER);
 
-        if (! $user || ! $user->isDiamond() || $userEvent->user_id !== $user->id) {
+        if (! $user || ! $user->canLogin() || $userEvent->user_id !== $user->id) {
             abort(403);
         }
 
