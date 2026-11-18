@@ -82,6 +82,7 @@ function VendorCatalogIcon({ className }) {
 }
 
 const accessControlItems = [
+    { name: 'Users', href: 'admin.staff-users.index', active: 'admin.staff-users.*', permission: 'staff-users.view' },
     { name: 'Roles', href: 'admin.roles.index', active: 'admin.roles.*', permission: 'roles.view' },
     { name: 'Permissions', href: 'admin.permissions.index', active: 'admin.permissions.*', permission: 'permissions.view' },
 ];

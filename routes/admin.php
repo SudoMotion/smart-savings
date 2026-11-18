@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ReferralTierController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\StaffUserController;
 use App\Http\Controllers\Admin\SubcategoryController;
 use App\Http\Controllers\Admin\SubsubcategoryController;
 use App\Http\Controllers\Admin\UnitController;
@@ -153,6 +154,25 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::post('permissions', [PermissionController::class, 'update'])
                 ->middleware('permission:permissions.update')
                 ->name('permissions.update');
+        });
+
+        Route::middleware('permission:staff-users.view')->group(function () {
+            Route::get('staff-users', [StaffUserController::class, 'index'])->name('staff-users.index');
+            Route::get('staff-users/create', [StaffUserController::class, 'create'])
+                ->middleware('permission:staff-users.create')
+                ->name('staff-users.create');
+            Route::post('staff-users', [StaffUserController::class, 'store'])
+                ->middleware('permission:staff-users.create')
+                ->name('staff-users.store');
+            Route::get('staff-users/{staffUser}/edit', [StaffUserController::class, 'edit'])
+                ->middleware('permission:staff-users.edit')
+                ->name('staff-users.edit');
+            Route::put('staff-users/{staffUser}', [StaffUserController::class, 'update'])
+                ->middleware('permission:staff-users.edit')
+                ->name('staff-users.update');
+            Route::delete('staff-users/{staffUser}', [StaffUserController::class, 'destroy'])
+                ->middleware('permission:staff-users.delete')
+                ->name('staff-users.destroy');
         });
 
         Route::middleware('permission:about-us.view')->group(function () {

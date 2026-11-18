@@ -34,6 +34,14 @@ class User extends Authenticatable
     ];
 
     /**
+     * Roles and permissions use guard_name "web" (see RolePermissionSeeder), not portal guards.
+     */
+    public function guardName(): string
+    {
+        return 'web';
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -110,6 +118,15 @@ class User extends Authenticatable
     public function scopeExcludingStaffAccounts(Builder $query): Builder
     {
         return $query->whereDoesntHave('roles');
+    }
+
+    /**
+     * @param  Builder<User>  $query
+     * @return Builder<User>
+     */
+    public function scopeStaffAccounts(Builder $query): Builder
+    {
+        return $query->whereHas('roles');
     }
 
     public function isRegular(): bool

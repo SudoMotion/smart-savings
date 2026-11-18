@@ -108,6 +108,12 @@ class Permissions
                 'permissions.view' => 'View Permissions',
                 'permissions.update' => 'Update Permissions',
             ],
+            'Staff Users' => [
+                'staff-users.view' => 'View Staff Users',
+                'staff-users.create' => 'Create Staff Users',
+                'staff-users.edit' => 'Edit Staff Users',
+                'staff-users.delete' => 'Delete Staff Users',
+            ],
             'Vendor Catalog' => [
                 'vendor-applications.view' => 'View Vendor Applications',
                 'vendor-applications.approve' => 'Approve Vendor Applications',
