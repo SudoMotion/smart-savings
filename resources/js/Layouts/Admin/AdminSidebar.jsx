@@ -135,23 +135,23 @@ export default function AdminSidebar({ open, onNavigate }) {
                     </AdminSidebarLink>
                 ))}
 
-                {visibleCatalogItems.length > 0 && (
+                {/* {visibleCatalogItems.length > 0 && (
                     <AdminSidebarGroup
                         label="Product Catalog"
                         icon={CatalogIcon}
                         items={visibleCatalogItems}
                         onNavigate={onNavigate}
                     />
-                )}
+                )} */}
 
-                {visibleVendorItems.length > 0 && (
+                {/* {visibleVendorItems.length > 0 && (
                     <AdminSidebarGroup
                         label="Vendor Catalog"
                         icon={VendorCatalogIcon}
                         items={visibleVendorItems}
                         onNavigate={onNavigate}
                     />
-                )}
+                )} */}
 
                 {visibleAccessItems.length > 0 && (
                     <AdminSidebarGroup
