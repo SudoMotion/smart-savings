@@ -1,1 +1,0 @@
-import{t as e}from"./app-EKg-XEV5.js";var t=e();function n({className:e=``,children:n}){return(0,t.jsx)(`div`,{className:`mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 ${e}`,children:n})}export{n as t};

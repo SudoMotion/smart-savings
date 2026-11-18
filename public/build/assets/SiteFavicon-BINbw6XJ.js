@@ -1,0 +1,1 @@
+import{n as e,o as t,t as n}from"./app-BUlxCjh2.js";var r=n();function i(){let{site:n}=t().props;return(0,r.jsx)(e,{children:(0,r.jsx)(`link`,{rel:`icon`,href:n?.favicon_url||`/images/favicon.png`})})}export{i as t};
