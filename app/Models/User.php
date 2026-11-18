@@ -12,17 +12,26 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'email', 'password', 'percentage', 'user_type', 'referred_by_user_id', 'referral_code'])]
+#[Fillable(['name', 'email', 'password', 'profile_photo_path', 'percentage', 'user_type', 'referred_by_user_id', 'referral_code'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasRoles, Notifiable;
+
+    /**
+     * @var list<string>
+     */
+    protected $appends = [
+        'profile_photo_url',
+    ];
 
     /**
      * Get the attributes that should be cast.
@@ -37,6 +46,15 @@ class User extends Authenticatable
             'percentage' => 'decimal:2',
             'user_type' => UserType::class,
         ];
+    }
+
+    protected function profilePhotoUrl(): Attribute
+    {
+        return Attribute::get(
+            fn () => $this->profile_photo_path
+                ? Storage::disk('public')->url($this->profile_photo_path)
+                : null,
+        );
     }
 
     public function wallet(): HasOne

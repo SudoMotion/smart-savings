@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\DepositOptionController;
 use App\Http\Controllers\Admin\DepositRequestController;
 use App\Http\Controllers\Admin\OrderLimitController;
 use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ReferralTierController;
 use App\Http\Controllers\Admin\RoleController;
@@ -93,6 +94,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('dashboard', function () {
             return Inertia::render('Admin/Dashboard/Index');
         })->middleware('permission:dashboard.view')->name('dashboard');
+
+        Route::get('profile', [ProfileController::class, 'index'])->name('profile.index');
+        Route::match(['patch', 'post'], 'profile', [ProfileController::class, 'update'])->name('profile.update');
+        Route::put('profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
 
         Route::middleware('permission:users.view')->group(function () {
             Route::get('users', [UserController::class, 'index'])->name('users.index');

@@ -40,8 +40,16 @@ export default function AdminTopbar({ title, onToggleSidebar }) {
                 <Dropdown>
                     <Dropdown.Trigger>
                         <Button type="button" variant="ghost" size="sm" className="gap-2 text-white hover:bg-white/10">
-                            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#2d5240] text-sm font-medium text-white">
-                                {user.name.charAt(0).toUpperCase()}
+                            <span className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[#2d5240] text-sm font-medium text-white">
+                                {user.profile_photo_url ? (
+                                    <img
+                                        src={user.profile_photo_url}
+                                        alt=""
+                                        className="h-full w-full object-cover"
+                                    />
+                                ) : (
+                                    user.name.charAt(0).toUpperCase()
+                                )}
                             </span>
                             <span className="hidden text-sm font-normal sm:inline">{user.name}</span>
                             <svg className="h-4 w-4 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
@@ -51,6 +59,7 @@ export default function AdminTopbar({ title, onToggleSidebar }) {
                     </Dropdown.Trigger>
 
                     <Dropdown.Content>
+                        <Dropdown.Link href={route('admin.profile.index')}>My Profile</Dropdown.Link>
                         <Dropdown.Link href={route('admin.logout')} method="post" as="button">
                             Log Out
                         </Dropdown.Link>
