@@ -48,9 +48,9 @@ export default function HomeEarningsAnimation() {
 
     return (
         <section className="home-earnings-panel home-earnings-scene relative h-full min-h-0 flex-[1_1_50%] overflow-x-hidden">
-            <div className="home-earnings-grid pointer-events-none absolute inset-0 opacity-40" />
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_75%_70%_at_72%_48%,rgba(254,189,105,0.14),transparent_68%)]" />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#0f281c] via-[#142f24] to-[#0a1f16]" />
+            <div className="home-earnings-grid pointer-events-none absolute inset-0 opacity-50 sm:opacity-40" />
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_75%_70%_at_72%_48%,rgba(254,189,105,0.16),transparent_68%)] sm:bg-[radial-gradient(ellipse_75%_70%_at_72%_48%,rgba(254,189,105,0.14),transparent_68%)]" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#e5e9e7] via-[#e8ebe9] to-[#dfe4e1] sm:from-[#122a22] sm:via-[#142f24] sm:to-[#0a1f16]" />
 
             <div className="home-earnings-coins" aria-hidden>
                 {coins.map((coin) => (
@@ -71,7 +71,7 @@ export default function HomeEarningsAnimation() {
             <div className="home-earnings-gear-stage">
                 <div className="home-earnings-gear-cluster">
                 <div className="home-earnings-machine relative flex items-center justify-center">
-                    <div className="home-earnings-orbit pointer-events-none absolute rounded-full border border-dashed border-[#febd69]/25" />
+                    <div className="home-earnings-orbit pointer-events-none absolute rounded-full border border-dashed border-[#b45309]/25 sm:border-[#febd69]/25" />
 
                     {sparks.map((spark) => (
                         <span
@@ -85,15 +85,15 @@ export default function HomeEarningsAnimation() {
                     ))}
 
                     <div className="home-earnings-hub relative z-10">
-                        <div className="home-earnings-gear-main text-[#febd69]">
+                        <div className="home-earnings-gear-main text-[#c9890a] sm:text-[#febd69]">
                             <GearIcon className="h-[3.75rem] w-[3.75rem] sm:h-[4.5rem] sm:w-[4.5rem] md:h-24 md:w-24" />
                         </div>
 
-                        <div className="home-earnings-gear-secondary absolute -right-8 top-0 text-emerald-300/90 sm:-right-10 sm:-top-1">
+                        <div className="home-earnings-gear-secondary absolute -right-8 top-0 text-emerald-700/85 sm:text-emerald-300/90 sm:-right-10 sm:-top-1">
                             <GearIcon className="h-11 w-11 sm:h-14 sm:w-14" />
                         </div>
 
-                        <div className="home-earnings-gear-tertiary absolute -left-7 bottom-0 text-teal-200/80 sm:-left-9 sm:bottom-1">
+                        <div className="home-earnings-gear-tertiary absolute -left-7 bottom-0 text-teal-700/80 sm:text-teal-200/80 sm:-left-9 sm:bottom-1">
                             <GearIcon className="h-9 w-9 sm:h-11 sm:w-11" />
                         </div>
                     </div>
@@ -102,17 +102,17 @@ export default function HomeEarningsAnimation() {
                 </div>
 
                 <div className="mt-4 max-w-xs text-center sm:mt-5">
-                    <p className="home-earnings-pulse text-base font-semibold tracking-wide text-[#febd69] sm:text-lg">
+                    <p className="home-earnings-pulse text-base font-semibold tracking-wide text-[#b45309] sm:text-[#febd69] sm:text-lg">
                         Earnings in motion
                     </p>
-                    <p className="mt-1 text-xs text-emerald-100/70 sm:text-sm">
+                    <p className="mt-1 text-xs text-[#2d5a47]/80 sm:text-emerald-100/70 sm:text-sm">
                         Your balance keeps working in the background
                     </p>
                     <div className="mt-4 flex justify-center gap-2">
                         {[0, 1, 2].map((dot) => (
                             <span
                                 key={dot}
-                                className="home-earnings-dot h-2 w-2 rounded-full bg-[#febd69]"
+                                className="home-earnings-dot h-2 w-2 rounded-full bg-[#c9890a] sm:bg-[#febd69]"
                                 style={{ animationDelay: `${dot * 0.22}s` }}
                             />
                         ))}

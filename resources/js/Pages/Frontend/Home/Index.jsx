@@ -18,6 +18,11 @@ export default function Index() {
                 <section className="home-hero-panel relative min-h-0 flex-[1_1_50%] overflow-hidden bg-[#0a1f16]">
                     <picture className="block h-full w-full">
                         <source media="(min-width: 768px)" srcSet="/images/hero-desktop.png" />
+                        <source
+                            media="(max-width: 767px)"
+                            srcSet="/images/hero-mobile.webp"
+                            type="image/webp"
+                        />
                         <img
                             src="/images/hero-mobile.png"
                             alt="Tether saving account — low risk high return, earn interest in ETH"
@@ -26,7 +31,7 @@ export default function Index() {
                             fetchpriority="high"
                         />
                     </picture>
-                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#0f281c] to-transparent" />
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#e5e9e7] via-[#e5e9e7]/60 to-transparent sm:h-14 sm:from-[#0f281c] sm:via-[#0f281c]/50" />
                 </section>
 
                 <HomeEarningsAnimation />
