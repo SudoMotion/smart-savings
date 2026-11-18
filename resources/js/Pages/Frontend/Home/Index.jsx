@@ -15,7 +15,7 @@ export default function Index() {
             <Head title={site?.name ? `${site.name} — Home` : 'Home'} />
 
             <div className={`${viewportClass} flex min-h-0 flex-1 flex-col overflow-x-hidden`}>
-                <section className="home-hero-panel relative min-h-0 flex-[1_1_50%] overflow-hidden bg-[#0a1f16]">
+                <section className="home-hero-panel relative min-h-0 flex-[1_1_50%] overflow-hidden">
                     <picture className="block h-full w-full">
                         <source media="(min-width: 768px)" srcSet="/images/hero-desktop.png" />
                         <source
@@ -31,7 +31,6 @@ export default function Index() {
                             fetchpriority="high"
                         />
                     </picture>
-                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#e5e9e7] via-[#e5e9e7]/60 to-transparent sm:h-14 sm:from-[#0f281c] sm:via-[#0f281c]/50" />
                 </section>
 
                 <HomeEarningsAnimation />

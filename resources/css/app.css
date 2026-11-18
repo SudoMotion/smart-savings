@@ -23,6 +23,15 @@
     flex: 1 1 auto;
     min-height: calc(100dvh - 7.5rem);
     height: calc(100dvh - 7.5rem);
+    /* Match hero image letterbox / fill (mobile + desktop art) */
+    --home-surface: #eaeded;
+    background-color: var(--home-surface);
+}
+
+@media (min-width: 768px) {
+    .home-viewport {
+        --home-surface: #fdfdfd;
+    }
 }
 
 .home-viewport--panel {
@@ -33,10 +42,12 @@
 .home-hero-panel {
     flex: 1 1 50%;
     min-height: 0;
+    background-color: var(--home-surface);
 }
 
 .home-earnings-panel {
     box-sizing: border-box;
+    background-color: var(--home-surface);
 }
 
 /* Home earnings animation */
@@ -163,17 +174,10 @@
 }
 
 .home-earnings-grid {
-    background-image: linear-gradient(rgba(45, 90, 71, 0.07) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(45, 90, 71, 0.07) 1px, transparent 1px);
+    background-image: linear-gradient(rgba(45, 90, 71, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(45, 90, 71, 0.05) 1px, transparent 1px);
     background-size: 28px 28px;
     mask-image: radial-gradient(ellipse 95% 110% at 50% 58%, black 50%, transparent 92%);
-}
-
-@media (min-width: 640px) {
-    .home-earnings-grid {
-        background-image: linear-gradient(rgba(254, 189, 105, 0.06) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(254, 189, 105, 0.06) 1px, transparent 1px);
-    }
 }
 
 .home-earnings-gear-cluster {
