@@ -26,7 +26,7 @@ export default function HomeEarningsAnimation() {
             Array.from({ length: 18 }, (_, i) => ({
                 id: i,
                 src: COIN_IMAGES[i % COIN_IMAGES.length],
-                left: `${6 + ((i * 17) % 78)}%`,
+                left: `${4 + ((i * 11) % 40)}%`,
                 delay: `${(i * 0.35) % 4}s`,
                 duration: `${2.8 + (i % 4) * 0.45}s`,
                 drift: `${((i % 5) - 2) * 0.35}rem`,
@@ -47,14 +47,12 @@ export default function HomeEarningsAnimation() {
     );
 
     return (
-        <section className="home-earnings-panel home-earnings-scene relative flex h-full min-h-0 flex-[1_1_50%] overflow-hidden">
+        <section className="home-earnings-panel home-earnings-scene relative h-full min-h-0 flex-[1_1_50%] overflow-x-hidden">
             <div className="home-earnings-grid pointer-events-none absolute inset-0 opacity-40" />
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_70%_50%,rgba(254,189,105,0.16),transparent_65%)]" />
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_75%_70%_at_72%_48%,rgba(254,189,105,0.14),transparent_68%)]" />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#0f281c] via-[#142f24] to-[#0a1f16]" />
 
-            {/* Left: crypto coins falling from top */}
-            <div className="home-earnings-coin-lane" aria-hidden>
-                <div className="pointer-events-none absolute inset-y-0 right-0 z-0 w-px bg-gradient-to-b from-transparent via-[#febd69]/25 to-transparent" />
+            <div className="home-earnings-coins" aria-hidden>
                 {coins.map((coin) => (
                     <FallingCoin
                         key={coin.id}
@@ -70,8 +68,8 @@ export default function HomeEarningsAnimation() {
                 ))}
             </div>
 
-            {/* Right: gear machine + caption */}
-            <div className="relative z-[1] flex min-h-0 h-full w-full flex-1 flex-col items-center justify-center pl-[44%] pr-3 py-6 sm:pl-[40%] sm:pr-6">
+            <div className="home-earnings-gear-stage">
+                <div className="home-earnings-gear-cluster">
                 <div className="home-earnings-machine relative flex items-center justify-center">
                     <div className="home-earnings-orbit pointer-events-none absolute rounded-full border border-dashed border-[#febd69]/25" />
 
@@ -88,22 +86,22 @@ export default function HomeEarningsAnimation() {
 
                     <div className="home-earnings-hub relative z-10">
                         <div className="home-earnings-gear-main text-[#febd69]">
-                            <GearIcon className="h-[4.5rem] w-[4.5rem] sm:h-24 sm:w-24" />
+                            <GearIcon className="h-[3.75rem] w-[3.75rem] sm:h-[4.5rem] sm:w-[4.5rem] md:h-24 md:w-24" />
                         </div>
 
-                        <div className="home-earnings-gear-secondary absolute -right-10 -top-2 text-emerald-300/90">
-                            <GearIcon className="h-14 w-14 sm:h-16 sm:w-16" />
+                        <div className="home-earnings-gear-secondary absolute -right-8 top-0 text-emerald-300/90 sm:-right-10 sm:-top-1">
+                            <GearIcon className="h-11 w-11 sm:h-14 sm:w-14" />
                         </div>
 
-                        <div className="home-earnings-gear-tertiary absolute -left-9 bottom-1 text-teal-200/80">
-                            <GearIcon className="h-11 w-11 sm:h-12 sm:w-12" />
+                        <div className="home-earnings-gear-tertiary absolute -left-7 bottom-0 text-teal-200/80 sm:-left-9 sm:bottom-1">
+                            <GearIcon className="h-9 w-9 sm:h-11 sm:w-11" />
                         </div>
                     </div>
 
                     <div className="home-earnings-vault pointer-events-none absolute -bottom-2 left-1/2 z-0 h-3 w-32 -translate-x-1/2 rounded-full bg-[#febd69]/30 blur-md" />
                 </div>
 
-                <div className="mt-6 text-center sm:mt-8">
+                <div className="mt-4 max-w-xs text-center sm:mt-5">
                     <p className="home-earnings-pulse text-base font-semibold tracking-wide text-[#febd69] sm:text-lg">
                         Earnings in motion
                     </p>
@@ -119,6 +117,7 @@ export default function HomeEarningsAnimation() {
                             />
                         ))}
                     </div>
+                </div>
                 </div>
             </div>
         </section>

@@ -17,8 +17,13 @@
 
 /* Home — full-viewport hero + earnings split */
 .home-viewport {
-    height: 100%;
+    flex: 1 1 0;
+    min-height: 0;
     max-height: 100%;
+}
+
+.home-earnings-panel {
+    box-sizing: border-box;
 }
 
 /* Home earnings animation */
@@ -115,18 +120,32 @@
     }
 }
 
-.home-earnings-coin-lane {
+/* Full-section canvas: coins on the left, gears on the right — no visible split */
+.home-earnings-coins {
     position: absolute;
-    inset: 0 auto 0 0;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: visible;
+}
+
+.home-earnings-gear-stage {
+    position: absolute;
+    inset: 0 0 0 46%;
     z-index: 2;
-    overflow: hidden;
-    width: 42%;
-    max-width: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(0.75rem, 2.5vh, 1.25rem) 1rem 0.5rem;
+    pointer-events: none;
+    overflow: visible;
 }
 
 @media (min-width: 640px) {
-    .home-earnings-coin-lane {
-        width: 38%;
+    .home-earnings-gear-stage {
+        inset: 0 0 0 50%;
+        padding: clamp(0.5rem, 2vh, 1rem) 1.5rem 0.75rem;
     }
 }
 
@@ -134,33 +153,60 @@
     background-image: linear-gradient(rgba(254, 189, 105, 0.06) 1px, transparent 1px),
         linear-gradient(90deg, rgba(254, 189, 105, 0.06) 1px, transparent 1px);
     background-size: 28px 28px;
-    mask-image: radial-gradient(ellipse at center, black 20%, transparent 75%);
+    mask-image: radial-gradient(ellipse 95% 110% at 50% 58%, black 50%, transparent 92%);
+}
+
+.home-earnings-gear-cluster {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 0 1 auto;
+    width: 100%;
+    max-height: 100%;
+    transform-origin: center center;
+}
+
+@media (max-height: 720px) {
+    .home-earnings-gear-cluster {
+        transform: scale(0.9);
+    }
+}
+
+@media (max-height: 620px) {
+    .home-earnings-gear-cluster {
+        transform: scale(0.8);
+    }
 }
 
 .home-earnings-machine {
-    width: 11rem;
-    height: 11rem;
+    position: relative;
+    flex-shrink: 0;
+    width: min(11rem, 24vh, 38vw);
+    height: min(11rem, 24vh, 38vw);
 }
 
 @media (min-width: 640px) {
     .home-earnings-machine {
-        width: 13rem;
-        height: 13rem;
+        width: min(13rem, 26vh, 32vw);
+        height: min(13rem, 26vh, 32vw);
     }
 }
 
 .home-earnings-orbit {
+    position: absolute;
     left: 50%;
     top: 50%;
-    width: 10.5rem;
-    height: 10.5rem;
+    width: 92%;
+    height: 92%;
+    transform: translate(-50%, -50%);
     animation: home-earnings-orbit-spin 14s linear infinite;
 }
 
 @media (min-width: 640px) {
     .home-earnings-orbit {
-        width: 12.5rem;
-        height: 12.5rem;
+        width: 94%;
+        height: 94%;
     }
 }
 
