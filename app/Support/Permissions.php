@@ -2,6 +2,9 @@
 
 namespace App\Support;
 
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\PermissionRegistrar;
+
 class Permissions
 {
     public const SUPERADMIN_ROLE = 'superadmin';
@@ -141,5 +144,17 @@ class Permissions
         }
 
         return $permissions;
+    }
+
+    /**
+     * Ensure every permission defined in code exists in the database (guard: web).
+     */
+    public static function syncToDatabase(): void
+    {
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+        foreach (self::all() as $permission) {
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+        }
     }
 }

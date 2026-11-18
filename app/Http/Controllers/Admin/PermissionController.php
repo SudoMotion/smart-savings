@@ -14,6 +14,8 @@ class PermissionController extends Controller
 {
     public function index(): Response
     {
+        Permissions::syncToDatabase();
+
         $roles = Role::query()
             ->where('name', '!=', Permissions::SUPERADMIN_ROLE)
             ->orderBy('name')
@@ -36,6 +38,8 @@ class PermissionController extends Controller
 
     public function update(UpdateRolePermissionsRequest $request): RedirectResponse
     {
+        Permissions::syncToDatabase();
+
         $role = Role::findOrFail($request->validated('role_id'));
 
         if ($role->name === Permissions::SUPERADMIN_ROLE) {
