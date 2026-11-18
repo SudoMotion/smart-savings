@@ -8,6 +8,23 @@ use App\Models\UserEvent;
 class UserEventData
 {
     /**
+     * Balance shown for an event: wallet plus all deposit amounts from earlier events (by id).
+     */
+    public static function openingBalanceForEvent(User $user, UserEvent $event): float
+    {
+        $wallet = WalletData::totalForUser($user);
+        $priorDeposits = (float) $user->events()
+            ->where('id', '<', $event->id)
+            ->sum('deposit_amount');
+
+        return $wallet['balance'] + $priorDeposits;
+    }
+
+    public static function standardBalanceForEvent(User $user, UserEvent $event): float
+    {
+        return self::openingBalanceForEvent($user, $event) + (float) $event->deposit_amount;
+    }
+    /**
      * @return array{id: int, first_window_text: string}|null
      */
     public static function activeEvent(User $user): ?UserEvent
@@ -53,17 +70,16 @@ class UserEventData
      */
     public static function forShow(User $user, UserEvent $event): array
     {
-        $wallet = WalletData::totalForUser($user);
-        $balance = $wallet['balance'];
+        $balance = self::openingBalanceForEvent($user, $event);
         $depositAmount = (float) $event->deposit_amount;
-        $standardBalance = $balance + $depositAmount;
+        $standardBalance = self::standardBalanceForEvent($user, $event);
         $bonusAmount = (float) $event->bonus_amount;
 
         return [
             'id' => $event->id,
             'first_window_text' => $event->first_window_text,
             'balance' => $balance,
-            'formatted_balance' => $wallet['formatted_balance'],
+            'formatted_balance' => WalletData::format($balance),
             'deposit_amount' => $depositAmount,
             'formatted_deposit_amount' => WalletData::format($depositAmount),
             'standard_balance' => $standardBalance,

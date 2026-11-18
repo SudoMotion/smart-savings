@@ -20,6 +20,21 @@ function formatAmount(value) {
     return Number.isFinite(amount) ? amount.toFixed(2) : '0.00';
 }
 
+/** Wallet for event 1; each next event starts at the previous standard balance (wallet + prior deposits). */
+function eventOpeningBalance(events, index, walletBalance) {
+    let balance = Number(walletBalance) || 0;
+
+    for (let i = 0; i < index; i += 1) {
+        balance += Number(events[i]?.deposit_amount || 0);
+    }
+
+    return balance;
+}
+
+function eventStandardBalance(events, index, walletBalance) {
+    return eventOpeningBalance(events, index, walletBalance) + Number(events[index]?.deposit_amount || 0);
+}
+
 export default function Edit({ user }) {
     const { flash } = usePage().props;
     const walletBalance = Number(user.wallet_balance ?? 0);
@@ -138,7 +153,9 @@ export default function Edit({ user }) {
                                             <Input
                                                 id={`event-${index}-balance`}
                                                 label="Balance"
-                                                value={user.formatted_wallet_balance ?? formatAmount(walletBalance)}
+                                                value={formatAmount(
+                                                    eventOpeningBalance(data.events, index, walletBalance),
+                                                )}
                                                 wrapperClassName="sm:col-span-2 lg:col-span-1 xl:col-span-1"
                                                 readOnly
                                                 disabled
@@ -160,7 +177,7 @@ export default function Edit({ user }) {
                                                 id={`event-${index}-standard-balance`}
                                                 label="Standard balance"
                                                 value={formatAmount(
-                                                    walletBalance + Number(event.deposit_amount || 0),
+                                                    eventStandardBalance(data.events, index, walletBalance),
                                                 )}
                                                 wrapperClassName="sm:col-span-2 lg:col-span-1 xl:col-span-1"
                                                 readOnly

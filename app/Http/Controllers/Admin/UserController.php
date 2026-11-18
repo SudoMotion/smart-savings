@@ -113,6 +113,7 @@ class UserController extends Controller
                 'wallet_balance' => $wallet['balance'],
                 'formatted_wallet_balance' => $wallet['formatted_balance'],
                 'events' => $user->events()
+                    ->orderBy('id')
                     ->get()
                     ->map(fn (UserEvent $event) => [
                         'id' => $event->id,
