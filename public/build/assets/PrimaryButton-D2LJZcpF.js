@@ -1,0 +1,1 @@
+import{t as e}from"./app-EKg-XEV5.js";import{y as t}from"./UI-BkekIdxZ.js";var n=e();function r(e){return(0,n.jsx)(t,{variant:`primary`,size:`sm`,...e})}export{r as t};
